@@ -1,0 +1,5 @@
+{
+  "integrity": "",
+  "strip_prefix": "proxy-wasm-cpp-host-{VERSION}",
+  "url": "https://github.com/{OWNER}/{REPO}/releases/download/v{VERSION}/proxy-wasm-cpp-host-{VERSION}.tar.gz"
+}
