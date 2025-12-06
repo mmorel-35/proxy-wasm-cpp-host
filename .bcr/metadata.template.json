@@ -1,0 +1,15 @@
+{
+  "homepage": "https://github.com/proxy-wasm/proxy-wasm-cpp-host",
+  "maintainers": [
+    {
+      "name": "Piotr Sikora",
+      "github": "PiotrSikora",
+      "github_user_id": 190297
+    }
+  ],
+  "repository": [
+    "github:proxy-wasm/proxy-wasm-cpp-host"
+  ],
+  "versions": [],
+  "yanked_versions": {}
+}
