@@ -30,4 +30,4 @@ tasks:
     platform: ${{ platform }}
     bazel: ${{ bazel }}
     build_targets:
-      - "@proxy_wasm_cpp_host//..."
+      - "//..."
