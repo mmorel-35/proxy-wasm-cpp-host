@@ -13,3 +13,27 @@ index bfd96ed9..d7e38658 100644
          # These rules are not supposed to be depended on by other rust targets, and
          # as such they shouldn't provide a CrateInfo. However, one may still want to
          # write a rust_test for them, so we provide the CrateInfo wrapped in a provider
+
+# Fix dummy CC toolchain for Bazel 7.7+
+# The DUMMY_GCC_TOOL needs to be an actual executable, not a path
+
+diff --git a/rust/private/dummy_cc_toolchain/BUILD.bazel b/rust/private/dummy_cc_toolchain/BUILD.bazel
+index 0d5f5f5d..8e8b9b9d 100644
+--- a/rust/private/dummy_cc_toolchain/BUILD.bazel
++++ b/rust/private/dummy_cc_toolchain/BUILD.bazel
+@@ -8,7 +8,7 @@ filegroup(
+ 
+ sh_binary(
+     name = "dummy_gcc_tool",
+-    srcs = ["DUMMY_GCC_TOOL"],
++    srcs = ["dummy_gcc_tool.sh"],
+ )
+ 
+ cc_toolchain(
+diff --git a/rust/private/dummy_cc_toolchain/dummy_gcc_tool.sh b/rust/private/dummy_cc_toolchain/dummy_gcc_tool.sh
+new file mode 100644
+index 00000000..f1f641af
+--- /dev/null
++++ b/rust/private/dummy_cc_toolchain/dummy_gcc_tool.sh
+@@ -0,0 +1 @@
++#!/bin/bash
