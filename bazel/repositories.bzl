@@ -180,7 +180,7 @@ def proxy_wasm_cpp_host_repositories():
         # 13.8.258.26
         commit = "de9d0f8b56ae61896e4d2ac577fc589efb14f87d",
         remote = "https://chromium.googlesource.com/v8/v8",
-        shallow_since = "1752074621 -0400",
+        shallow_since = "1752074621",
         patches = [
             "@proxy_wasm_cpp_host//bazel/external:v8.patch",
         ],
