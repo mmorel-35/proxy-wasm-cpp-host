@@ -64,3 +64,4 @@ index 92fbf09..e8cd2da 100644
 +else
 +    exec clang-tidy "$@"
 +fi
+
