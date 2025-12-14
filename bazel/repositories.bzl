@@ -57,22 +57,24 @@ def proxy_wasm_cpp_host_repositories():
         url = "https://github.com/aspect-build/rules_lint/releases/download/v1.12.0/rules_lint-v1.12.0.tar.gz",
     )
     
-    # bazel_lib v3.0.0-rc.0 required by aspect_rules_lint v1.12.0
+    # bazel_lib v3.0.1 required by aspect_rules_lint v1.12.0
     maybe(
         http_archive,
         name = "bazel_lib",
-        sha256 = "0758ace949a93f709230a8e08ef35c5f0aacae2ff5d219b27da1d21d8233a709",
-        strip_prefix = "bazel-lib-3.0.0-rc.0",
-        url = "https://github.com/bazel-contrib/bazel-lib/releases/download/v3.0.0-rc.0/bazel-lib-v3.0.0-rc.0.tar.gz",
+        sha256 = "8b074b1a2731d29f6b95defdca95297354dc424492caf7019cf6b9f36afba54f",
+        strip_prefix = "bazel-lib-3.0.1",
+        url = "https://github.com/bazel-contrib/bazel-lib/releases/download/v3.0.1/bazel-lib-v3.0.1.tar.gz",
     )
     
-    # aspect_bazel_lib alias for aspect_rules_js compatibility
+    # aspect_bazel_lib alias for aspect_rules_js v2.1.2 compatibility
+    # aspect_rules_js expects @aspect_bazel_lib while aspect_rules_lint expects @bazel_lib
+    # Both repos reference the same bazel-lib v3.0.1 release to maintain consistency
     maybe(
         http_archive,
         name = "aspect_bazel_lib",
-        sha256 = "0758ace949a93f709230a8e08ef35c5f0aacae2ff5d219b27da1d21d8233a709",
-        strip_prefix = "bazel-lib-3.0.0-rc.0",
-        url = "https://github.com/bazel-contrib/bazel-lib/releases/download/v3.0.0-rc.0/bazel-lib-v3.0.0-rc.0.tar.gz",
+        sha256 = "8b074b1a2731d29f6b95defdca95297354dc424492caf7019cf6b9f36afba54f",
+        strip_prefix = "bazel-lib-3.0.1",
+        url = "https://github.com/bazel-contrib/bazel-lib/releases/download/v3.0.1/bazel-lib-v3.0.1.tar.gz",
     )
     
     # aspect_rules_js is required by aspect_rules_lint
