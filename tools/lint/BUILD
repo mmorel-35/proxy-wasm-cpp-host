@@ -12,13 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@bazel_lib//lib:copy_file.bzl", "copy_file")
+load("@bazel_skylib//rules:native_binary.bzl", "native_binary")
 
 # Make hermetic clang-tidy available as a binary for aspect_rules_lint
-copy_file(
+native_binary(
     name = "clang_tidy",
-    src = "@llvm_toolchain_llvm//:bin/clang-tidy",
-    out = "clang-tidy",
-    allow_symlink = True,
+    src = select(
+        {
+            "@bazel_tools//src/conditions:linux_x86_64": "@llvm_toolchain_llvm//:bin/clang-tidy",
+            "@bazel_tools//src/conditions:linux_aarch64": "@llvm_toolchain_llvm//:bin/clang-tidy",
+            "@bazel_tools//src/conditions:darwin_x86_64": "@llvm_toolchain_llvm//:bin/clang-tidy",
+            "@bazel_tools//src/conditions:darwin_arm64": "@llvm_toolchain_llvm//:bin/clang-tidy",
+        },
+    ),
+    out = "clang_tidy",
     visibility = ["//visibility:public"],
 )

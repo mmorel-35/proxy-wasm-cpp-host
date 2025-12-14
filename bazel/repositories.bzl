@@ -57,9 +57,19 @@ def proxy_wasm_cpp_host_repositories():
         url = "https://github.com/aspect-build/rules_lint/releases/download/v1.12.0/rules_lint-v1.12.0.tar.gz",
     )
     
+    # bazel_lib v3.0.0-rc.0 required by aspect_rules_lint v1.12.0
     maybe(
         http_archive,
         name = "bazel_lib",
+        sha256 = "0758ace949a93f709230a8e08ef35c5f0aacae2ff5d219b27da1d21d8233a709",
+        strip_prefix = "bazel-lib-3.0.0-rc.0",
+        url = "https://github.com/bazel-contrib/bazel-lib/releases/download/v3.0.0-rc.0/bazel-lib-v3.0.0-rc.0.tar.gz",
+    )
+    
+    # aspect_bazel_lib alias for aspect_rules_js compatibility
+    maybe(
+        http_archive,
+        name = "aspect_bazel_lib",
         sha256 = "0758ace949a93f709230a8e08ef35c5f0aacae2ff5d219b27da1d21d8233a709",
         strip_prefix = "bazel-lib-3.0.0-rc.0",
         url = "https://github.com/bazel-contrib/bazel-lib/releases/download/v3.0.0-rc.0/bazel-lib-v3.0.0-rc.0.tar.gz",
@@ -69,7 +79,7 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "aspect_rules_js",
-        sha256 = "e5920cf0b6daa81b3ab82cb72a39cf2c36005d2069c8e45f70f1b8db05ca2914",
+        sha256 = "fbc34d815a0cc52183a1a26732fc0329e26774a51abbe0f26fc9fd2dab6133b4",
         strip_prefix = "rules_js-2.1.2",
         url = "https://github.com/aspect-build/rules_js/releases/download/v2.1.2/rules_js-v2.1.2.tar.gz",
     )
