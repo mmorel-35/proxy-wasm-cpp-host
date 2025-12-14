@@ -50,12 +50,10 @@ def proxy_wasm_cpp_host_repositories():
 
     maybe(
         http_archive,
-        name = "bazel_clang_tidy",
-        sha256 = "6ed23cbff9423a30ef10becf57210a26d54fe198a211f4037d931c06f843c023",
-        strip_prefix = "bazel_clang_tidy-c2fe98cfec0430e78bff4169e9ca0a43123e4c99",
-        url = "https://github.com/erenon/bazel_clang_tidy/archive/c2fe98cfec0430e78bff4169e9ca0a43123e4c99.tar.gz",
-        patches = ["@proxy_wasm_cpp_host//bazel/external:bazel_clang_tidy.patch"],
-        patch_args = ["-p1"],
+        name = "aspect_rules_lint",
+        sha256 = "4c194d6ebac5f952595c79249045d8e78b5eb7aacb3f29bc89fed77e808f18e7",
+        strip_prefix = "rules_lint-1.12.0",
+        url = "https://github.com/aspect-build/rules_lint/archive/refs/tags/v1.12.0.tar.gz",
     )
 
     maybe(
