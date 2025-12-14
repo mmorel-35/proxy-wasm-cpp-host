@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
+load("@bazel_lib//lib:copy_file.bzl", "copy_file")
 
 # Make hermetic clang-tidy available as a binary for aspect_rules_lint
 copy_file(
