@@ -19,6 +19,14 @@ load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 def proxy_wasm_cpp_host_repositories():
     # Bazel extensions.
 
+    maybe(
+        http_archive,
+        name = "bazel_features",
+        sha256 = "07271d0f6b12633777b69020c4cb1eb67b1939c0cf84bb3944dc85cc250c0c01",
+        strip_prefix = "bazel_features-1.38.0",
+        urls = ["https://github.com/bazel-contrib/bazel_features/releases/download/v1.38.0/bazel_features-v1.38.0.tar.gz"],
+    )
+
     # Update platforms for crate_universe. Can remove when we update Bazel version.
     maybe(
         http_archive,
@@ -77,9 +85,9 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "rules_foreign_cc",
-        sha256 = "bcd0c5f46a49b85b384906daae41d277b3dc0ff27c7c752cc51e43048a58ec83",
-        strip_prefix = "rules_foreign_cc-0.7.1",
-        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.7.1.tar.gz",
+        sha256 = "32759728913c376ba45b0116869b71b68b1c2ebf8f2bcf7b41222bc07b773d73",
+        strip_prefix = "rules_foreign_cc-0.15.1",
+        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.15.1.tar.gz",
     )
 
     maybe(
@@ -180,7 +188,7 @@ def proxy_wasm_cpp_host_repositories():
         # 13.8.258.26
         commit = "de9d0f8b56ae61896e4d2ac577fc589efb14f87d",
         remote = "https://chromium.googlesource.com/v8/v8",
-        shallow_since = "1752074621 -0400",
+        shallow_since = "1752074621 -0700",
         patches = [
             "@proxy_wasm_cpp_host//bazel/external:v8.patch",
         ],
