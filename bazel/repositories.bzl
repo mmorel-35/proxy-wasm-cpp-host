@@ -22,9 +22,9 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "bazel_features",
-        sha256 = "af3d4fb1cf4f25942cb4a933b1ad93a0ea9fe9ee70c2af7f369fb72a67c266e5",
-        strip_prefix = "bazel_features-1.21.0",
-        urls = ["https://github.com/bazel-contrib/bazel_features/releases/download/v1.21.0/bazel_features-v1.21.0.tar.gz"],
+        sha256 = "a660027f5a87f13224ab54b8dc6e191693c554f2692fcca46e8e29ee7dabc43b",
+        strip_prefix = "bazel_features-1.30.0",
+        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.30.0/bazel_features-v1.30.0.tar.gz",
     )
 
     # Update platforms for crate_universe. Can remove when we update Bazel version.
@@ -101,8 +101,8 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "rules_java",
-        sha256 = "16bc94b1a3c64f2c36ceecddc9e09a643e80937076b97e934b96a8f715ed1eaa",
-        urls = ["https://github.com/bazelbuild/rules_java/releases/download/6.5.2/rules_java-6.5.2.tar.gz"],
+        sha256 = "1b30698d89dccd9dc01b1a4ad7e9e5c6e669cdf1918dbb050334e365b40a1b5e",
+        urls = ["https://github.com/bazelbuild/rules_java/releases/download/8.16.1/rules_java-8.16.1.tar.gz"],
     )
 
     maybe(
