@@ -32,10 +32,10 @@ def proxy_wasm_cpp_host_repositories():
         http_archive,
         name = "platforms",
         urls = [
-            "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.10/platforms-0.0.10.tar.gz",
-            "https://github.com/bazelbuild/platforms/releases/download/0.0.10/platforms-0.0.10.tar.gz",
+            "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/1.0.0/platforms-1.0.0.tar.gz",
+            "https://github.com/bazelbuild/platforms/releases/download/1.0.0/platforms-1.0.0.tar.gz",
         ],
-        sha256 = "218efe8ee736d26a3572663b374a253c012b716d8af0c07e842e82f238a0a7ee",
+        sha256 = "3384eb1c30762704fbe38e440204e114154086c8fc8a8c2e3e28441028c019a8",
     )
 
     maybe(
@@ -134,14 +134,12 @@ def proxy_wasm_cpp_host_repositories():
         url = "https://github.com/bazelbuild/rules_python/releases/download/0.34.0/rules_python-0.34.0.tar.gz",
     )
 
-    # Keep at 0.42 one because https://github.com/bazelbuild/rules_rust/issues/2665
-    # manifests at 0.43
     maybe(
         http_archive,
         name = "rules_rust",
-        integrity = "sha256-JLN47ZcAbx9wEr5Jiib4HduZATGLiDgK7oUi/fvotzU=",
+        sha256 = "dc287e3eca80b29d5cc95e261cae273eedf1af4a00a96ae937e234534dadb24c",
         # NOTE: Update Rust version in bazel/dependencies.bzl.
-        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.42.1/rules_rust-v0.42.1.tar.gz",
+        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.67.0/rules_rust-0.67.0.tar.gz",
         patches = ["@proxy_wasm_cpp_host//bazel/external:rules_rust.patch"],
         patch_args = ["-p1"],
     )
@@ -293,11 +291,6 @@ def proxy_wasm_cpp_host_repositories():
         build_file = "@proxy_wasm_cpp_host//bazel/external:intel_ittapi.BUILD",
     )
 
-    native.bind(
-        name = "wee8",
-        actual = "@v8//:wee8",
-    )
-
     # WAMR with dependencies.
 
     maybe(
@@ -308,11 +301,6 @@ def proxy_wasm_cpp_host_repositories():
         sha256 = "ca18bbf304f47287bf43707564db63b8908dd6d0d6ac40bb39271a7144def4cc",
         strip_prefix = "wasm-micro-runtime-WAMR-2.4.1",
         url = "https://github.com/bytecodealliance/wasm-micro-runtime/archive/refs/tags/WAMR-2.4.1.zip",
-    )
-
-    native.bind(
-        name = "wamr",
-        actual = "@com_github_bytecodealliance_wasm_micro_runtime//:wamr_lib",
     )
 
     maybe(
@@ -335,11 +323,6 @@ def proxy_wasm_cpp_host_repositories():
         url = "https://github.com/WasmEdge/WasmEdge/archive/refs/tags/proxy-wasm/0.13.1.tar.gz",
     )
 
-    native.bind(
-        name = "wasmedge",
-        actual = "@com_github_wasmedge_wasmedge//:wasmedge_lib",
-    )
-
     # Wasmtime with dependencies.
 
     maybe(
@@ -349,14 +332,4 @@ def proxy_wasm_cpp_host_repositories():
         sha256 = "2ccb49bb3bfa4d86907ad4c80d1147aef6156c7b6e3f7f14ed02a39de9761155",
         strip_prefix = "wasmtime-24.0.0",
         url = "https://github.com/bytecodealliance/wasmtime/archive/v24.0.0.tar.gz",
-    )
-
-    native.bind(
-        name = "wasmtime",
-        actual = "@com_github_bytecodealliance_wasmtime//:wasmtime_lib",
-    )
-
-    native.bind(
-        name = "prefixed_wasmtime",
-        actual = "@com_github_bytecodealliance_wasmtime//:prefixed_wasmtime_lib",
     )
