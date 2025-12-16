@@ -16,7 +16,6 @@ load("@fuzzing_py_deps//:requirements.bzl", pip_fuzzing_dependencies = "install_
 load("@llvm_toolchain//:toolchains.bzl", "llvm_register_toolchains")
 load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
 load("@rules_fuzzing//fuzzing:repositories.bzl", "rules_fuzzing_dependencies")
-load("@rules_java//java:repositories.bzl", "rules_java_toolchains")
 load("@v8_python_deps//:requirements.bzl", pip_v8_dependencies = "install_deps")
 
 def proxy_wasm_cpp_host_dependencies_import():
@@ -24,9 +23,6 @@ def proxy_wasm_cpp_host_dependencies_import():
 
     rules_foreign_cc_dependencies()
     rules_fuzzing_dependencies()
-
-    # Register Java toolchains (after rules_java_dependencies is called in setup_bazel_features)
-    rules_java_toolchains()
 
     pip_fuzzing_dependencies()
     pip_v8_dependencies()
