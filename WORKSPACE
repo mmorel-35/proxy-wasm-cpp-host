@@ -4,6 +4,12 @@ load("@proxy_wasm_cpp_host//bazel:repositories.bzl", "proxy_wasm_cpp_host_reposi
 
 proxy_wasm_cpp_host_repositories()
 
+# Setup rules_cc compatibility proxy (required for rules_cc 0.2.x with WORKSPACE)
+# Must be called immediately after repositories that define rules_cc
+load("@rules_cc//cc:extensions.bzl", "compatibility_proxy_repo")
+
+compatibility_proxy_repo()
+
 load("@proxy_wasm_cpp_host//bazel:dependencies.bzl", "proxy_wasm_cpp_host_dependencies")
 
 proxy_wasm_cpp_host_dependencies()
