@@ -27,8 +27,8 @@ def proxy_wasm_cpp_host_dependencies():
 
     py_repositories()
     python_register_toolchains(
-        name = "python_3_9",
-        python_version = "3.9",
+        name = "python_3_11",
+        python_version = "3.11",
         ignore_root_user_error = True,  # for docker run
     )
 

@@ -22,9 +22,9 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "bazel_features",
-        sha256 = "af3d4fb1cf4f25942cb4a933b1ad93a0ea9fe9ee70c2af7f369fb72a67c266e5",
-        strip_prefix = "bazel_features-1.21.0",
-        urls = ["https://github.com/bazel-contrib/bazel_features/releases/download/v1.21.0/bazel_features-v1.21.0.tar.gz"],
+        sha256 = "a660027f5a87f13224ab54b8dc6e191693c554f2692fcca46e8e29ee7dabc43b",
+        strip_prefix = "bazel_features-1.30.0",
+        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.30.0/bazel_features-v1.30.0.tar.gz",
     )
 
     # Update platforms for crate_universe. Can remove when we update Bazel version.
@@ -51,9 +51,9 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "rules_cc",
-        sha256 = "2037875b9a4456dce4a79d112a8ae885bbc4aad968e6587dca6e64f3a0900cdf",
-        strip_prefix = "rules_cc-0.0.9",
-        urls = ["https://github.com/bazelbuild/rules_cc/releases/download/0.0.9/rules_cc-0.0.9.tar.gz"],
+        sha256 = "b8b918a85f9144c01f6cfe0f45e4f2838c7413961a8ff23bc0c6cdf8bb07a3b6",
+        strip_prefix = "rules_cc-0.1.5",
+        urls = ["https://github.com/bazelbuild/rules_cc/releases/download/0.1.5/rules_cc-0.1.5.tar.gz"],
     )
 
     maybe(
@@ -85,25 +85,32 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "rules_foreign_cc",
-        sha256 = "26b32bb97f643963e55e22e2edc2a1cb1e731b65fda1bd329653d0ad4782e7f9",
-        strip_prefix = "rules_foreign_cc-7273e20d2624b6fc0caf254b881768ab60b2afed",
-        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/7273e20d2624b6fc0caf254b881768ab60b2afed.tar.gz",
+        sha256 = "32759728913c376ba45b0116869b71b68b1c2ebf8f2bcf7b41222bc07b773d73",
+        strip_prefix = "rules_foreign_cc-0.15.1",
+        url = "https://github.com/bazelbuild/rules_foreign_cc/releases/download/0.15.1/rules_foreign_cc-0.15.1.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "rules_fuzzing",
-        sha256 = "3ec0eee05b243552cc4a784b30323d088bf73cb2177ddda02c827e68981933f1",
-        strip_prefix = "rules_fuzzing-0.5.2",
-        urls = ["https://github.com/bazelbuild/rules_fuzzing/archive/v0.5.2.tar.gz"],
+        sha256 = "e4b0329bb6335689d03961549a8227192cc6bf9458b20b07cbd735ec5c58e7d7",
+        strip_prefix = "rules_fuzzing-v0.6.0",
+        url = "https://github.com/bazelbuild/rules_fuzzing/releases/download/v0.6.0/rules_fuzzing-v0.6.0.tar.gz",
+    )
+
+    maybe(
+        http_archive,
+        name = "rules_java",
+        sha256 = "1b30698d89dccd9dc01b1a4ad7e9e5c6e669cdf1918dbb050334e365b40a1b5e",
+        urls = ["https://github.com/bazelbuild/rules_java/releases/download/8.16.1/rules_java-8.16.1.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "778aaeab3e6cfd56d681c89f5c10d7ad6bf8d2f1a72de9de55b23081b2d31618",
-        strip_prefix = "rules_python-0.34.0",
-        url = "https://github.com/bazelbuild/rules_python/releases/download/0.34.0/rules_python-0.34.0.tar.gz",
+        sha256 = "9c6e26911a79fbf510a8f06d8eedb40f412023cf7fa6d1461def27116bff022c",
+        strip_prefix = "rules_python-1.1.0",
+        url = "https://github.com/bazelbuild/rules_python/releases/download/1.1.0/rules_python-1.1.0.tar.gz",
     )
 
     # Keep at 0.42 one because https://github.com/bazelbuild/rules_rust/issues/2665
@@ -175,9 +182,9 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "com_google_protobuf",
-        sha256 = "77ad26d3f65222fd96ccc18b055632b0bfedf295cb748b712a98ba1ac0b704b2",
-        strip_prefix = "protobuf-3.17.3",
-        url = "https://github.com/protocolbuffers/protobuf/releases/download/v3.17.3/protobuf-all-3.17.3.tar.gz",
+        sha256 = "da288bf1daa6c04d03a9051781caa52aceb9163586bff9aa6cfb12f69b9395aa",
+        strip_prefix = "protobuf-27.0",
+        url = "https://github.com/protocolbuffers/protobuf/archive/v27.0.tar.gz",
     )
 
     # V8 with dependencies.
