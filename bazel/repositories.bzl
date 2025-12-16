@@ -51,9 +51,9 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "rules_cc",
-        sha256 = "bbf1ae2f83305b7053b11e4467d317a7ba3517a12cef608543c1b1c5bf48a4df",
-        strip_prefix = "rules_cc-0.0.16",
-        urls = ["https://github.com/bazelbuild/rules_cc/releases/download/0.0.16/rules_cc-0.0.16.tar.gz"],
+        sha256 = "abc605dd850f813bb37004b77db20106a19311a96b2da1c92b789da529d28fe1",
+        strip_prefix = "rules_cc-0.0.17",
+        urls = ["https://github.com/bazelbuild/rules_cc/releases/download/0.0.17/rules_cc-0.0.17.tar.gz"],
     )
 
     maybe(
@@ -93,9 +93,9 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "rules_fuzzing",
-        sha256 = "850897989ebc06567ea06c959eb4a6129fa509ed2dbbd0d147d62d2b986714a9",
-        strip_prefix = "rules_fuzzing-0.6.0",
-        urls = ["https://github.com/bazelbuild/rules_fuzzing/archive/v0.6.0.tar.gz"],
+        sha256 = "e4b0329bb6335689d03961549a8227192cc6bf9458b20b07cbd735ec5c58e7d7",
+        strip_prefix = "rules_fuzzing-v0.6.0",
+        url = "https://github.com/bazelbuild/rules_fuzzing/releases/download/v0.6.0/rules_fuzzing-v0.6.0.tar.gz",
     )
 
     maybe(

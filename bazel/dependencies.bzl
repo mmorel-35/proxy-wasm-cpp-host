@@ -16,6 +16,7 @@ load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 load("@envoy_toolshed//sysroot:sysroot.bzl", "setup_sysroots")
 load("@proxy_wasm_cpp_host//bazel/cargo/wasmsign/remote:crates.bzl", wasmsign_crate_repositories = "crate_repositories")
 load("@proxy_wasm_cpp_host//bazel/cargo/wasmtime/remote:crates.bzl", wasmtime_crate_repositories = "crate_repositories")
+load("@rules_fuzzing//fuzzing:repositories.bzl", "rules_fuzzing_dependencies")
 load("@rules_python//python:repositories.bzl", "py_repositories", "python_register_toolchains")
 load("@rules_rust//crate_universe:repositories.bzl", "crate_universe_dependencies")
 load("@rules_rust//rust:repositories.bzl", "rust_repositories", "rust_repository_set")
@@ -24,6 +25,10 @@ load("@toolchains_llvm//toolchain:rules.bzl", "llvm_toolchain")
 
 def proxy_wasm_cpp_host_dependencies():
     # Bazel extensions.
+
+    # Load rules_fuzzing dependencies (including rules_java)
+    # Our rules_python definition in repositories.bzl takes precedence
+    rules_fuzzing_dependencies()
 
     py_repositories()
     python_register_toolchains(
