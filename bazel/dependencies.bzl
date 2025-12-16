@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("@aspect_rules_lint//format:repositories.bzl", "rules_lint_dependencies")
+load("@bazel_lib//lib:repositories.bzl", "bazel_lib_dependencies", "bazel_lib_register_toolchains")
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 load("@envoy_toolshed//sysroot:sysroot.bzl", "setup_sysroots")
 load("@proxy_wasm_cpp_host//bazel/cargo/wasmsign/remote:crates.bzl", wasmsign_crate_repositories = "crate_repositories")
@@ -25,10 +27,15 @@ load("@toolchains_llvm//toolchain:rules.bzl", "llvm_toolchain")
 def proxy_wasm_cpp_host_dependencies():
     # Bazel extensions.
 
+    rules_lint_dependencies()
+
+    bazel_lib_dependencies()
+    bazel_lib_register_toolchains()
+
     py_repositories()
     python_register_toolchains(
-        name = "python_3_11",
-        python_version = "3.11",
+        name = "python_3_9",
+        python_version = "3.9",
         ignore_root_user_error = True,  # for docker run
     )
 

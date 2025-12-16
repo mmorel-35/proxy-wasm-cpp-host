@@ -4,17 +4,14 @@ load("@proxy_wasm_cpp_host//bazel:repositories.bzl", "proxy_wasm_cpp_host_reposi
 
 proxy_wasm_cpp_host_repositories()
 
-load("@proxy_wasm_cpp_host//bazel:setup_features.bzl", "setup_bazel_features")
-
-setup_bazel_features()
-
-load("@rules_java//java:rules_java_deps.bzl", "rules_java_dependencies")
-
-rules_java_dependencies()
-
 load("@proxy_wasm_cpp_host//bazel:dependencies.bzl", "proxy_wasm_cpp_host_dependencies")
 
 proxy_wasm_cpp_host_dependencies()
+
+# Setup bazel_features internal repos (required for aspect_rules_lint)
+load("@proxy_wasm_cpp_host//bazel:setup_features.bzl", "setup_bazel_features")
+
+setup_bazel_features()
 
 load("@proxy_wasm_cpp_host//bazel:dependencies_python.bzl", "proxy_wasm_cpp_host_dependencies_python")
 
