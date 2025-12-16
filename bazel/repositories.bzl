@@ -101,9 +101,9 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "778aaeab3e6cfd56d681c89f5c10d7ad6bf8d2f1a72de9de55b23081b2d31618",
-        strip_prefix = "rules_python-0.34.0",
-        url = "https://github.com/bazelbuild/rules_python/releases/download/0.34.0/rules_python-0.34.0.tar.gz",
+        sha256 = "f609f341d6e9090b981b3f45324d05a819fd7a5a56434f849c761971ce2c47da",
+        strip_prefix = "rules_python-1.7.0",
+        url = "https://github.com/bazelbuild/rules_python/releases/download/1.7.0/rules_python-1.7.0.tar.gz",
     )
 
     # Keep at 0.42 one because https://github.com/bazelbuild/rules_rust/issues/2665
