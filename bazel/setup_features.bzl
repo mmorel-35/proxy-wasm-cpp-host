@@ -12,10 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Setup bazel_features internal repositories."""
+"""Setup bazel_features and rules_java internal repositories."""
 
+load("@bazel_features//:deps.bzl", "bazel_features_deps")
 load("@bazel_features//private:repos.bzl", "bazel_features_repos")
+load("@rules_java//java:rules_java_deps.bzl", "rules_java_dependencies")
 
 def setup_bazel_features():
-    """Initialize bazel_features internal repos (needed for WORKSPACE compat)."""
+    """Initialize bazel_features and rules_java internal repos (needed for WORKSPACE compat)."""
+    bazel_features_deps()
     bazel_features_repos()
+    rules_java_dependencies()
