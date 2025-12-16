@@ -51,9 +51,9 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "rules_cc",
-        sha256 = "2037875b9a4456dce4a79d112a8ae885bbc4aad968e6587dca6e64f3a0900cdf",
-        strip_prefix = "rules_cc-0.0.9",
-        urls = ["https://github.com/bazelbuild/rules_cc/releases/download/0.0.9/rules_cc-0.0.9.tar.gz"],
+        sha256 = "bbf1ae2f83305b7053b11e4467d317a7ba3517a12cef608543c1b1c5bf48a4df",
+        strip_prefix = "rules_cc-0.0.16",
+        urls = ["https://github.com/bazelbuild/rules_cc/releases/download/0.0.16/rules_cc-0.0.16.tar.gz"],
     )
 
     maybe(
@@ -85,9 +85,9 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "rules_foreign_cc",
-        sha256 = "32759728913c376ba45b0116869b71b68b1c2ebf8f2bcf7b41222bc07b773d73",
-        strip_prefix = "rules_foreign_cc-0.15.1",
-        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.15.1.tar.gz",
+        sha256 = "62cf2de93583a40413cbf7ebca380a0c0d2421db7b3614eb1d8389bcba21723e",
+        strip_prefix = "rules_foreign_cc-2eca712c15301c1f4e71ceec21e6271f373501e2",
+        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/2eca712c15301c1f4e71ceec21e6271f373501e2.tar.gz",
     )
 
     maybe(
@@ -101,9 +101,9 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "f609f341d6e9090b981b3f45324d05a819fd7a5a56434f849c761971ce2c47da",
-        strip_prefix = "rules_python-1.7.0",
-        url = "https://github.com/bazelbuild/rules_python/releases/download/1.7.0/rules_python-1.7.0.tar.gz",
+        sha256 = "2ef40fdcd797e07f0b6abda446d1d84e2d9570d234fddf8fcd2aa262da852d1c",
+        strip_prefix = "rules_python-1.2.0",
+        url = "https://github.com/bazelbuild/rules_python/releases/download/1.2.0/rules_python-1.2.0.tar.gz",
     )
 
     # Keep at 0.42 one because https://github.com/bazelbuild/rules_rust/issues/2665
@@ -175,9 +175,9 @@ def proxy_wasm_cpp_host_repositories():
     maybe(
         http_archive,
         name = "com_google_protobuf",
-        sha256 = "77ad26d3f65222fd96ccc18b055632b0bfedf295cb748b712a98ba1ac0b704b2",
-        strip_prefix = "protobuf-3.17.3",
-        url = "https://github.com/protocolbuffers/protobuf/releases/download/v3.17.3/protobuf-all-3.17.3.tar.gz",
+        sha256 = "da288bf1daa6c04d03a9051781caa52aceb9163586bff9aa6cfb12f69b9395aa",
+        strip_prefix = "protobuf-27.0",
+        url = "https://github.com/protocolbuffers/protobuf/archive/v27.0.tar.gz",
     )
 
     # V8 with dependencies.
