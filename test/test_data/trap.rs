@@ -42,6 +42,6 @@ fn two() {
 }
 
 #[inline(never)]
-fn three(){
+fn three() {
     panic!("trap!");
 }
