@@ -160,7 +160,8 @@ TEST_P(TestVm, Trap) {
     EXPECT_TRUE(host->isErrorLogged(" - std::panicking::begin_panic"));
     // Check for the function name 'one' in the backtrace, which may appear with or without
     // module prefix depending on Rust compiler version and symbol generation.
-    EXPECT_TRUE(host->isErrorLogged("::one") || host->isErrorLogged(" - one"));
+    bool has_one_symbol = host->isErrorLogged("::one") || host->isErrorLogged(" - one");
+    EXPECT_TRUE(has_one_symbol) << "Expected to find '::one' or ' - one' in backtrace";
   }
 }
 
