@@ -21,4 +21,4 @@ version = "0.1.2"
 path = "fake_lib.rs"
 
 [dependencies]
-wasmsign2-cli = "0.2.6"
+wasmsign = { git = "https://github.com/jedisct1/wasmsign", rev = "6a6ef1c" }

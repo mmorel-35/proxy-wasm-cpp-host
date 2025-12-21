@@ -43,19 +43,12 @@ wasi_rust_transition = transition(
 def _wasm_binary_impl(ctx):
     out = ctx.actions.declare_file(ctx.label.name)
     if ctx.attr.signing_key:
-        # Only use the secret key (first file) for signing
-        # Public key is optional and used only for key identifier in the signature
-        ctx.actions.run_shell(
-            command = '"{tool}" sign -k "{sk}" -i "{inp}" -o "{outp}" && echo "Signing completed for {name}" || (echo "ERROR: wasmsign2 failed for {name}" >&2 && exit 1)'.format(
-                tool = ctx.executable._wasmsign_tool.path,
-                sk = ctx.files.signing_key[0].path,
-                inp = ctx.files.binary[0].path,
-                outp = out.path,
-                name = ctx.label.name,
-            ),
+        # Use wasmsign v1 with custom section to add signature
+        ctx.actions.run(
+            executable = ctx.executable._wasmsign_tool,
+            arguments = ["--sign", "--use-custom-section", "-i", ctx.files.binary[0].path, "-o", out.path, "-s", ctx.files.signing_key[0].path],
             outputs = [out],
             inputs = ctx.files.binary + ctx.files.signing_key,
-            tools = [ctx.executable._wasmsign_tool],
             mnemonic = "WasmSign",
         )
     else:
