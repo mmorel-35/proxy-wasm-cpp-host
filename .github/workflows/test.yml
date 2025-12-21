@@ -244,7 +244,7 @@ jobs:
           os: macos-15
           arch: x86_64
           action: test
-          flags: --config=hermetic-llvm
+          flags: --config=hermetic-llvm-macos
         - name: 'Wasmtime on Linux/x86_64'
           engine: 'wasmtime'
           repo: 'com_github_bytecodealliance_wasmtime'
