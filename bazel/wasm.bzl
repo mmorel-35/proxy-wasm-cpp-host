@@ -45,9 +45,10 @@ def _wasm_binary_impl(ctx):
     if ctx.attr.signing_key:
         ctx.actions.run(
             executable = ctx.executable._wasmsign_tool,
-            arguments = ["sign", "--secret-key", ctx.files.signing_key[0].path, "--public-key", ctx.files.signing_key[1].path, "--input-file", ctx.files.binary[0].path, "--output-file", out.path],
+            arguments = ["sign", "-k", ctx.files.signing_key[0].path, "-K", ctx.files.signing_key[1].path, "-i", ctx.files.binary[0].path, "-o", out.path],
             outputs = [out],
             inputs = ctx.files.binary + ctx.files.signing_key,
+            mnemonic = "WasmSign",
         )
     else:
         ctx.actions.run(
