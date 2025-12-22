@@ -95,7 +95,7 @@ bool SignatureUtil::verifySignature(std::string_view bytecode, std::string &mess
 #ifdef PROXY_WASM_VERIFY_WITH_ED25519_PUBKEY
 
   /*
-   * Ed25519 signature generated using https://github.com/wasm-signatures/wasmsign2 v0.2.6
+   * Ed25519 signature generated using https://github.com/wasm-signatures/wasmsign2 0.2.6
    * Format specification: https://github.com/WebAssembly/tool-conventions/blob/main/Signatures.md
    * Note: wasmsign2 0.2.6 omits the signed_hashes_count wrapper and directly embeds a single
    * SignedHash
@@ -123,7 +123,7 @@ bool SignatureUtil::verifySignature(std::string_view bytecode, std::string &mess
     return false;
   }
 
-  // Parse wasmsign2 v0.2.6 format:
+  // Parse wasmsign2 0.2.6 format:
   // spec_version (byte), content_type (byte), hash_fn (byte),
   // then directly the SignedHash structure:
   //   hashes_count (varint), hashes (32 bytes each for SHA-256),
