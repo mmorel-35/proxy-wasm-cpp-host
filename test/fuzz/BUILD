@@ -27,10 +27,6 @@ cc_fuzz_test(
     name = "bytecode_util_fuzzer",
     srcs = ["bytecode_util_fuzzer.cc"],
     corpus = [":corpus_bytecode"],
-    target_compatible_with = select({
-        "@platforms//os:linux": [],
-        "//conditions:default": ["@platforms//:incompatible"],
-    }),
     deps = [
         "//:lib",
     ],
@@ -45,10 +41,6 @@ cc_fuzz_test(
     name = "pairs_util_fuzzer",
     srcs = ["pairs_util_fuzzer.cc"],
     corpus = [":corpus_pairs"],
-    target_compatible_with = select({
-        "@platforms//os:linux": [],
-        "//conditions:default": ["@platforms//:incompatible"],
-    }),
     deps = [
         "//:lib",
     ],
