@@ -16,6 +16,7 @@
 
 #include <array>
 #include <cstring>
+#include <memory>
 
 #ifdef PROXY_WASM_VERIFY_WITH_ED25519_PUBKEY
 #include <openssl/evp.h>
@@ -101,16 +102,13 @@ bool SignatureUtil::verifySignature(std::string_view bytecode, std::string &mess
    * Format notes:
    * - wasmsign2 0.2.6 DOES include signed_hashes_count (previously thought to omit it)
    * - wasmsign2 0.2.6 includes length fields not in the spec:
-   *   - signed_hash_len: length of each SignedHash structure
-   *   - signature_bytes_len: length of each signature's data
+   *   - signed_hash_len: length of each SignedHash structure (using varint::put_slice)
+   *   - signature_bytes_len: length of each signature's data (using varint::put_slice)
    *
-   * Known issue:
-   * - wasmsign2 uses ed25519-compact library which produces signatures incompatible with
-   *   standard Ed25519 implementations (OpenSSL, Python cryptography)
-   * - wasmsign2 can verify its own signatures successfully
-   * - Standard Ed25519 libraries cannot verify wasmsign2 signatures
-   * - This needs investigation: may require using ed25519-compact in C++ or finding the
-   *   format/algorithm difference
+   * Signature verification:
+   * - The signature is over a message with domain separation, NOT just the hash
+   * - Message format: "wasmsig" + spec_version + content_type + hash_fn + hash
+   * - See: https://github.com/wasm-signatures/wasmsign2/blob/0.2.6/src/lib/src/signature/multi.rs#L268-L278
    */
 
 
@@ -329,6 +327,20 @@ bool SignatureUtil::verifySignature(std::string_view bytecode, std::string &mess
   }
 
   // Verify the signature
+  // wasmsign2 signs a message that includes domain separation and metadata:
+  // "wasmsig" + spec_version + content_type + hash_fn + hash
+  // See: https://github.com/wasm-signatures/wasmsign2/blob/0.2.6/src/lib/src/signature/multi.rs#L268-L278
+  const char *domain = "wasmsig";
+  size_t domain_len = 7;
+  size_t msg_len = domain_len + 3 + 32; // domain + 3 bytes (spec/content/hash) + 32 bytes (hash)
+  auto signature_msg = std::make_unique<uint8_t[]>(msg_len);
+  
+  std::memcpy(signature_msg.get(), domain, domain_len);
+  signature_msg[domain_len] = spec_version;
+  signature_msg[domain_len + 1] = content_type;
+  signature_msg[domain_len + 2] = hash_fn;
+  std::memcpy(signature_msg.get() + domain_len + 3, expected_hash, 32);
+
   static const auto ed25519_pubkey = hex2pubkey<32>(PROXY_WASM_VERIFY_WITH_ED25519_PUBKEY);
 
   EVP_PKEY *pubkey = EVP_PKEY_new_raw_public_key(EVP_PKEY_ED25519, nullptr, ed25519_pubkey.data(),
@@ -347,7 +359,7 @@ bool SignatureUtil::verifySignature(std::string_view bytecode, std::string &mess
 
   bool ok =
       (EVP_DigestVerifyInit(mdctx, nullptr, nullptr, nullptr, pubkey) != 0) &&
-      (EVP_DigestVerify(mdctx, signature, 64 /* ED25519_SIGNATURE_LEN */, expected_hash, 32) != 0);
+      (EVP_DigestVerify(mdctx, signature, 64 /* ED25519_SIGNATURE_LEN */, signature_msg.get(), msg_len) != 0);
 
   EVP_MD_CTX_free(mdctx);
   EVP_PKEY_free(pubkey);
