@@ -97,9 +97,22 @@ bool SignatureUtil::verifySignature(std::string_view bytecode, std::string &mess
   /*
    * Ed25519 signature generated using https://github.com/wasm-signatures/wasmsign2 0.2.6
    * Format specification: https://github.com/WebAssembly/tool-conventions/blob/main/Signatures.md
-   * Note: wasmsign2 0.2.6 omits the signed_hashes_count wrapper and directly embeds a single
-   * SignedHash
+   *
+   * Format notes:
+   * - wasmsign2 0.2.6 DOES include signed_hashes_count (previously thought to omit it)
+   * - wasmsign2 0.2.6 includes length fields not in the spec:
+   *   - signed_hash_len: length of each SignedHash structure
+   *   - signature_bytes_len: length of each signature's data
+   *
+   * Known issue:
+   * - wasmsign2 uses ed25519-compact library which produces signatures incompatible with
+   *   standard Ed25519 implementations (OpenSSL, Python cryptography)
+   * - wasmsign2 can verify its own signatures successfully
+   * - Standard Ed25519 libraries cannot verify wasmsign2 signatures
+   * - This needs investigation: may require using ed25519-compact in C++ or finding the
+   *   format/algorithm difference
    */
+
 
   std::string_view signature_payload;
   if (!BytecodeUtil::getCustomSection(bytecode, "signature", signature_payload)) {
