@@ -125,8 +125,8 @@ bool SignatureUtil::verifySignature(std::string_view bytecode, std::string &mess
 
   // Parse wasmsign2 0.2.6 format:
   // spec_version (byte), content_type (byte), hash_fn (byte),
-  // then directly the SignedHash structure:
-  //   hashes_count (varint), hashes (32 bytes each for SHA-256),
+  // signed_hashes_count (varint), then for each SignedHash:
+  //   signed_hash_len (varint), hashes_count (varint), hashes (32 bytes each for SHA-256),
   //   signatures_count (varint), then for each signature:
   //     key_id_len (varint), key_id (bytes), signature_id (byte),
   //     signature_len (varint), signature (bytes)
@@ -158,8 +158,28 @@ bool SignatureUtil::verifySignature(std::string_view bytecode, std::string &mess
     return false;
   }
 
-  // In wasmsign2 0.2.6, there is no signed_hashes_count varint
-  // The format goes directly to the SignedHash structure
+  // Parse signed_hashes_count
+  uint32_t signed_hashes_count = 0;
+  if (!parseVarint(pos, end, signed_hashes_count) || signed_hashes_count == 0) {
+    message = "Invalid or zero signed_hashes_count";
+    return false;
+  }
+
+  // For simplicity, we only support single SignedHash verification
+  if (signed_hashes_count != 1) {
+    message = "Only single SignedHash is supported (found " + std::to_string(signed_hashes_count) +
+              " SignedHash entries)";
+    return false;
+  }
+
+  // Parse signed_hash_len (the length of the SignedHash structure)
+  uint32_t signed_hash_len = 0;
+  if (!parseVarint(pos, end, signed_hash_len)) {
+    message = "Invalid signed_hash_len";
+    return false;
+  }
+
+  // Now parse the SignedHash structure
   uint32_t hashes_count = 0;
   if (!parseVarint(pos, end, hashes_count) || hashes_count == 0) {
     message = "Invalid or zero hashes_count";
@@ -189,6 +209,13 @@ bool SignatureUtil::verifySignature(std::string_view bytecode, std::string &mess
   }
 
   // We only verify the first signature
+  // wasmsign2 0.2.6 includes a signature_bytes_len field before each signature
+  uint32_t signature_bytes_len = 0;
+  if (!parseVarint(pos, end, signature_bytes_len)) {
+    message = "Invalid signature_bytes_len";
+    return false;
+  }
+
   uint32_t key_id_len = 0;
   if (!parseVarint(pos, end, key_id_len)) {
     message = "Invalid key_id_len";
