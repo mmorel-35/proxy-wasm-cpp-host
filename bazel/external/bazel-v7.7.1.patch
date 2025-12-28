@@ -1,14 +1,17 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From f29fdb0a8592306a070f31033c55dbdc7abd7161 Mon Sep 17 00:00:00 2001
+From: Test <test@example.com>
+Date: Sun, 28 Dec 2025 20:17:38 +0000
 Subject: [PATCH] Force bazel_features 1.26.0 (dep + override)
 
 ---
- MODULE.bazel | 6 ++++++
- 1 file changed, 6 insertions(+)
+ MODULE.bazel | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/MODULE.bazel b/MODULE.bazel
+index 0a5ea5b..787d093 100755
 --- a/MODULE.bazel
 +++ b/MODULE.bazel
-@@ -10,6 +10,7 @@
+@@ -14,6 +14,7 @@ module(
  
  bazel_dep(name = "rules_license", version = "0.0.7")
  bazel_dep(name = "bazel_skylib", version = "1.7.1")
@@ -16,15 +19,10 @@ diff --git a/MODULE.bazel b/MODULE.bazel
  bazel_dep(name = "protobuf", version = "21.7", repo_name = "com_google_protobuf")
  bazel_dep(name = "grpc", version = "1.48.1.bcr.1", repo_name = "com_github_grpc_grpc")
  bazel_dep(name = "platforms", version = "0.0.10")
-@@ -34,6 +35,11 @@
- 
- single_version_override(
-     module_name = "rules_jvm_external",
-     version = "6.0",
+@@ -41,6 +42,10 @@ single_version_override(
      patch_strip = 1,
      patches = ["//third_party:rules_jvm_external_6.0.patch"],
  )
-+
 +single_version_override(
 +    module_name = "bazel_features",
 +    version = "1.26.0",
@@ -33,4 +31,5 @@ diff --git a/MODULE.bazel b/MODULE.bazel
  local_path_override(
      module_name = "remoteapis",
 -- 
-2.47.1
+2.52.0
+
