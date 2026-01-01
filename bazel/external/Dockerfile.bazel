@@ -77,7 +77,11 @@ ENV EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk \
     --copt=-fno-var-tracking --host_copt=-fno-var-tracking \
     --copt=-fno-var-tracking-assignments --host_copt=-fno-var-tracking-assignments \
     --copt=-fno-schedule-insns --host_copt=-fno-schedule-insns \
-    --copt=-fno-schedule-insns2 --host_copt=-fno-schedule-insns2"
+    --copt=-fno-schedule-insns2 --host_copt=-fno-schedule-insns2 \
+    --copt=-fno-tree-pre --host_copt=-fno-tree-pre \
+    --copt=-fno-ira-hoist-pressure --host_copt=-fno-ira-hoist-pressure \
+    --copt=-fno-reorder-blocks --host_copt=-fno-reorder-blocks \
+    --copt=-fno-gcse --host_copt=-fno-gcse"
 RUN bash ./compile.sh && \
         cp /tmp/src/bazel/output/bazel /tmp/bazel && \
         chmod +x /tmp/bazel && \
