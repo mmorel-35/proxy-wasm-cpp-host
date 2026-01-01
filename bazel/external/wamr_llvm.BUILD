@@ -253,10 +253,8 @@ cmake(
 
 # LLVM configuration for macOS builds
 # CMAKE_OSX_ARCHITECTURES is set for cross-compilation support.
-# LLVM_BUILD_UTILS and LLVM_INCLUDE_UTILS are NOT specified here,
-# allowing them to default to enabled. This is required when
-# CMAKE_OSX_ARCHITECTURES is set, as LLVM's CMake needs utils enabled
-# for host-architecture build tools during cross-compilation.
+# LLVM_BUILD_UTILS and LLVM_INCLUDE_UTILS are disabled to avoid mlgo-utils
+# test suite errors (requires llvm-objcopy and yaml2obj tools that are disabled).
 cmake(
     name = "llvm_wamr_lib_macos",
     cache_entries = {
@@ -269,6 +267,7 @@ cmake(
         "LLVM_BUILD_EXAMPLES": "off",
         "LLVM_BUILD_TESTS": "off",
         "LLVM_BUILD_TOOLS": "off",
+        "LLVM_BUILD_UTILS": "off",
         "LLVM_ENABLE_IDE": "off",
         "LLVM_ENABLE_LIBEDIT": "off",
         "LLVM_ENABLE_LIBXML2": "off",
@@ -280,6 +279,7 @@ cmake(
         "LLVM_INCLUDE_EXAMPLES": "off",
         "LLVM_INCLUDE_TESTS": "off",
         "LLVM_INCLUDE_TOOLS": "off",
+        "LLVM_INCLUDE_UTILS": "off",
         "LLVM_TARGETS_TO_BUILD": "X86;AArch64",
     },
     # `lld` doesn't work on macOS
