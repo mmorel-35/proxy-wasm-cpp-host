@@ -62,7 +62,8 @@ WORKDIR /tmp/src/bazel
 # - Force bazel_features v1.11.0 (avoids bzlmod macro requirement during bootstrap)
 # - Configure C++ toolchain compilation flags to avoid GCC segmentation faults on s390x under QEMU emulation
 COPY bazel/external/bazel-v7.7.1.patch /tmp/bazel-v7.7.1.patch
-RUN git apply /tmp/bazel-v7.7.1.patch
+RUN git apply /tmp/bazel-v7.7.1.patch && \
+    rm -rf derived/repository_cache
 # Additional compilation flags for bootstrap build to avoid GCC crashes under QEMU emulation
 # Note: .bazelrc is ignored during bootstrap (BAZELRC=/dev/null), so flags must be in EXTRA_BAZEL_ARGS
 # These flags duplicate those in the unix_cc_configure.bzl patch to ensure they're applied even if
