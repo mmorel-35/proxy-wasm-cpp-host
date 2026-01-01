@@ -180,7 +180,7 @@ cmake(
         "LLVM_INCLUDE_TOOLS": "off",
         "LLVM_TARGETS_TO_BUILD": "X86;AArch64",
     },
-    # `lld` doesn't work on MacOS
+    # `lld` doesn't work on macOS
     generate_args = ["-GNinja"],
     lib_source = ":srcs",
     out_data_dirs = [
