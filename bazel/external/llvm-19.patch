@@ -1,0 +1,18 @@
+# Fix for LLVM 19 build when tools and tests are disabled
+# The mlgo-utils test suite requires llvm-objcopy and yaml2obj tools
+# which are not built when LLVM_BUILD_TOOLS and LLVM_INCLUDE_TOOLS are off.
+# This patch prevents the mlgo-utils directory from being processed.
+
+diff --git a/llvm/utils/CMakeLists.txt b/llvm/utils/CMakeLists.txt
+index 1234567890ab..1234567890ab 100644
+--- a/llvm/utils/CMakeLists.txt
++++ b/llvm/utils/CMakeLists.txt
+@@ -1,5 +1,7 @@
+ add_subdirectory(FileCheck)
+ add_subdirectory(count)
+-add_subdirectory(mlgo-utils)
++if (LLVM_INCLUDE_TESTS AND LLVM_INCLUDE_TOOLS)
++  add_subdirectory(mlgo-utils)
++endif()
+ add_subdirectory(not)
+ add_subdirectory(yaml-bench)
