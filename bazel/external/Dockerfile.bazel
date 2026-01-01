@@ -65,6 +65,8 @@ COPY bazel/external/bazel-v7.7.1.patch /tmp/bazel-v7.7.1.patch
 RUN git apply /tmp/bazel-v7.7.1.patch
 # Additional compilation flags for bootstrap build to avoid GCC crashes under QEMU emulation
 # Note: .bazelrc is ignored during bootstrap (BAZELRC=/dev/null), so flags must be in EXTRA_BAZEL_ARGS
+# These flags duplicate those in the unix_cc_configure.bzl patch to ensure they're applied even if
+# toolchain auto-configuration has issues. This belt-and-suspenders approach is warranted for s390x/QEMU.
 ENV EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk \
     --jobs=1 \
     --local_ram_resources=2048 \
