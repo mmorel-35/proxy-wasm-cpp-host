@@ -58,19 +58,11 @@ RUN apt-get update && \
         unzip /tmp/bazel-dist.zip -d /tmp/src/bazel && \
         rm -f /tmp/bazel-dist.zip /tmp/src/bazel/MODULE.bazel.lock
 WORKDIR /tmp/src/bazel
-# Patch MODULE.bazel to force bazel_features v1.26.0 (avoids bzlmod macro requirement during bootstrap)
+# Patch MODULE.bazel and .bazelrc to:
+# - Force bazel_features v1.26.0 (avoids bzlmod macro requirement during bootstrap)
+# - Configure compilation flags to avoid GCC segmentation faults on s390x under QEMU emulation
 COPY bazel/external/bazel-v7.7.1.patch /tmp/bazel-v7.7.1.patch
 RUN git apply /tmp/bazel-v7.7.1.patch
-# Create .bazelrc to control compilation flags and avoid GCC segmentation faults on s390x
-RUN cat > .bazelrc << 'EOF'
-build --jobs=1
-build --copt=-O0
-build --host_copt=-O0
-build --copt=-g0
-build --host_copt=-g0
-EOF
-# Limit parallelism and optimization to avoid GCC segmentation faults on s390x
-# Use -O0 (no optimization) and single job to prevent GCC crashes during QEMU emulation
 ENV EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk"
 RUN bash ./compile.sh && \
         cp /tmp/src/bazel/output/bazel /tmp/bazel && \
