@@ -151,7 +151,8 @@ cmake(
 
 # LLVM configuration for macOS builds
 # CMAKE_OSX_ARCHITECTURES is set for cross-compilation support.
-# LLVM_BUILD_UTILS and LLVM_INCLUDE_UTILS must NOT be disabled when
+# LLVM_BUILD_UTILS and LLVM_INCLUDE_UTILS are NOT specified here,
+# allowing them to default to enabled. This is required when
 # CMAKE_OSX_ARCHITECTURES is set, as LLVM's CMake needs utils enabled
 # for host-architecture build tools during cross-compilation.
 cmake(
