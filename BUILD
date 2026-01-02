@@ -151,11 +151,6 @@ cc_library(
     ],
     linkopts = select({
         "@platforms//os:macos": ["-Wl,-all_load"],
-        "@platforms//os:linux": [
-            # Use --start-group/--end-group to handle circular dependencies in LLVM libraries
-            "-Wl,--start-group",
-            "-Wl,--end-group",
-        ],
         "//conditions:default": [],
     }),
     deps = [
