@@ -79,8 +79,6 @@ ENV EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk \
     --host_compilation_mode=dbg \
     --copt=-O0 --host_copt=-O0 \
     --copt=-g0 --host_copt=-g0 \
-    --copt=-fno-inline --host_copt=-fno-inline \
-    --copt=-fno-inline-functions --host_copt=-fno-inline-functions \
     --copt=-fno-var-tracking --host_copt=-fno-var-tracking \
     --copt=-fno-var-tracking-assignments --host_copt=-fno-var-tracking-assignments \
     --copt=-fno-schedule-insns --host_copt=-fno-schedule-insns \
