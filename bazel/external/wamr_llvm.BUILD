@@ -64,8 +64,8 @@ cmake(
         "LLVM_INCLUDE_TOOLS": "off",
         "LLVM_INCLUDE_UTILS": "off",
         "LLVM_TARGETS_TO_BUILD": "X86",
-        "CMAKE_CXX_FLAGS": "-O0 -g0 -fno-inline -fno-inline-functions -Wno-unused-command-line-argument",
-        "CMAKE_C_FLAGS": "-O0 -g0 -fno-inline -fno-inline-functions -Wno-unused-command-line-argument",
+        "CMAKE_CXX_FLAGS": "-O0 -g0 -Wno-unused-command-line-argument",
+        "CMAKE_C_FLAGS": "-O0 -g0 -Wno-unused-command-line-argument",
     },
     # `lld` works on Linux
     generate_args = [
@@ -183,8 +183,8 @@ cmake(
         "LLVM_INCLUDE_TOOLS": "off",
         "LLVM_INCLUDE_UTILS": "off",
         "LLVM_TARGETS_TO_BUILD": "AArch64",
-        "CMAKE_CXX_FLAGS": "-O0 -g0 -fno-inline -fno-inline-functions -Wno-unused-command-line-argument",
-        "CMAKE_C_FLAGS": "-O0 -g0 -fno-inline -fno-inline-functions -Wno-unused-command-line-argument",
+        "CMAKE_CXX_FLAGS": "-O0 -g0 -Wno-unused-command-line-argument",
+        "CMAKE_C_FLAGS": "-O0 -g0 -Wno-unused-command-line-argument",
     },
     # `lld` works on Linux
     generate_args = [
@@ -304,8 +304,8 @@ cmake(
         "LLVM_INCLUDE_TOOLS": "off",
         "LLVM_INCLUDE_UTILS": "off",
         "LLVM_TARGETS_TO_BUILD": "X86",
-        "CMAKE_CXX_FLAGS": "-O0 -g0 -fno-inline -fno-inline-functions -Wno-unused-command-line-argument",
-        "CMAKE_C_FLAGS": "-O0 -g0 -fno-inline -fno-inline-functions -Wno-unused-command-line-argument",
+        "CMAKE_CXX_FLAGS": "-O0 -g0 -Wno-unused-command-line-argument",
+        "CMAKE_C_FLAGS": "-O0 -g0 -Wno-unused-command-line-argument",
     },
     # `lld` doesn't work on macOS
     generate_args = ["-GNinja"],
@@ -420,8 +420,8 @@ cmake(
         "LLVM_INCLUDE_TOOLS": "off",
         "LLVM_INCLUDE_UTILS": "off",
         "LLVM_TARGETS_TO_BUILD": "AArch64",
-        "CMAKE_CXX_FLAGS": "-O0 -g0 -fno-inline -fno-inline-functions -Wno-unused-command-line-argument",
-        "CMAKE_C_FLAGS": "-O0 -g0 -fno-inline -fno-inline-functions -Wno-unused-command-line-argument",
+        "CMAKE_CXX_FLAGS": "-O0 -g0 -Wno-unused-command-line-argument",
+        "CMAKE_C_FLAGS": "-O0 -g0 -Wno-unused-command-line-argument",
     },
     # `lld` doesn't work on macOS
     generate_args = ["-GNinja"],
