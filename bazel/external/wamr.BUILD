@@ -47,7 +47,8 @@ cmake(
         "-GNinja",
     ] + select({
         "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": [
-            "-DLLVM_DIR=$EXT_BUILD_DEPS/copy_llvm-19_1_0/llvm/lib/cmake/llvm",
+            # Point to LLVM built with native Bazel
+            "-DLLVM_DIR=$EXT_BUILD_DEPS/llvm_cmake_config",
             "-DWAMR_BUILD_AOT=1",
             "-DWAMR_BUILD_FAST_INTERP=0",
             "-DWAMR_BUILD_INTERP=0",
@@ -71,7 +72,10 @@ cmake(
     }),
     out_static_libs = ["libiwasm.a"],
     deps = select({
-        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": ["@llvm-19_1_0//:llvm_wamr_lib"],
+        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": [
+            "@proxy_wasm_cpp_host//bazel/external:llvm_cmake_config",
+            "@proxy_wasm_cpp_host//bazel/external:llvm_libs_for_wamr",
+        ],
         "//conditions:default": [],
     }),
 )
