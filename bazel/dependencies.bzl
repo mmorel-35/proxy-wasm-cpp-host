@@ -111,6 +111,7 @@ def proxy_wasm_cpp_host_dependencies():
     # LLVM with native Bazel build (for WAMR JIT).
     # Configure LLVM using its native Bazel overlay from utils/bazel.
     # Only build X86 and AArch64 targets to minimize build size.
+    # Note: LLVM external dependencies (llvm_zlib, llvm_zstd) are defined in repositories.bzl
     llvm_configure(name = "llvm-project", targets = ["X86", "AArch64"])
 
     # Wasmtime dependencies.

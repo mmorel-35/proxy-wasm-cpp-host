@@ -25,10 +25,9 @@ cc_library(
     name = "llvm_wamr_lib",
     deps = [
         "@llvm-project//llvm:Analysis",
-        "@llvm-project//llvm:AsmPrinter",
         "@llvm-project//llvm:BitReader",
         "@llvm-project//llvm:BitWriter",
-        "@llvm-project//llvm:CodeGen",
+        "@llvm-project//llvm:CodeGen",  # Includes SelectionDAG
         "@llvm-project//llvm:Core",
         "@llvm-project//llvm:ExecutionEngine",
         "@llvm-project//llvm:IPO",
@@ -42,8 +41,7 @@ cc_library(
         "@llvm-project//llvm:Object",
         "@llvm-project//llvm:OrcJIT",
         "@llvm-project//llvm:Passes",
-        "@llvm-project//llvm:ScalarOpts",
-        "@llvm-project//llvm:SelectionDAG",
+        "@llvm-project//llvm:Scalar",  # Was ScalarOpts
         "@llvm-project//llvm:Support",
         "@llvm-project//llvm:Target",
         "@llvm-project//llvm:TransformUtils",
