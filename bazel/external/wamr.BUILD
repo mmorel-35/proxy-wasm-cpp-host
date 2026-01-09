@@ -72,7 +72,6 @@ cmake(
     out_static_libs = ["libiwasm.a"],
     deps = select({
         "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": [
-            "@llvm-raw//:llvm_cmake_config",
             "@llvm-raw//:llvm_wamr_lib",
         ],
         "//conditions:default": [],
