@@ -74,7 +74,7 @@ genrule(
     name = "llvm_cmake_config_gen",
     outs = ["llvm_cmake_config/LLVMConfig.cmake"],
     cmd = """
-    mkdir -p $(dirname $@)
+    mkdir -p $(@D)
     cat > $@ << 'EOF'
 # Generated LLVMConfig.cmake for Bazel-built LLVM
 # This minimal config allows WAMR's CMake build to find LLVM.
