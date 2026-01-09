@@ -312,7 +312,7 @@ def proxy_wasm_cpp_host_repositories():
 
     maybe(
         http_archive,
-        name = "llvm-19_1_0",
+        name = "llvm-raw",
         build_file = "@proxy_wasm_cpp_host//bazel/external:wamr_llvm.BUILD",
         sha256 = "5042522b49945bc560ff9206f25fb87980a9b89b914193ca00d961511ff0673c",
         strip_prefix = "llvm-project-19.1.0.src",
