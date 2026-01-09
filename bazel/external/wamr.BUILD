@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 licenses(["notice"])  # Apache 2
@@ -24,7 +25,25 @@ filegroup(
 )
 
 cmake(
-    name = "wamr_lib",
+    name = "wamr_lib_cmake",
+    # Use data to provide LLVM toolchain for CMake find_package(LLVM)
+    # The hermetic LLVM toolchain includes proper CMake configs that WAMR can use
+    data = select({
+        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": [
+            "@llvm_toolchain_llvm//:all_includes",
+            "@llvm_toolchain_llvm//:bin",
+            "@llvm_toolchain_llvm//:lib",
+        ],
+        "//conditions:default": [],
+    }),
+    # Set CMAKE_PREFIX_PATH to help CMake find the hermetic LLVM
+    # This is more standard than setting LLVM_DIR directly
+    env = select({
+        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": {
+            "CMAKE_PREFIX_PATH": "$(EXT_BUILD_DEPS)/copy_llvm_toolchain_llvm",
+        },
+        "//conditions:default": {},
+    }),
     generate_args = [
         # disable WASI
         "-DWAMR_BUILD_LIBC_WASI=0",
@@ -47,7 +66,8 @@ cmake(
         "-GNinja",
     ] + select({
         "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": [
-            "-DLLVM_DIR=$EXT_BUILD_DEPS/copy_llvm-19_1_0/llvm/lib/cmake/llvm",
+            # WAMR's CMake will find LLVM via CMAKE_PREFIX_PATH
+            # No need to set LLVM_DIR explicitly
             "-DWAMR_BUILD_AOT=1",
             "-DWAMR_BUILD_FAST_INTERP=0",
             "-DWAMR_BUILD_INTERP=0",
@@ -65,13 +85,20 @@ cmake(
         ],
     }),
     lib_source = ":srcs",
+    out_static_libs = ["libiwasm.a"],
+)
+
+# Wrapper library that adds LLVM dependencies for linking
+cc_library(
+    name = "wamr_lib",
     linkopts = select({
         "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": ["-ldl"],
         "//conditions:default": [],
     }),
-    out_static_libs = ["libiwasm.a"],
-    deps = select({
-        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": ["@llvm-19_1_0//:llvm_wamr_lib"],
+    deps = [":wamr_lib_cmake"] + select({
+        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": [
+            "@llvm-raw//:llvm_wamr_lib",
+        ],
         "//conditions:default": [],
     }),
 )
