@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 licenses(["notice"])  # Apache 2
@@ -24,7 +25,13 @@ filegroup(
 )
 
 cmake(
-    name = "wamr_lib",
+    name = "wamr_lib_cmake",
+    # Use data instead of deps to avoid propagating LLVM compile flags
+    # which contain shell-sensitive characters like -DBACKTRACE_HEADER=<execinfo.h>
+    data = select({
+        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": ["@llvm-raw//:llvm_cmake_config"],
+        "//conditions:default": [],
+    }),
     generate_args = [
         # disable WASI
         "-DWAMR_BUILD_LIBC_WASI=0",
@@ -47,7 +54,7 @@ cmake(
         "-GNinja",
     ] + select({
         "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": [
-            "-DLLVM_DIR=$EXT_BUILD_DEPS/copy_llvm-19_1_0/llvm/lib/cmake/llvm",
+            "-DLLVM_DIR=$EXT_BUILD_DEPS/copy_llvm-raw/llvm_cmake_config",
             "-DWAMR_BUILD_AOT=1",
             "-DWAMR_BUILD_FAST_INTERP=0",
             "-DWAMR_BUILD_INTERP=0",
@@ -65,13 +72,20 @@ cmake(
         ],
     }),
     lib_source = ":srcs",
+    out_static_libs = ["libiwasm.a"],
+)
+
+# Wrapper library that adds LLVM dependencies for linking
+cc_library(
+    name = "wamr_lib",
     linkopts = select({
         "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": ["-ldl"],
         "//conditions:default": [],
     }),
-    out_static_libs = ["libiwasm.a"],
-    deps = select({
-        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": ["@llvm-19_1_0//:llvm_wamr_lib"],
+    deps = [":wamr_lib_cmake"] + select({
+        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": [
+            "@llvm-raw//:llvm_wamr_lib",
+        ],
         "//conditions:default": [],
     }),
 )
