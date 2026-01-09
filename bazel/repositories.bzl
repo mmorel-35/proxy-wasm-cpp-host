@@ -318,7 +318,7 @@ def proxy_wasm_cpp_host_repositories():
         sha256 = "5042522b49945bc560ff9206f25fb87980a9b89b914193ca00d961511ff0673c",
         strip_prefix = "llvm-project-19.1.0.src",
         url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-19.1.0/llvm-project-19.1.0.src.tar.xz",
-        build_file_content = "# LLVM source with native Bazel support",
+        build_file = "@proxy_wasm_cpp_host//bazel/external:llvm.BUILD",
     )
 
     # WasmEdge with dependencies.
