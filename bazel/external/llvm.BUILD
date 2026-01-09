@@ -22,48 +22,14 @@ licenses(["notice"])  # Apache 2
 
 package(default_visibility = ["//visibility:public"])
 
-# Platform-specific config settings
-config_setting(
-    name = "linux_x86_64",
-    constraint_values = [
-        "@platforms//os:linux",
-        "@platforms//cpu:x86_64",
-    ],
-)
-
-config_setting(
-    name = "linux_aarch64",
-    constraint_values = [
-        "@platforms//os:linux",
-        "@platforms//cpu:aarch64",
-    ],
-)
-
-config_setting(
-    name = "macos_x86_64",
-    constraint_values = [
-        "@platforms//os:macos",
-        "@platforms//cpu:x86_64",
-    ],
-)
-
-config_setting(
-    name = "macos_aarch64",
-    constraint_values = [
-        "@platforms//os:macos",
-        "@platforms//cpu:aarch64",
-    ],
-)
-
 # Aggregate target that provides all LLVM libraries needed by WAMR JIT.
 # This replaces the foreign_cc cmake build of LLVM with native Bazel builds.
+# Selection is based only on CPU architecture (OS doesn't matter).
 alias(
     name = "llvm_libs_for_wamr",
     actual = select({
-        ":linux_x86_64": ":llvm_libs_x86",
-        ":linux_aarch64": ":llvm_libs_aarch64",
-        ":macos_x86_64": ":llvm_libs_x86",
-        ":macos_aarch64": ":llvm_libs_aarch64",
+        "@platforms//cpu:x86_64": ":llvm_libs_x86",
+        "@platforms//cpu:aarch64": ":llvm_libs_aarch64",
         "//conditions:default": ":llvm_libs_x86",
     }),
 )
