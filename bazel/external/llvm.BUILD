@@ -22,84 +22,53 @@ licenses(["notice"])  # Apache 2
 
 package(default_visibility = ["//visibility:public"])
 
-# Aggregate target that provides all LLVM libraries needed by WAMR JIT.
+# LLVM libraries needed by WAMR JIT.
 # This replaces the foreign_cc cmake build of LLVM with native Bazel builds.
-# Selection is based only on CPU architecture (OS doesn't matter).
-alias(
+# Uses select() for CPU-specific libraries only.
+cc_library(
     name = "llvm_libs_for_wamr",
-    actual = select({
-        "@platforms//cpu:x86_64": ":llvm_libs_x86",
-        "@platforms//cpu:aarch64": ":llvm_libs_aarch64",
-        "//conditions:default": ":llvm_libs_x86",
+    deps = [
+        "@llvm-project//llvm:ExecutionEngine",
+        "@llvm-project//llvm:MCJIT",
+        "@llvm-project//llvm:OrcJIT",
+        "@llvm-project//llvm:Support",
+        "@llvm-project//llvm:Core",
+        "@llvm-project//llvm:Target",
+        "@llvm-project//llvm:MC",
+        "@llvm-project//llvm:Object",
+        "@llvm-project//llvm:Analysis",
+        "@llvm-project//llvm:Passes",
+        "@llvm-project//llvm:TransformUtils",
+        "@llvm-project//llvm:ScalarOpts",
+        "@llvm-project//llvm:InstCombine",
+        "@llvm-project//llvm:CodeGen",
+        "@llvm-project//llvm:SelectionDAG",
+        "@llvm-project//llvm:AsmPrinter",
+        "@llvm-project//llvm:BitWriter",
+        "@llvm-project//llvm:BitReader",
+        "@llvm-project//llvm:IRReader",
+        "@llvm-project//llvm:Vectorize",
+        "@llvm-project//llvm:IPO",
+        "@llvm-project//llvm:Linker",
+        "@llvm-project//llvm:Instrumentation",
+        "@llvm-project//llvm:JITLink",
+    ] + select({
+        "@platforms//cpu:x86_64": [
+            "@llvm-project//llvm:X86CodeGen",
+            "@llvm-project//llvm:X86AsmParser",
+            "@llvm-project//llvm:X86Disassembler",
+        ],
+        "@platforms//cpu:aarch64": [
+            "@llvm-project//llvm:AArch64CodeGen",
+            "@llvm-project//llvm:AArch64AsmParser",
+            "@llvm-project//llvm:AArch64Disassembler",
+        ],
+        "//conditions:default": [
+            "@llvm-project//llvm:X86CodeGen",
+            "@llvm-project//llvm:X86AsmParser",
+            "@llvm-project//llvm:X86Disassembler",
+        ],
     }),
-)
-
-# X86/X86_64 LLVM libraries
-cc_library(
-    name = "llvm_libs_x86",
-    deps = [
-        "@llvm-project//llvm:ExecutionEngine",
-        "@llvm-project//llvm:MCJIT",
-        "@llvm-project//llvm:OrcJIT",
-        "@llvm-project//llvm:X86CodeGen",
-        "@llvm-project//llvm:X86AsmParser",
-        "@llvm-project//llvm:X86Disassembler",
-        "@llvm-project//llvm:Support",
-        "@llvm-project//llvm:Core",
-        "@llvm-project//llvm:Target",
-        "@llvm-project//llvm:MC",
-        "@llvm-project//llvm:Object",
-        "@llvm-project//llvm:Analysis",
-        "@llvm-project//llvm:Passes",
-        "@llvm-project//llvm:TransformUtils",
-        "@llvm-project//llvm:ScalarOpts",
-        "@llvm-project//llvm:InstCombine",
-        "@llvm-project//llvm:CodeGen",
-        "@llvm-project//llvm:SelectionDAG",
-        "@llvm-project//llvm:AsmPrinter",
-        "@llvm-project//llvm:BitWriter",
-        "@llvm-project//llvm:BitReader",
-        "@llvm-project//llvm:IRReader",
-        "@llvm-project//llvm:Vectorize",
-        "@llvm-project//llvm:IPO",
-        "@llvm-project//llvm:Linker",
-        "@llvm-project//llvm:Instrumentation",
-        "@llvm-project//llvm:JITLink",
-    ],
-)
-
-# AArch64 LLVM libraries  
-cc_library(
-    name = "llvm_libs_aarch64",
-    deps = [
-        "@llvm-project//llvm:ExecutionEngine",
-        "@llvm-project//llvm:MCJIT",
-        "@llvm-project//llvm:OrcJIT",
-        "@llvm-project//llvm:AArch64CodeGen",
-        "@llvm-project//llvm:AArch64AsmParser",
-        "@llvm-project//llvm:AArch64Disassembler",
-        "@llvm-project//llvm:Support",
-        "@llvm-project//llvm:Core",
-        "@llvm-project//llvm:Target",
-        "@llvm-project//llvm:MC",
-        "@llvm-project//llvm:Object",
-        "@llvm-project//llvm:Analysis",
-        "@llvm-project//llvm:Passes",
-        "@llvm-project//llvm:TransformUtils",
-        "@llvm-project//llvm:ScalarOpts",
-        "@llvm-project//llvm:InstCombine",
-        "@llvm-project//llvm:CodeGen",
-        "@llvm-project//llvm:SelectionDAG",
-        "@llvm-project//llvm:AsmPrinter",
-        "@llvm-project//llvm:BitWriter",
-        "@llvm-project//llvm:BitReader",
-        "@llvm-project//llvm:IRReader",
-        "@llvm-project//llvm:Vectorize",
-        "@llvm-project//llvm:IPO",
-        "@llvm-project//llvm:Linker",
-        "@llvm-project//llvm:Instrumentation",
-        "@llvm-project//llvm:JITLink",
-    ],
 )
 
 # Generate minimal CMake config for WAMR to find Bazel-built LLVM.
