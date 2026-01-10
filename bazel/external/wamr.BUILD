@@ -40,7 +40,7 @@ cmake(
     # This is more standard than setting LLVM_DIR directly
     env = select({
         "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": {
-            "CMAKE_PREFIX_PATH": "$(EXT_BUILD_DEPS)/copy_llvm_toolchain_llvm",
+            "CMAKE_PREFIX_PATH": "$$EXT_BUILD_DEPS/copy_llvm_toolchain_llvm",
         },
         "//conditions:default": {},
     }),
