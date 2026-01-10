@@ -65,6 +65,31 @@ cc_library(
     }),
 )
 
+# Generate LLVMExports.cmake with dummy targets for optional dependencies
+# This is needed because system LLVM's LLVMExports.cmake references CURL::libcurl and LibEdit::LibEdit
+genrule(
+    name = "llvm_cmake_exports_gen",
+    outs = ["llvm_cmake_config/LLVMExports.cmake"],
+    cmd = """
+    mkdir -p $(@D)
+    cat > $@ << 'EOF'
+# Generated LLVMExports.cmake for Bazel-built LLVM
+# Provides dummy/no-op targets for optional LLVM dependencies
+# to prevent CMake from failing when it can't find them.
+
+# Create dummy IMPORTED targets for optional dependencies
+# These are referenced by system LLVM but we don't need them
+if(NOT TARGET CURL::libcurl)
+    add_library(CURL::libcurl INTERFACE IMPORTED)
+endif()
+
+if(NOT TARGET LibEdit::LibEdit)
+    add_library(LibEdit::LibEdit INTERFACE IMPORTED)
+endif()
+EOF
+    """,
+)
+
 # Generate minimal CMake config for WAMR to find Bazel-built LLVM.
 # WAMR's CMake build uses find_package(LLVM), so we need to provide
 # a minimal LLVMConfig.cmake that points to our Bazel-built libraries.
@@ -91,6 +116,12 @@ set(LLVM_DEFINITIONS "")
 set(LLVM_ENABLE_EH OFF)
 set(LLVM_ENABLE_RTTI OFF)
 
+# Set LLVM_CMAKE_DIR before including exports
+set(LLVM_CMAKE_DIR "$${CMAKE_CURRENT_LIST_DIR}")
+
+# Include the exports file which provides dummy targets for optional deps
+include("$${LLVM_CMAKE_DIR}/LLVMExports.cmake")
+
 # Provide llvm_map_components_to_libnames function
 # WAMR calls this, but we provide libraries via Bazel deps, not CMake
 function(llvm_map_components_to_libnames out_libs)
@@ -98,9 +129,6 @@ function(llvm_map_components_to_libnames out_libs)
     # so this is effectively a no-op for our build
     set($${out_libs} "" PARENT_SCOPE)
 endfunction()
-
-# Mark as found so WAMR's CMake configuration succeeds
-set(LLVM_CMAKE_DIR "$${CMAKE_CURRENT_LIST_DIR}")
 EOF
     """,
 )
@@ -108,5 +136,8 @@ EOF
 # Filegroup to make the CMake config available to WAMR's build
 filegroup(
     name = "llvm_cmake_config",
-    srcs = [":llvm_cmake_config_gen"],
+    srcs = [
+        ":llvm_cmake_config_gen",
+        ":llvm_cmake_exports_gen",
+    ],
 )
