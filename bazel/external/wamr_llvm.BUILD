@@ -18,8 +18,10 @@ licenses(["notice"])  # Apache 2
 
 package(default_visibility = ["//visibility:public"])
 
-# LLVM libraries needed by WAMR JIT.
+# LLVM libraries needed by WAMR JIT - built with native Bazel.
 # This replaces the foreign_cc cmake build of LLVM with native Bazel builds.
+# These libraries are linked into the final binary, while WAMR's CMake build
+# uses the hermetic LLVM toolchain's CMake configs for configuration only.
 # Uses select() for CPU-specific libraries only.
 cc_library(
     name = "llvm_wamr_lib",
@@ -63,81 +65,4 @@ cc_library(
             "@llvm-project//llvm:X86Disassembler",
         ],
     }),
-)
-
-# Generate LLVMExports.cmake with dummy targets for optional dependencies
-# This is needed because system LLVM's LLVMExports.cmake references CURL::libcurl and LibEdit::LibEdit
-genrule(
-    name = "llvm_cmake_exports_gen",
-    outs = ["llvm_cmake_config/LLVMExports.cmake"],
-    cmd = """
-    mkdir -p $(@D)
-    cat > $@ << 'EOF'
-# Generated LLVMExports.cmake for Bazel-built LLVM
-# Provides dummy/no-op targets for optional LLVM dependencies
-# to prevent CMake from failing when it can't find them.
-
-# Create dummy IMPORTED targets for optional dependencies
-# These are referenced by system LLVM but we don't need them
-if(NOT TARGET CURL::libcurl)
-    add_library(CURL::libcurl INTERFACE IMPORTED)
-endif()
-
-if(NOT TARGET LibEdit::LibEdit)
-    add_library(LibEdit::LibEdit INTERFACE IMPORTED)
-endif()
-EOF
-    """,
-)
-
-# Generate minimal CMake config for WAMR to find Bazel-built LLVM.
-# WAMR's CMake build uses find_package(LLVM), so we need to provide
-# a minimal LLVMConfig.cmake that points to our Bazel-built libraries.
-genrule(
-    name = "llvm_cmake_config_gen",
-    outs = ["llvm_cmake_config/LLVMConfig.cmake"],
-    cmd = """
-    mkdir -p $(@D)
-    cat > $@ << 'EOF'
-# Generated LLVMConfig.cmake for Bazel-built LLVM
-# This minimal config allows WAMR's CMake build to find LLVM.
-
-set(LLVM_FOUND TRUE)
-set(LLVM_PACKAGE_VERSION "19.1.0")
-set(LLVM_VERSION_MAJOR 19)
-set(LLVM_VERSION_MINOR 1)
-set(LLVM_VERSION_PATCH 0)
-
-# LLVM include and library directories are provided via Bazel deps
-# so we set these to empty/placeholder values
-set(LLVM_INCLUDE_DIRS "")
-set(LLVM_LIBRARY_DIRS "")
-set(LLVM_DEFINITIONS "")
-set(LLVM_ENABLE_EH OFF)
-set(LLVM_ENABLE_RTTI OFF)
-
-# Set LLVM_CMAKE_DIR before including exports
-set(LLVM_CMAKE_DIR "$${CMAKE_CURRENT_LIST_DIR}")
-
-# Include the exports file which provides dummy targets for optional deps
-include("$${LLVM_CMAKE_DIR}/LLVMExports.cmake")
-
-# Provide llvm_map_components_to_libnames function
-# WAMR calls this, but we provide libraries via Bazel deps, not CMake
-function(llvm_map_components_to_libnames out_libs)
-    # All LLVM libraries are provided via Bazel cc_library deps
-    # so this is effectively a no-op for our build
-    set($${out_libs} "" PARENT_SCOPE)
-endfunction()
-EOF
-    """,
-)
-
-# Filegroup to make the CMake config available to WAMR's build
-filegroup(
-    name = "llvm_cmake_config",
-    srcs = [
-        ":llvm_cmake_config_gen",
-        ":llvm_cmake_exports_gen",
-    ],
 )
