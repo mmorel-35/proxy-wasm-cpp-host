@@ -29,7 +29,11 @@ cmake(
     # Use data to provide LLVM toolchain for CMake find_package(LLVM)
     # The hermetic LLVM toolchain includes proper CMake configs that WAMR can use
     data = select({
-        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": ["@llvm_toolchain_llvm//:all_files"],
+        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": [
+            "@llvm_toolchain_llvm//:bin",
+            "@llvm_toolchain_llvm//:lib",
+            "@llvm_toolchain_llvm//:all_includes",
+        ],
         "//conditions:default": [],
     }),
     # Set CMAKE_PREFIX_PATH to help CMake find the hermetic LLVM
