@@ -42,6 +42,11 @@ config_setting(
 )
 
 config_setting(
+    name = "engine_wasmedge_aot",
+    values = {"define": "engine=wasmedge-aot"},
+)
+
+config_setting(
     name = "engine_wasmtime",
     values = {"define": "engine=wasmtime"},
 )

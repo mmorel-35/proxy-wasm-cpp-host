@@ -509,6 +509,20 @@ cmake(
     working_directory = "llvm",
 )
 
+# WasmEdge LLVM support - reuses the same LLVM libraries as WAMR
+# Platform and architecture-aware alias that selects the appropriate LLVM configuration
+alias(
+    name = "llvm_wasmedge_lib",
+    actual = select({
+        ":linux_x86_64": ":llvm_wamr_lib_linux_x86",
+        ":linux_aarch64": ":llvm_wamr_lib_linux_aarch64",
+        ":macos_x86_64": ":llvm_wamr_lib_macos_x86",
+        ":macos_aarch64": ":llvm_wamr_lib_macos_aarch64",
+        # Default to x86_64 Linux for other architectures
+        "//conditions:default": ":llvm_wamr_lib_linux_x86",
+    }),
+)
+
 # Platform-specific config settings to enable proper select() in alias rule
 config_setting(
     name = "linux_x86_64",

@@ -26,16 +26,35 @@ filegroup(
 cmake(
     name = "wasmedge_lib",
     cache_entries = {
-        "WASMEDGE_USE_LLVM": "Off",
         "WASMEDGE_BUILD_SHARED_LIB": "Off",
         "WASMEDGE_BUILD_STATIC_LIB": "On",
         "WASMEDGE_BUILD_TOOLS": "Off",
         "WASMEDGE_FORCE_DISABLE_LTO": "On",
-    },
+    } | select({
+        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": {
+            "WASMEDGE_USE_LLVM": "On",
+        },
+        "//conditions:default": {
+            "WASMEDGE_USE_LLVM": "Off",
+        },
+    }),
     env = {
         "CXXFLAGS": "-Wno-error=dangling-reference -Wno-error=maybe-uninitialized -Wno-error=array-bounds= -Wno-error=deprecated-declarations -std=c++20",
     },
-    generate_args = ["-GNinja"],
+    generate_args = ["-GNinja"] + select({
+        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": [
+            "-DLLVM_DIR=$EXT_BUILD_DEPS/copy_llvm-19_1_0/llvm/lib/cmake/llvm",
+        ],
+        "//conditions:default": [],
+    }),
     lib_source = ":srcs",
+    linkopts = select({
+        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": ["-ldl"],
+        "//conditions:default": [],
+    }),
     out_static_libs = ["libwasmedge.a"],
+    deps = select({
+        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": ["@llvm-19_1_0//:llvm_wasmedge_lib"],
+        "//conditions:default": [],
+    }),
 )
