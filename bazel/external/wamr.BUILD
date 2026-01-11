@@ -26,21 +26,18 @@ filegroup(
 
 cmake(
     name = "wamr_lib_cmake",
-    # Use data to provide LLVM toolchain for CMake find_package(LLVM)
-    # The hermetic LLVM toolchain includes proper CMake configs that WAMR can use
+    # LLVM dependencies for JIT: headers needed for compilation, libs provided via cc_library deps
+    # The patch skips LLVM CMake detection when BAZEL_BUILD is set
     data = select({
         "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": [
             "@llvm_toolchain_llvm//:all_includes",
-            "@llvm_toolchain_llvm//:bin",
-            "@llvm_toolchain_llvm//:lib",
         ],
         "//conditions:default": [],
     }),
-    # Set CMAKE_PREFIX_PATH to help CMake find the hermetic LLVM
-    # This is more standard than setting LLVM_DIR directly
-    env = select({
+    cache_entries = select({
         "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": {
-            "CMAKE_PREFIX_PATH": "$$EXT_BUILD_DEPS/copy_llvm_toolchain_llvm",
+            "BAZEL_BUILD": "ON",
+            "LLVM_INCLUDE_DIR": "$$EXT_BUILD_DEPS/copy_llvm_toolchain_llvm_all_includes/include",
         },
         "//conditions:default": {},
     }),
