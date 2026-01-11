@@ -34,6 +34,14 @@ cmake(
         ],
         "//conditions:default": [],
     }),
+    env = select({
+        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": {
+            # Add LLVM include path directly via compiler flags as fallback
+            "CFLAGS": "-I$$EXT_BUILD_DEPS/copy_llvm_toolchain_llvm_all_includes/include",
+            "CXXFLAGS": "-I$$EXT_BUILD_DEPS/copy_llvm_toolchain_llvm_all_includes/include",
+        },
+        "//conditions:default": {},
+    }),
     cache_entries = select({
         "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": {
             "BAZEL_BUILD": "ON",
