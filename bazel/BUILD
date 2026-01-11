@@ -37,13 +37,19 @@ config_setting(
 )
 
 config_setting(
-    name = "engine_wasmedge",
-    values = {"define": "engine=wasmedge"},
+    name = "engine_wasmedge_interp",
+    values = {"define": "engine=wasmedge-interp"},
 )
 
 config_setting(
     name = "engine_wasmedge_aot",
     values = {"define": "engine=wasmedge-aot"},
+)
+
+# Legacy alias for backward compatibility
+config_setting(
+    name = "engine_wasmedge",
+    values = {"define": "engine=wasmedge"},
 )
 
 config_setting(

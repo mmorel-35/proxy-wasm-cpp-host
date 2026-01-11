@@ -200,20 +200,36 @@ jobs:
           action: test
           cache: true
           flags: --config=hermetic-llvm
-        - name: 'WasmEdge on Linux/x86_64'
-          engine: 'wasmedge'
+        - name: 'WasmEdge interp on Linux/x86_64'
+          engine: 'wasmedge-interp'
           repo: 'com_github_wasmedge_wasmedge'
           os: ubuntu-24.04-16core
           arch: x86_64
           action: test
           flags: --config=hermetic-llvm
-        - name: 'WasmEdge on macOS/x86_64'
-          engine: 'wasmedge'
+        - name: 'WasmEdge interp on macOS/x86_64'
+          engine: 'wasmedge-interp'
           repo: 'com_github_wasmedge_wasmedge'
           os: macos-15
           arch: x86_64
           action: test
           flags: --config=hermetic-llvm
+        - name: 'WasmEdge AOT on Linux/x86_64'
+          engine: 'wasmedge-aot'
+          repo: 'com_github_wasmedge_wasmedge'
+          os: ubuntu-24.04-16core
+          arch: x86_64
+          action: test
+          flags: --config=hermetic-llvm
+          cache: true
+        - name: 'WasmEdge AOT on macOS/x86_64'
+          engine: 'wasmedge-aot'
+          repo: 'com_github_wasmedge_wasmedge'
+          os: macos-15
+          arch: x86_64
+          action: test
+          flags: --config=hermetic-llvm
+          cache: true
         - name: 'Wasmtime on Linux/x86_64'
           engine: 'wasmtime'
           repo: 'com_github_bytecodealliance_wasmtime'
