@@ -26,8 +26,10 @@ filegroup(
 
 cmake(
     name = "wamr_lib_cmake",
-    # LLVM dependencies for JIT: headers needed for compilation, libs provided via cc_library deps
+    # LLVM dependencies for JIT are provided via Bazel, not CMake
     # The patch skips LLVM CMake detection when BAZEL_BUILD is set
+    # LLVM headers from hermetic toolchain (bzlmod-compatible via data attribute)
+    # LLVM libraries are linked via cc_library deps (see wamr_lib below)
     data = select({
         "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": [
             "@llvm_toolchain_llvm//:all_includes",
@@ -36,16 +38,19 @@ cmake(
     }),
     env = select({
         "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": {
-            # Add LLVM include path directly via compiler flags as fallback
-            "CFLAGS": "-I$$EXT_BUILD_DEPS/copy_llvm_toolchain_llvm_all_includes/include",
-            "CXXFLAGS": "-I$$EXT_BUILD_DEPS/copy_llvm_toolchain_llvm_all_includes/include",
+            # Reference LLVM headers in sandbox via EXT_BUILD_ROOT
+            # The data attribute ensures llvm_toolchain_llvm is mounted in sandbox
+            # This path works with both WORKSPACE and bzlmod
+            "CFLAGS": "-isystem $$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include",
+            "CXXFLAGS": "-isystem $$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include",
         },
         "//conditions:default": {},
     }),
     cache_entries = select({
         "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": {
             "BAZEL_BUILD": "ON",
-            "LLVM_INCLUDE_DIR": "$$EXT_BUILD_DEPS/copy_llvm_toolchain_llvm_all_includes/include",
+            # Set LLVM_INCLUDE_DIR for the patch to use
+            "LLVM_INCLUDE_DIR": "$$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include",
         },
         "//conditions:default": {},
     }),
