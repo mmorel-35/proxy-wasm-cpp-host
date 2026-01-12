@@ -77,7 +77,7 @@ cc_library(
     }),
     deps = [":wasmedge_lib_cmake"] + select({
         "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": [
-            "@llvm-raw//:llvm_wasmedge_lib",
+            "@llvm-raw//:llvm_lib",
         ],
         "//conditions:default": [],
     }),
