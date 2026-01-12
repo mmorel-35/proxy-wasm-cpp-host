@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 licenses(["notice"])  # Apache 2
@@ -24,7 +25,7 @@ filegroup(
 )
 
 cmake(
-    name = "wasmedge_lib",
+    name = "wasmedge_lib_cmake",
     cache_entries = {
         "WASMEDGE_BUILD_SHARED_LIB": "Off",
         "WASMEDGE_BUILD_STATIC_LIB": "On",
@@ -33,28 +34,51 @@ cmake(
     } | select({
         "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": {
             "WASMEDGE_USE_LLVM": "On",
+            "BAZEL_BUILD": "ON",
+            # Set LLVM_INCLUDE_DIR for the build to use
+            "LLVM_INCLUDE_DIR": "$$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include",
         },
         "//conditions:default": {
             "WASMEDGE_USE_LLVM": "Off",
         },
     }),
-    env = {
-        "CXXFLAGS": "-Wno-error=dangling-reference -Wno-error=maybe-uninitialized -Wno-error=array-bounds= -Wno-error=deprecated-declarations -std=c++20",
-    },
-    generate_args = ["-GNinja"] + select({
+    # LLVM dependencies for AOT are provided via Bazel, not CMake
+    # LLVM headers from hermetic toolchain (bzlmod-compatible via data attribute)
+    # LLVM libraries are linked via cc_library deps (see wasmedge_lib below)
+    data = select({
         "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": [
-            "-DLLVM_DIR=$EXT_BUILD_DEPS/copy_llvm-19_1_0/llvm/lib/cmake/llvm",
+            "@llvm_toolchain_llvm//:all_includes",
         ],
         "//conditions:default": [],
     }),
+    env = select({
+        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": {
+            # Reference LLVM headers in sandbox via EXT_BUILD_ROOT
+            # The data attribute ensures llvm_toolchain_llvm is mounted in sandbox
+            # This path works with both WORKSPACE and bzlmod
+            "CFLAGS": "-isystem $$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include",
+            "CXXFLAGS": "-isystem $$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include -Wno-error=dangling-reference -Wno-error=maybe-uninitialized -Wno-error=array-bounds= -Wno-error=deprecated-declarations -std=c++20",
+        },
+        "//conditions:default": {
+            "CXXFLAGS": "-Wno-error=dangling-reference -Wno-error=maybe-uninitialized -Wno-error=array-bounds= -Wno-error=deprecated-declarations -std=c++20",
+        },
+    }),
+    generate_args = ["-GNinja"],
     lib_source = ":srcs",
+    out_static_libs = ["libwasmedge.a"],
+)
+
+# Wrapper library that adds LLVM dependencies for linking
+cc_library(
+    name = "wasmedge_lib",
     linkopts = select({
         "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": ["-ldl"],
         "//conditions:default": [],
     }),
-    out_static_libs = ["libwasmedge.a"],
-    deps = select({
-        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": ["@llvm-19_1_0//:llvm_wasmedge_lib"],
+    deps = [":wasmedge_lib_cmake"] + select({
+        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": [
+            "@llvm-raw//:llvm_wasmedge_lib",
+        ],
         "//conditions:default": [],
     }),
 )
