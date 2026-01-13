@@ -171,6 +171,7 @@ jobs:
           cache: true
         - name: 'WAMR interp on Linux/x86_64'
           engine: 'wamr'
+          llvm_mode: 'interpreter'
           repo: 'com_github_bytecodealliance_wasm_micro_runtime'
           os: ubuntu-24.04-16core
           arch: x86_64
@@ -178,6 +179,7 @@ jobs:
           flags: --config=hermetic-llvm
         - name: 'WAMR interp on macOS/x86_64'
           engine: 'wamr'
+          llvm_mode: 'interpreter'
           repo: 'com_github_bytecodealliance_wasm_micro_runtime'
           os: macos-15
           arch: x86_64
@@ -204,6 +206,7 @@ jobs:
           flags: --config=hermetic-llvm
         - name: 'WasmEdge interp on Linux/x86_64'
           engine: 'wasmedge'
+          llvm_mode: 'interpreter'
           repo: 'com_github_wasmedge_wasmedge'
           os: ubuntu-24.04-16core
           arch: x86_64
@@ -211,6 +214,7 @@ jobs:
           flags: --config=hermetic-llvm
         - name: 'WasmEdge interp on macOS/x86_64'
           engine: 'wasmedge'
+          llvm_mode: 'interpreter'
           repo: 'com_github_wasmedge_wasmedge'
           os: macos-15
           arch: x86_64

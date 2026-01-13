@@ -38,6 +38,11 @@ config_setting(
 
 # LLVM mode configuration (orthogonal to engine choice)
 config_setting(
+    name = "llvm_mode_interpreter",
+    values = {"define": "llvm_mode=interpreter"},
+)
+
+config_setting(
     name = "llvm_mode_jit",
     values = {"define": "llvm_mode=jit"},
 )
