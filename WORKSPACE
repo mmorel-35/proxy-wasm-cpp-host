@@ -9,7 +9,10 @@ load("@proxy_wasm_cpp_host//bazel:dependencies.bzl", "proxy_wasm_cpp_host_depend
 proxy_wasm_cpp_host_dependencies()
 
 # Setup rules_java as required by protobuf 33.2+
-# Must be done as direct loads in WORKSPACE (not in a .bzl file) to avoid cycles
+# Must be done as direct loads in WORKSPACE (not in a .bzl file) to avoid load-time cycles.
+# rules_java_dependencies() creates the @compatibility_proxy repository which is needed by
+# rules_java's java_binary and other rules. Loading these in a .bzl file would create a cycle
+# because the .bzl load would transitively reference @compatibility_proxy before it exists.
 load("@rules_java//java:rules_java_deps.bzl", "rules_java_dependencies")
 
 rules_java_dependencies()
