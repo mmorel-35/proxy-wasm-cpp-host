@@ -27,29 +27,89 @@ config_setting(
 )
 
 config_setting(
-    name = "engine_wamr_interp",
+    name = "engine_wamr",
+    values = {"define": "engine=wamr"},
+)
+
+config_setting(
+    name = "engine_wasmedge",
+    values = {"define": "engine=wasmedge"},
+)
+
+# LLVM mode configuration (orthogonal to engine choice)
+config_setting(
+    name = "llvm_mode_jit",
+    values = {"define": "llvm_mode=jit"},
+)
+
+config_setting(
+    name = "llvm_mode_aot",
+    values = {"define": "llvm_mode=aot"},
+)
+
+# Combined settings for engines with LLVM
+selects.config_setting_group(
+    name = "engine_wamr_jit",
+    match_all = [":engine_wamr", ":llvm_mode_jit"],
+)
+
+selects.config_setting_group(
+    name = "engine_wasmedge_aot",
+    match_all = [":engine_wasmedge", ":llvm_mode_aot"],
+)
+
+# Legacy aliases for backward compatibility
+config_setting(
+    name = "engine_wamr_interp_legacy",
     values = {"define": "engine=wamr-interp"},
 )
 
 config_setting(
-    name = "engine_wamr_jit",
+    name = "engine_wamr_jit_legacy",
     values = {"define": "engine=wamr-jit"},
 )
 
 config_setting(
-    name = "engine_wasmedge_interp",
+    name = "engine_wasmedge_interp_legacy",
     values = {"define": "engine=wasmedge-interp"},
 )
 
 config_setting(
-    name = "engine_wasmedge_aot",
+    name = "engine_wasmedge_aot_legacy",
     values = {"define": "engine=wasmedge-aot"},
 )
 
-# Legacy alias for backward compatibility
-config_setting(
-    name = "engine_wasmedge",
-    values = {"define": "engine=wasmedge"},
+# Unified engine selectors that support both new and legacy syntax
+selects.config_setting_group(
+    name = "engine_wamr_interp",
+    match_any = [
+        ":engine_wamr",  # New: --define=engine=wamr (without llvm_mode)
+        ":engine_wamr_interp_legacy",  # Legacy: --define=engine=wamr-interp
+    ],
+)
+
+selects.config_setting_group(
+    name = "engine_wamr_with_jit",
+    match_any = [
+        ":engine_wamr_jit",  # New: --define=engine=wamr --define=llvm_mode=jit
+        ":engine_wamr_jit_legacy",  # Legacy: --define=engine=wamr-jit
+    ],
+)
+
+selects.config_setting_group(
+    name = "engine_wasmedge_interp",
+    match_any = [
+        ":engine_wasmedge",  # New: --define=engine=wasmedge (without llvm_mode)
+        ":engine_wasmedge_interp_legacy",  # Legacy: --define=engine=wasmedge-interp
+    ],
+)
+
+selects.config_setting_group(
+    name = "engine_wasmedge_with_aot",
+    match_any = [
+        ":engine_wasmedge_aot",  # New: --define=engine=wasmedge --define=llvm_mode=aot
+        ":engine_wasmedge_aot_legacy",  # Legacy: --define=engine=wasmedge-aot
+    ],
 )
 
 config_setting(

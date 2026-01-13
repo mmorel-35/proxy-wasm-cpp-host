@@ -32,7 +32,7 @@ cmake(
         "WASMEDGE_BUILD_TOOLS": "Off",
         "WASMEDGE_FORCE_DISABLE_LTO": "On",
     } | select({
-        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": {
+        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_with_aot": {
             "WASMEDGE_USE_LLVM": "On",
             "BAZEL_BUILD": "ON",
             # Set LLVM_INCLUDE_DIR for the build to use
@@ -46,13 +46,13 @@ cmake(
     # LLVM headers from hermetic toolchain (bzlmod-compatible via data attribute)
     # LLVM libraries are linked via cc_library deps (see wasmedge_lib below)
     data = select({
-        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": [
+        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_with_aot": [
             "@llvm_toolchain_llvm//:all_includes",
         ],
         "//conditions:default": [],
     }),
     env = select({
-        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": {
+        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_with_aot": {
             # Reference LLVM headers in sandbox via EXT_BUILD_ROOT
             # The data attribute ensures llvm_toolchain_llvm is mounted in sandbox
             # This path works with both WORKSPACE and bzlmod
@@ -72,11 +72,11 @@ cmake(
 cc_library(
     name = "wasmedge_lib",
     linkopts = select({
-        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": ["-ldl"],
+        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_with_aot": ["-ldl"],
         "//conditions:default": [],
     }),
     deps = [":wasmedge_lib_cmake"] + select({
-        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_aot": [
+        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_with_aot": [
             "@llvm-raw//:llvm_lib",
         ],
         "//conditions:default": [],
