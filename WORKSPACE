@@ -8,6 +8,11 @@ load("@proxy_wasm_cpp_host//bazel:dependencies.bzl", "proxy_wasm_cpp_host_depend
 
 proxy_wasm_cpp_host_dependencies()
 
+# Setup protobuf dependencies (rules_java) as required by protobuf 33.2+
+load("@proxy_wasm_cpp_host//bazel:setup_protobuf_deps.bzl", "setup_protobuf_deps")
+
+setup_protobuf_deps()
+
 # Setup bazel_features internal repos (required for aspect_rules_lint)
 load("@proxy_wasm_cpp_host//bazel:setup_features.bzl", "setup_bazel_features")
 
