@@ -52,17 +52,6 @@ config_setting(
     values = {"define": "llvm_mode=aot"},
 )
 
-# Combined settings for engines with LLVM (intermediate settings)
-selects.config_setting_group(
-    name = "engine_wamr_with_jit_combined",
-    match_all = [":engine_wamr", ":llvm_mode_jit"],
-)
-
-selects.config_setting_group(
-    name = "engine_wasmedge_with_aot_combined",
-    match_all = [":engine_wasmedge", ":llvm_mode_aot"],
-)
-
 # Legacy aliases for backward compatibility (only for settings that existed in upstream)
 config_setting(
     name = "engine_wamr_interp_legacy",
@@ -86,23 +75,25 @@ selects.config_setting_group(
 selects.config_setting_group(
     name = "engine_wamr_jit",
     match_any = [
-        ":engine_wamr_with_jit_combined",  # New: --define=engine=wamr --define=llvm_mode=jit
         ":engine_wamr_jit_legacy",  # Legacy: --define=engine=wamr-jit
+    ],
+    match_all = [
+        ":engine_wamr",
+        ":llvm_mode_jit",
     ],
 )
 
 # WasmEdge selectors (no legacy needed - these are new in this PR)
-selects.config_setting_group(
+alias(
     name = "engine_wasmedge_interp",
-    match_any = [
-        ":engine_wasmedge",  # --define=engine=wasmedge (without llvm_mode)
-    ],
+    actual = ":engine_wasmedge",
 )
 
 selects.config_setting_group(
     name = "engine_wasmedge_aot",
-    match_any = [
-        ":engine_wasmedge_with_aot_combined",  # --define=engine=wasmedge --define=llvm_mode=aot
+    match_all = [
+        ":engine_wasmedge",
+        ":llvm_mode_aot",
     ],
 )
 
