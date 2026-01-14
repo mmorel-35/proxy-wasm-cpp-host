@@ -23,6 +23,16 @@ filegroup(
     srcs = glob(["**"]),
 )
 
+# Provide fmt and spdlog sources as data dependencies
+# These will be available in the CMake sandbox
+filegroup(
+    name = "all_srcs",
+    srcs = glob(["**"]) + [
+        "@com_github_fmtlib_fmt//:all_files",
+        "@com_github_gabime_spdlog//:all_files",
+    ],
+)
+
 cmake(
     name = "wasmedge_lib",
     cache_entries = {
@@ -36,6 +46,6 @@ cmake(
         "CXXFLAGS": "-Wno-error=dangling-reference -Wno-error=maybe-uninitialized -Wno-error=array-bounds= -Wno-error=deprecated-declarations -std=c++20",
     },
     generate_args = ["-GNinja"],
-    lib_source = ":srcs",
+    lib_source = ":all_srcs",
     out_static_libs = ["libwasmedge.a"],
 )
