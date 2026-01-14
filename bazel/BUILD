@@ -52,14 +52,14 @@ config_setting(
     values = {"define": "llvm_mode=aot"},
 )
 
-# Combined settings for engines with LLVM
+# Combined settings for engines with LLVM (intermediate settings)
 selects.config_setting_group(
-    name = "engine_wamr_jit",
+    name = "engine_wamr_with_jit_combined",
     match_all = [":engine_wamr", ":llvm_mode_jit"],
 )
 
 selects.config_setting_group(
-    name = "engine_wasmedge_aot",
+    name = "engine_wasmedge_with_aot_combined",
     match_all = [":engine_wasmedge", ":llvm_mode_aot"],
 )
 
@@ -84,9 +84,9 @@ selects.config_setting_group(
 )
 
 selects.config_setting_group(
-    name = "engine_wamr_with_jit",
+    name = "engine_wamr_jit",
     match_any = [
-        ":engine_wamr_jit",  # New: --define=engine=wamr --define=llvm_mode=jit
+        ":engine_wamr_with_jit_combined",  # New: --define=engine=wamr --define=llvm_mode=jit
         ":engine_wamr_jit_legacy",  # Legacy: --define=engine=wamr-jit
     ],
 )
@@ -100,9 +100,9 @@ selects.config_setting_group(
 )
 
 selects.config_setting_group(
-    name = "engine_wasmedge_with_aot",
+    name = "engine_wasmedge_aot",
     match_any = [
-        ":engine_wasmedge_aot",  # --define=engine=wasmedge --define=llvm_mode=aot
+        ":engine_wasmedge_with_aot_combined",  # --define=engine=wasmedge --define=llvm_mode=aot
     ],
 )
 

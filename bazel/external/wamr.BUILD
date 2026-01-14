@@ -27,7 +27,7 @@ filegroup(
 cmake(
     name = "wamr_lib_cmake",
     cache_entries = select({
-        "@proxy_wasm_cpp_host//bazel:engine_wamr_with_jit": {
+        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": {
             "BAZEL_BUILD": "ON",
             # Set LLVM_INCLUDE_DIR for the patch to use
             "LLVM_INCLUDE_DIR": "$$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include",
@@ -39,13 +39,13 @@ cmake(
     # LLVM headers from hermetic toolchain (bzlmod-compatible via data attribute)
     # LLVM libraries are linked via cc_library deps (see wamr_lib below)
     data = select({
-        "@proxy_wasm_cpp_host//bazel:engine_wamr_with_jit": [
+        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": [
             "@llvm_toolchain_llvm//:all_includes",
         ],
         "//conditions:default": [],
     }),
     env = select({
-        "@proxy_wasm_cpp_host//bazel:engine_wamr_with_jit": {
+        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": {
             # Reference LLVM headers in sandbox via EXT_BUILD_ROOT
             # The data attribute ensures llvm_toolchain_llvm is mounted in sandbox
             # This path works with both WORKSPACE and bzlmod
@@ -75,7 +75,7 @@ cmake(
         "-DWAMR_BUILD_WASM_CACHE=0",
         "-GNinja",
     ] + select({
-        "@proxy_wasm_cpp_host//bazel:engine_wamr_with_jit": [
+        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": [
             # WAMR's CMake will find LLVM via CMAKE_PREFIX_PATH
             # No need to set LLVM_DIR explicitly
             "-DWAMR_BUILD_AOT=1",
@@ -102,11 +102,11 @@ cmake(
 cc_library(
     name = "wamr_lib",
     linkopts = select({
-        "@proxy_wasm_cpp_host//bazel:engine_wamr_with_jit": ["-ldl"],
+        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": ["-ldl"],
         "//conditions:default": [],
     }),
     deps = [":wamr_lib_cmake"] + select({
-        "@proxy_wasm_cpp_host//bazel:engine_wamr_with_jit": [
+        "@proxy_wasm_cpp_host//bazel:engine_wamr_jit": [
             "@llvm-raw//:llvm_lib",
         ],
         "//conditions:default": [],
