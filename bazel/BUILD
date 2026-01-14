@@ -36,6 +36,16 @@ config_setting(
     values = {"define": "engine=wasmedge"},
 )
 
+config_setting(
+    name = "engine_wasmtime",
+    values = {"define": "engine=wasmtime"},
+)
+
+config_setting(
+    name = "multiengine",
+    values = {"define": "engine=multi"},
+)
+
 # LLVM mode configuration (orthogonal to engine choice)
 config_setting(
     name = "llvm_mode_interpreter",
@@ -74,19 +84,13 @@ selects.config_setting_group(
 
 selects.config_setting_group(
     name = "engine_wamr_jit",
-    match_any = [
-        ":engine_wamr_jit_legacy",  # Legacy: --define=engine=wamr-jit
-    ],
     match_all = [
         ":engine_wamr",
         ":llvm_mode_jit",
     ],
-)
-
-# WasmEdge selectors (no legacy needed - these are new in this PR)
-alias(
-    name = "engine_wasmedge_interp",
-    actual = ":engine_wasmedge",
+    match_any = [
+        ":engine_wamr_jit_legacy",  # Legacy: --define=engine=wamr-jit
+    ],
 )
 
 selects.config_setting_group(
@@ -95,16 +99,6 @@ selects.config_setting_group(
         ":engine_wasmedge",
         ":llvm_mode_aot",
     ],
-)
-
-config_setting(
-    name = "engine_wasmtime",
-    values = {"define": "engine=wasmtime"},
-)
-
-config_setting(
-    name = "multiengine",
-    values = {"define": "engine=multi"},
 )
 
 config_setting(
