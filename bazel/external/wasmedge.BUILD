@@ -23,8 +23,8 @@ filegroup(
     srcs = glob(["**"]),
 )
 
-# Provide fmt and spdlog sources as data dependencies
-# These will be available in the CMake sandbox
+# Include fmt and spdlog source dependencies that will be available in the CMake sandbox.
+# These are required for WasmEdge's CMake FetchContent to use pre-fetched sources.
 filegroup(
     name = "all_srcs",
     srcs = glob(["**"]) + [

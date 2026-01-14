@@ -30,6 +30,7 @@ cc_library(
         "include/fmt/*.h",
     ]),
     includes = ["include"],
+    # Suppress fmt-specific warnings that are not relevant for external dependency
     copts = [
         "-Wno-missing-noreturn",
         "-Wno-sign-conversion",

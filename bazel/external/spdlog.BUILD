@@ -21,6 +21,8 @@ filegroup(
     srcs = glob(["**"]),
 )
 
+# spdlog is built as a header-only library with external fmt dependency.
+# This matches the configuration used by WasmEdge (SPDLOG_FMT_EXTERNAL=ON).
 cc_library(
     name = "spdlog",
     hdrs = glob([
