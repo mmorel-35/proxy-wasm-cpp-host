@@ -343,15 +343,16 @@ def proxy_wasm_cpp_host_repositories():
     )
 
     # WasmEdge with dependencies.
-
+    # Using native Bazel BUILD files instead of CMake + rules_foreign_cc
+    
     # fmt library required by WasmEdge
     maybe(
         http_archive,
         name = "fmt",
         build_file = "@proxy_wasm_cpp_host//bazel/external:fmt.BUILD",
-        sha256 = "40fc58bebcf38c759e11a7bd8fdc163507d2423ef5058bba7f26280c5b9c5465",
-        strip_prefix = "fmt-11.0.2",
-        url = "https://github.com/fmtlib/fmt/releases/download/11.0.2/fmt-11.0.2.zip",
+        sha256 = "5dea48d1fcddc3ec571ce2058e13910a0d4a6bab4cc09a809d8b1dd1c88ae6f2",
+        strip_prefix = "fmt-9.1.0",
+        url = "https://github.com/fmtlib/fmt/archive/refs/tags/9.1.0.tar.gz",
     )
 
     # spdlog library required by WasmEdge
@@ -359,9 +360,19 @@ def proxy_wasm_cpp_host_repositories():
         http_archive,
         name = "spdlog",
         build_file = "@proxy_wasm_cpp_host//bazel/external:spdlog.BUILD",
-        sha256 = "534f2ee1a4dcbeb22249856edfb2be76a1cf4f708a20b0ac2ed090ee24cfdbc9",
-        strip_prefix = "spdlog-1.13.0",
-        url = "https://github.com/gabime/spdlog/archive/refs/tags/v1.13.0.tar.gz",
+        sha256 = "4dccf2d10f410c1e2feaff89966bfc49a1abb29ef6f08246335b110e001e09a9",
+        strip_prefix = "spdlog-1.12.0",
+        url = "https://github.com/gabime/spdlog/archive/refs/tags/v1.12.0.tar.gz",
+    )
+
+    # simdjson library required by WasmEdge
+    maybe(
+        http_archive,
+        name = "simdjson",
+        build_file = "@proxy_wasm_cpp_host//bazel/external:simdjson.BUILD",
+        sha256 = "9eab3197231382b8b99d14d8ca647d6ab6bea1b40008df086d25e6f687309bf6",
+        strip_prefix = "simdjson-3.6.0",
+        url = "https://github.com/simdjson/simdjson/archive/refs/tags/v3.6.0.tar.gz",
     )
 
     maybe(
@@ -371,8 +382,6 @@ def proxy_wasm_cpp_host_repositories():
         sha256 = "2354d90a67e3eb396179663bdc0b457abbbc70dca967ec4528f211599a49f62a",
         strip_prefix = "WasmEdge-0.16.1",
         url = "https://github.com/WasmEdge/WasmEdge/archive/refs/tags/0.16.1.tar.gz",
-        patches = ["@proxy_wasm_cpp_host//bazel/external:wasmedge.patch"],
-        patch_args = ["-p1"],
     )
 
     # Wasmtime with dependencies.

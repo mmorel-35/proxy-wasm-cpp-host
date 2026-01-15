@@ -12,34 +12,190 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+# Native Bazel BUILD file for WasmEdge runtime
+# Based on https://github.com/mmorel-35/WasmEdge/pull/1
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
 
 licenses(["notice"])  # Apache 2
 
 package(default_visibility = ["//visibility:public"])
 
-filegroup(
-    name = "srcs",
-    srcs = glob(["**"]),
+# Common library
+cc_library(
+    name = "common",
+    srcs = [
+        "lib/common/errinfo.cpp",
+        "lib/common/hash.cpp",
+        "lib/common/hexstr.cpp",
+        "lib/common/spdlog.cpp",
+    ],
+    hdrs = glob([
+        "include/common/*.h",
+        "include/common/*.hpp",
+    ]),
+    includes = ["include"],
+    deps = [
+        "@spdlog",
+    ],
 )
 
-cmake(
-    name = "wasmedge_lib",
-    cache_entries = {
-        "WASMEDGE_USE_LLVM": "Off",
-        "WASMEDGE_BUILD_SHARED_LIB": "Off",
-        "WASMEDGE_BUILD_STATIC_LIB": "On",
-        "WASMEDGE_BUILD_TOOLS": "Off",
-        "WASMEDGE_FORCE_DISABLE_LTO": "On",
-    },
-    env = {
-        "CXXFLAGS": "-Wno-error=dangling-reference -Wno-error=maybe-uninitialized -Wno-error=array-bounds= -Wno-error=deprecated-declarations -std=c++20",
-    },
-    generate_args = ["-GNinja"],
-    lib_source = ":srcs",
-    out_static_libs = ["libwasmedge.a"],
+# System library
+cc_library(
+    name = "system",
+    srcs = [
+        "lib/system/allocator.cpp",
+        "lib/system/fault.cpp",
+        "lib/system/mmap.cpp",
+        "lib/system/path.cpp",
+        "lib/system/stacktrace.cpp",
+    ],
+    hdrs = glob(["include/system/*.h"]),
+    includes = ["include"],
+    linkopts = select({
+        "@platforms//os:windows": ["-ldbghelp"],
+        "//conditions:default": [],
+    }),
     deps = [
-        "@fmt",
-        "@spdlog",
+        ":common",
+    ],
+)
+
+# Program Options library
+cc_library(
+    name = "po",
+    srcs = glob(["lib/po/*.cpp"]),
+    hdrs = glob(["include/po/*.h"]),
+    includes = ["include"],
+    deps = [
+        ":common",
+    ],
+)
+
+# Loader library  
+cc_library(
+    name = "loader",
+    srcs = glob([
+        "lib/loader/*.cpp",
+        "lib/loader/filemgr/*.cpp",
+    ]),
+    hdrs = glob([
+        "include/loader/*.h",
+        "include/loader/filemgr/*.h",
+    ]),
+    includes = ["include"],
+    deps = [
+        ":common",
+        ":system",
+        "@simdjson",
+    ],
+)
+
+# Validator library
+cc_library(
+    name = "validator",
+    srcs = glob(["lib/validator/*.cpp"]),
+    hdrs = glob(["include/validator/*.h"]),
+    includes = ["include"],
+    deps = [
+        ":common",
+    ],
+)
+
+# Executor library
+cc_library(
+    name = "executor",
+    srcs = glob(["lib/executor/**/*.cpp"]),
+    hdrs = glob(["include/executor/*.h"]),
+    includes = ["include"],
+    deps = [
+        ":common",
+        ":system",
+    ],
+)
+
+# WASI host module
+cc_library(
+    name = "host_wasi",
+    srcs = glob(["lib/host/wasi/*.cpp"]) + select({
+        "@platforms//os:linux": glob(["lib/host/wasi/linux/*.cpp"]),
+        "@platforms//os:macos": glob(["lib/host/wasi/darwin/*.cpp"]),
+        "@platforms//os:windows": glob(["lib/host/wasi/win/*.cpp"]),
+        "//conditions:default": [],
+    }),
+    hdrs = glob(["include/host/wasi/*.h"]),
+    includes = ["include"],
+    deps = [
+        ":common",
+        ":executor",
+        ":system",
+    ],
+)
+
+# Plugin library
+cc_library(
+    name = "plugin",
+    srcs = glob(["lib/plugin/*.cpp"]),
+    hdrs = glob(["include/plugin/*.h"]),
+    includes = ["include"],
+    deps = [
+        ":common",
+        ":loader",
+    ],
+)
+
+# WASI Logging plugin
+cc_library(
+    name = "plugin_wasi_logging",
+    srcs = glob(["lib/plugin/wasi_logging/*.cpp"]),
+    hdrs = glob(["include/plugin/wasi_logging/*.h"]),
+    includes = ["include"],
+    deps = [
+        ":common",
+        ":plugin",
+    ],
+)
+
+# VM library
+cc_library(
+    name = "vm",
+    srcs = glob(["lib/vm/*.cpp"]),
+    hdrs = glob(["include/vm/*.h"]),
+    includes = ["include"],
+    deps = [
+        ":common",
+        ":executor",
+        ":host_wasi",
+        ":loader",
+        ":plugin",
+        ":validator",
+    ],
+)
+
+# Driver library
+cc_library(
+    name = "driver",
+    srcs = glob(["lib/driver/*.cpp"]),
+    hdrs = glob(["include/driver/*.h"]),
+    includes = ["include"],
+    deps = [
+        ":common",
+        ":po",
+        ":vm",
+    ],
+)
+
+# API library (main entry point)
+cc_library(
+    name = "wasmedge_lib",
+    srcs = ["lib/api/wasmedge.cpp"],
+    hdrs = glob(["include/api/wasmedge/*.h"]),
+    includes = [
+        "include",
+        "include/api",
+    ],
+    deps = [
+        ":driver",
+        ":vm",
     ],
 )
