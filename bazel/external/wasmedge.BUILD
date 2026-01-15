@@ -23,16 +23,6 @@ filegroup(
     srcs = glob(["**"]),
 )
 
-# Include fmt and spdlog source dependencies that will be available in the CMake sandbox.
-# These are required for WasmEdge's CMake FetchContent to use pre-fetched sources.
-filegroup(
-    name = "all_srcs",
-    srcs = glob(["**"]) + [
-        "@com_github_fmtlib_fmt//:all_files",
-        "@com_github_gabime_spdlog//:all_files",
-    ],
-)
-
 cmake(
     name = "wasmedge_lib",
     cache_entries = {
@@ -46,6 +36,6 @@ cmake(
         "CXXFLAGS": "-Wno-error=dangling-reference -Wno-error=maybe-uninitialized -Wno-error=array-bounds= -Wno-error=deprecated-declarations -std=c++20",
     },
     generate_args = ["-GNinja"],
-    lib_source = ":all_srcs",
+    lib_source = ":srcs",
     out_static_libs = ["libwasmedge.a"],
 )
