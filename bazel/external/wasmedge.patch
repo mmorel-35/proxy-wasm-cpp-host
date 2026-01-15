@@ -1,29 +1,33 @@
---- WasmEdge-0.16.1/cmake/Helper.cmake.orig	2026-01-15 07:08:28.026114144 +0000
-+++ WasmEdge-0.16.1/cmake/Helper.cmake	2026-01-15 07:32:12.583631935 +0000
-@@ -365,6 +365,26 @@
+diff -urN WasmEdge-0.16.1/cmake/Helper.cmake WasmEdge-0.16.1-patched/cmake/Helper.cmake
+--- WasmEdge-0.16.1/cmake/Helper.cmake	2026-01-05 22:09:55.000000000 +0000
++++ WasmEdge-0.16.1-patched/cmake/Helper.cmake	2026-01-15 07:37:20.896411038 +0000
+@@ -362,6 +362,12 @@
+ endfunction()
+ 
+ function(wasmedge_setup_spdlog)
++  # When building under Bazel with external dependencies, skip setup
++  # Bazel handles fmt and spdlog separately through its dependency system
++  if(DEFINED ENV{EXT_BUILD_DEPS})
++    message(STATUS "Using fmt and spdlog from Bazel dependencies - skipping setup")
++    return()
++  endif()
    if(TARGET spdlog::spdlog)
      return()
    endif()
-+  # Check if building under Bazel with external dependencies
-+  if(DEFINED ENV{EXT_BUILD_DEPS})
-+    # When using Bazel's rules_foreign_cc with deps, fmt and spdlog are provided
-+    # Create interface targets that point to the libraries provided by Bazel
-+    if(NOT TARGET fmt)
-+      add_library(fmt INTERFACE IMPORTED GLOBAL)
-+      set_target_properties(fmt PROPERTIES
-+        INTERFACE_INCLUDE_DIRECTORIES "$ENV{EXT_BUILD_DEPS}/include"
-+      )
-+    endif()
-+    if(NOT TARGET spdlog::spdlog)
-+      add_library(spdlog::spdlog INTERFACE IMPORTED GLOBAL)
-+      set_target_properties(spdlog::spdlog PROPERTIES
-+        INTERFACE_INCLUDE_DIRECTORIES "$ENV{EXT_BUILD_DEPS}/include"
-+        INTERFACE_LINK_LIBRARIES fmt
-+      )
-+    endif()
-+    message(STATUS "Using fmt and spdlog from Bazel dependencies")
-+    return()
+diff -urN WasmEdge-0.16.1/lib/api/CMakeLists.txt WasmEdge-0.16.1-patched/lib/api/CMakeLists.txt
+--- WasmEdge-0.16.1/lib/api/CMakeLists.txt	2026-01-05 22:09:55.000000000 +0000
++++ WasmEdge-0.16.1-patched/lib/api/CMakeLists.txt	2026-01-15 07:37:20.896411038 +0000
+@@ -151,8 +151,11 @@
+ endif()
+ 
+ if(WASMEDGE_BUILD_STATIC_LIB)
+-  wasmedge_add_static_lib_component_command(fmt::fmt)
+-  wasmedge_add_static_lib_component_command(spdlog::spdlog)
++  # Skip fmt and spdlog when building under Bazel - they're provided separately
++  if(NOT DEFINED ENV{EXT_BUILD_DEPS})
++    wasmedge_add_static_lib_component_command(fmt::fmt)
++    wasmedge_add_static_lib_component_command(spdlog::spdlog)
 +  endif()
-   # setup spdlog
-   find_package(spdlog QUIET)
-   if(spdlog_FOUND)
+   wasmedge_add_static_lib_component_command(wasmedgeSystem)
+   wasmedge_add_static_lib_component_command(wasmedgeCommon)
+   wasmedge_add_static_lib_component_command(wasmedgePO)
