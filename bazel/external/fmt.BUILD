@@ -7,17 +7,12 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "fmt",
-    srcs = glob([
-        "src/*.cc",
-    ]),
+    srcs = [],  # Header-only mode
     hdrs = glob([
         "include/fmt/*.h",
     ]),
-    copts = [
-        "-std=c++20",
-    ],
     defines = [
-        "FMT_USE_NONTYPE_TEMPLATE_ARGS=0",
+        "FMT_HEADER_ONLY=1",  # Use header-only mode to avoid compilation issues
     ],
     includes = ["include"],
     strip_include_prefix = "include",

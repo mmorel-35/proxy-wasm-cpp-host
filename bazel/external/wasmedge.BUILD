@@ -33,10 +33,38 @@ cc_library(
     hdrs = glob([
         "include/common/*.h",
         "include/common/*.hpp",
+        "include/common/*.inc",  # Include .inc header files
     ]),
     includes = ["include"],
     deps = [
         "@spdlog",
+    ],
+)
+
+# AST (Abstract Syntax Tree) - header-only library
+cc_library(
+    name = "ast",
+    hdrs = glob([
+        "include/ast/*.h",
+        "include/ast/**/*.h",
+    ]),
+    includes = ["include"],
+    deps = [
+        ":common",
+    ],
+)
+
+# Runtime - header-only library
+cc_library(
+    name = "runtime",
+    hdrs = glob([
+        "include/runtime/*.h",
+        "include/runtime/**/*.h",
+    ]),
+    includes = ["include"],
+    deps = [
+        ":ast",
+        ":common",
     ],
 )
 
@@ -85,6 +113,7 @@ cc_library(
     ]),
     includes = ["include"],
     deps = [
+        ":ast",
         ":common",
         ":system",
         "@simdjson",
@@ -98,6 +127,7 @@ cc_library(
     hdrs = glob(["include/validator/*.h"]),
     includes = ["include"],
     deps = [
+        ":ast",
         ":common",
     ],
 )
@@ -109,7 +139,9 @@ cc_library(
     hdrs = glob(["include/executor/*.h"]),
     includes = ["include"],
     deps = [
+        ":ast",
         ":common",
+        ":runtime",
         ":system",
     ],
 )
