@@ -1,7 +1,7 @@
 diff -urN WasmEdge-0.16.1/cmake/Helper.cmake WasmEdge-0.16.1-patched/cmake/Helper.cmake
 --- WasmEdge-0.16.1/cmake/Helper.cmake	2026-01-05 22:09:55.000000000 +0000
-+++ WasmEdge-0.16.1-patched/cmake/Helper.cmake	2026-01-15 18:11:47.155339217 +0000
-@@ -362,6 +362,48 @@
++++ WasmEdge-0.16.1-patched/cmake/Helper.cmake	2026-01-15 18:27:24.422226996 +0000
+@@ -362,6 +362,72 @@
  endfunction()
  
  function(wasmedge_setup_spdlog)
@@ -10,17 +10,41 @@ diff -urN WasmEdge-0.16.1/cmake/Helper.cmake WasmEdge-0.16.1-patched/cmake/Helpe
 +  if(DEFINED ENV{EXT_BUILD_DEPS})
 +    message(STATUS "Using fmt and spdlog from Bazel dependencies - creating imported targets")
 +    
-+    # Parse CMAKE_PREFIX_PATH to find fmt and spdlog include directories
++    # Use the EXT_BUILD_DEPS directory which should contain all dependencies
++    set(deps_dir "$ENV{EXT_BUILD_DEPS}")
++    message(STATUS "EXT_BUILD_DEPS: ${deps_dir}")
++    
++    # Find fmt and spdlog include directories in the deps directory
++    file(GLOB_RECURSE fmt_headers "${deps_dir}/**/fmt/*.h")
++    file(GLOB_RECURSE spdlog_headers "${deps_dir}/**/spdlog/*.h")
++    
++    list(LENGTH fmt_headers fmt_headers_count)
++    list(LENGTH spdlog_headers spdlog_headers_count)
++    message(STATUS "Found ${fmt_headers_count} fmt headers")
++    message(STATUS "Found ${spdlog_headers_count} spdlog headers")
++    
 +    set(fmt_include_dirs "")
 +    set(spdlog_include_dirs "")
-+    foreach(path ${CMAKE_PREFIX_PATH})
-+      if(path MATCHES "fmt")
-+        list(APPEND fmt_include_dirs "${path}")
-+      endif()
-+      if(path MATCHES "spdlog")
-+        list(APPEND spdlog_include_dirs "${path}")
-+      endif()
-+    endforeach()
++    
++    if(fmt_headers)
++      list(GET fmt_headers 0 fmt_header)
++      get_filename_component(fmt_include_dir "${fmt_header}" DIRECTORY)
++      get_filename_component(fmt_include_dir "${fmt_include_dir}" DIRECTORY)
++      list(APPEND fmt_include_dirs "${fmt_include_dir}")
++      message(STATUS "Found fmt includes: ${fmt_include_dir}")
++    endif()
++    
++    if(spdlog_headers)
++      list(GET spdlog_headers 0 spdlog_header)
++      get_filename_component(spdlog_include_dir "${spdlog_header}" DIRECTORY)
++      get_filename_component(spdlog_include_dir "${spdlog_include_dir}" DIRECTORY)
++      list(APPEND spdlog_include_dirs "${spdlog_include_dir}")
++      message(STATUS "Found spdlog includes: ${spdlog_include_dir}")
++    endif()
++    
++    if(NOT fmt_include_dirs OR NOT spdlog_include_dirs)
++      message(FATAL_ERROR "Failed to find fmt or spdlog includes in ${deps_dir}")
++    endif()
 +    
 +    # Create fmt::fmt imported target if not already defined
 +    if(NOT TARGET fmt::fmt)
