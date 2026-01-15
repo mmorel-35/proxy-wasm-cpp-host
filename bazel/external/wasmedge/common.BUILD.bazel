@@ -1,0 +1,29 @@
+# Copyright 2025 Google LLC
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "common",
+    srcs = [
+        "errinfo.cpp",
+        "hash.cpp",
+        "hexstr.cpp",
+        "spdlog.cpp",
+    ],
+    hdrs = glob([
+        "../../include/common/*.h",
+        "../../include/common/*.hpp",
+        "../../include/common/*.inc",
+        "../../include/experimental/*.hpp",
+    ]) + [
+        "//include:generate_config_header",
+        "//include:generate_common_version_header",
+    ],
+    strip_include_prefix = "../../include",
+    deps = [
+        "@spdlog",
+    ],
+)

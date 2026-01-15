@@ -1,0 +1,24 @@
+# Copyright 2025 Google LLC
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "wasmedge",
+    srcs = ["wasmedge.cpp"],
+    hdrs = glob([
+        "../../include/api/*.h",
+        "../../include/api/wasmedge/*.h",
+    ]) + [
+        "//include:copy_enum_headers",
+        "//include:generate_api_version_header",
+    ],
+    strip_include_prefix = "../../include",
+    deps = [
+        "//lib/common",
+        "//lib/po",
+        "//lib/vm",
+    ],
+)

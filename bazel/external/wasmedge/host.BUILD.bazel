@@ -1,0 +1,27 @@
+# Copyright 2025 Google LLC
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "host_wasi",
+    srcs = glob([
+        "wasi/*.cpp",
+    ]) + select({
+        "@platforms//os:linux": glob(["wasi/linux/*.cpp"]),
+        "@platforms//os:macos": glob(["wasi/darwin/*.cpp"]),
+        "@platforms//os:windows": glob(["wasi/win/*.cpp"]),
+        "//conditions:default": [],
+    }),
+    hdrs = glob([
+        "../../include/host/*.h",
+        "../../include/host/wasi/*.h",
+    ]),
+    strip_include_prefix = "../../include",
+    deps = [
+        "//lib/common",
+        "//lib/executor",
+    ],
+)

@@ -1,0 +1,30 @@
+# Copyright 2025 Google LLC
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "system",
+    srcs = [
+        "allocator.cpp",
+        "fault.cpp",
+        "mmap.cpp",
+        "path.cpp",
+        "stacktrace.cpp",
+    ],
+    hdrs = glob([
+        "../../include/system/*.h",
+        "../../include/runtime/*.h",
+        "../../include/runtime/instance/*.h",
+    ]),
+    strip_include_prefix = "../../include",
+    linkopts = select({
+        "@platforms//os:windows": ["-ldbghelp"],
+        "//conditions:default": [],
+    }),
+    deps = [
+        "//lib/common",
+    ],
+)

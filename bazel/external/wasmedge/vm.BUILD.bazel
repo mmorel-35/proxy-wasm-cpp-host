@@ -1,0 +1,23 @@
+# Copyright 2025 Google LLC
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "vm",
+    srcs = glob(["*.cpp"]),
+    hdrs = glob([
+        "../../include/vm/*.h",
+    ]),
+    strip_include_prefix = "../../include",
+    deps = [
+        "//lib/common",
+        "//lib/executor",
+        "//lib/host:host_wasi",
+        "//lib/loader",
+        "//lib/plugin",
+        "//lib/validator",
+    ],
+)

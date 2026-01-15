@@ -1,0 +1,29 @@
+# Copyright 2025 Google LLC
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "loader",
+    srcs = glob([
+        "*.cpp",
+        "filemgr/*.cpp",
+        "ast/*.cpp",
+        "serialize/*.cpp",
+    ]),
+    hdrs = glob([
+        "../../include/loader/*.h",
+        "../../include/loader/filemgr/*.h",
+        "../../include/aot/*.h",
+        "../../include/ast/*.h",
+        "../../include/ast/component/*.h",
+    ]),
+    strip_include_prefix = "../../include",
+    deps = [
+        "//lib/common",
+        "//lib/system",
+        "@simdjson",
+    ],
+)

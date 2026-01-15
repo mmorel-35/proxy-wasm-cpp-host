@@ -1,0 +1,36 @@
+# Copyright 2025 Google LLC
+# SPDX-License-Identifier: Apache-2.0
+#
+# Root BUILD file for WasmEdge
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+# Main WasmEdge library - aggregates all components
+cc_library(
+    name = "wasmedge_lib",
+    deps = [
+        "//lib/api:wasmedge",
+    ],
+)
+
+# Interpreter-only build (no AOT/LLVM)
+cc_library(
+    name = "wasmedge_interpreter",
+    deps = [
+        "//lib/common",
+        "//lib/loader",
+        "//lib/validator",
+        "//lib/executor",
+        "//lib/vm",
+    ],
+)
+
+# Exports for external use
+exports_files([
+    "include/api/wasmedge/wasmedge.h",
+    "include/api/wasmedge/version.h.in",
+])
+
+licenses(["notice"])  # Apache 2.0

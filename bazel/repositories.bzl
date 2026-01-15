@@ -15,6 +15,7 @@
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+load("//bazel:wasmedge_repository.bzl", "wasmedge_repository")
 
 def proxy_wasm_cpp_host_repositories():
     # Bazel extensions.
@@ -376,14 +377,12 @@ def proxy_wasm_cpp_host_repositories():
     )
 
     maybe(
-        http_archive,
+        wasmedge_repository,
         name = "com_github_wasmedge_wasmedge",
-        build_file = "@proxy_wasm_cpp_host//bazel/external:wasmedge.BUILD",
+        url = "https://github.com/WasmEdge/WasmEdge/archive/refs/tags/0.16.1.tar.gz",
         sha256 = "2354d90a67e3eb396179663bdc0b457abbbc70dca967ec4528f211599a49f62a",
         strip_prefix = "WasmEdge-0.16.1",
-        url = "https://github.com/WasmEdge/WasmEdge/archive/refs/tags/0.16.1.tar.gz",
         patches = ["@proxy_wasm_cpp_host//bazel/external:wasmedge_cxx20.patch"],
-        patch_args = ["-p1"],
     )
 
     # Wasmtime with dependencies.

@@ -1,0 +1,29 @@
+# Copyright 2025 Google LLC
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "executor",
+    srcs = glob([
+        "*.cpp",
+        "engine/*.cpp",
+        "instantiate/*.cpp",
+        "instantiate/component/*.cpp",
+    ]),
+    hdrs = glob([
+        "../../include/executor/*.h",
+        "../../include/runtime/*.h",
+        "../../include/runtime/instance/*.h",
+        "../../include/ast/*.h",
+        "../../include/ast/component/*.h",
+    ]),
+    strip_include_prefix = "../../include",
+    deps = [
+        "//lib/common",
+        "//lib/loader",
+        "//lib/system",
+    ],
+)
