@@ -38,4 +38,8 @@ cmake(
     generate_args = ["-GNinja"],
     lib_source = ":srcs",
     out_static_libs = ["libwasmedge.a"],
+    deps = [
+        "@fmt",
+        "@spdlog",
+    ],
 )

@@ -344,6 +344,26 @@ def proxy_wasm_cpp_host_repositories():
 
     # WasmEdge with dependencies.
 
+    # fmt library required by WasmEdge
+    maybe(
+        http_archive,
+        name = "fmt",
+        build_file = "@proxy_wasm_cpp_host//bazel/external:fmt.BUILD",
+        sha256 = "d695f3e5f7c8dcb3a0b14fb255fc76afe5d9f48f68e0db3e3de82ee7ca5ad994",
+        strip_prefix = "fmt-11.0.2",
+        url = "https://github.com/fmtlib/fmt/releases/download/11.0.2/fmt-11.0.2.zip",
+    )
+
+    # spdlog library required by WasmEdge
+    maybe(
+        http_archive,
+        name = "spdlog",
+        build_file = "@proxy_wasm_cpp_host//bazel/external:spdlog.BUILD",
+        sha256 = "45250b168e38b1a61c541e5cca9035b99e8f5d00f1bfb914f4f8c325db85a0df",
+        strip_prefix = "spdlog-1.13.0",
+        url = "https://github.com/gabime/spdlog/archive/refs/tags/v1.13.0.tar.gz",
+    )
+
     maybe(
         http_archive,
         name = "com_github_wasmedge_wasmedge",
@@ -351,6 +371,8 @@ def proxy_wasm_cpp_host_repositories():
         sha256 = "2354d90a67e3eb396179663bdc0b457abbbc70dca967ec4528f211599a49f62a",
         strip_prefix = "WasmEdge-0.16.1",
         url = "https://github.com/WasmEdge/WasmEdge/archive/refs/tags/0.16.1.tar.gz",
+        patches = ["@proxy_wasm_cpp_host//bazel/external:wasmedge.patch"],
+        patch_args = ["-p1"],
     )
 
     # Wasmtime with dependencies.
