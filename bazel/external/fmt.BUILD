@@ -26,5 +26,4 @@ cc_library(
         "include/fmt/*.h",
     ]),
     includes = ["include"],
-    strip_include_prefix = "include",
 )
