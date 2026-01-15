@@ -382,6 +382,8 @@ def proxy_wasm_cpp_host_repositories():
         sha256 = "2354d90a67e3eb396179663bdc0b457abbbc70dca967ec4528f211599a49f62a",
         strip_prefix = "WasmEdge-0.16.1",
         url = "https://github.com/WasmEdge/WasmEdge/archive/refs/tags/0.16.1.tar.gz",
+        patches = ["@proxy_wasm_cpp_host//bazel/external:wasmedge_cxx20.patch"],
+        patch_args = ["-p1"],
     )
 
     # Wasmtime with dependencies.
