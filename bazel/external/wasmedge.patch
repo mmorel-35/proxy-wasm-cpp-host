@@ -1,12 +1,9 @@
-diff --git a/cmake/Helper.cmake b/cmake/Helper.cmake
-index 1234567..abcdefg 100644
---- a/cmake/Helper.cmake
-+++ b/cmake/Helper.cmake
-@@ -363,6 +363,27 @@ endfunction()
+--- WasmEdge-0.16.1/cmake/Helper.cmake.orig	2026-01-15 07:08:28.026114144 +0000
++++ WasmEdge-0.16.1/cmake/Helper.cmake	2026-01-15 07:10:20.341030256 +0000
+@@ -364,6 +364,26 @@
  function(wasmedge_setup_spdlog)
    if(TARGET spdlog::spdlog)
      return()
-+  endif()
 +  # Check if building under Bazel with external dependencies
 +  if(DEFINED ENV{EXT_BUILD_DEPS})
 +    # When using Bazel's rules_foreign_cc with deps, fmt and spdlog are provided
@@ -26,6 +23,7 @@ index 1234567..abcdefg 100644
 +    endif()
 +    message(STATUS "Using fmt and spdlog from Bazel dependencies")
 +    return()
++  endif()
    endif()
    # setup spdlog
    find_package(spdlog QUIET)

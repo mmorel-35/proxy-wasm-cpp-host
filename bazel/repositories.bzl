@@ -349,7 +349,7 @@ def proxy_wasm_cpp_host_repositories():
         http_archive,
         name = "fmt",
         build_file = "@proxy_wasm_cpp_host//bazel/external:fmt.BUILD",
-        sha256 = "d695f3e5f7c8dcb3a0b14fb255fc76afe5d9f48f68e0db3e3de82ee7ca5ad994",
+        sha256 = "40fc58bebcf38c759e11a7bd8fdc163507d2423ef5058bba7f26280c5b9c5465",
         strip_prefix = "fmt-11.0.2",
         url = "https://github.com/fmtlib/fmt/releases/download/11.0.2/fmt-11.0.2.zip",
     )
@@ -359,7 +359,7 @@ def proxy_wasm_cpp_host_repositories():
         http_archive,
         name = "spdlog",
         build_file = "@proxy_wasm_cpp_host//bazel/external:spdlog.BUILD",
-        sha256 = "45250b168e38b1a61c541e5cca9035b99e8f5d00f1bfb914f4f8c325db85a0df",
+        sha256 = "534f2ee1a4dcbeb22249856edfb2be76a1cf4f708a20b0ac2ed090ee24cfdbc9",
         strip_prefix = "spdlog-1.13.0",
         url = "https://github.com/gabime/spdlog/archive/refs/tags/v1.13.0.tar.gz",
     )
