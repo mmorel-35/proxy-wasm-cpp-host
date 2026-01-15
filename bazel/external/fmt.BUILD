@@ -16,6 +16,9 @@ cc_library(
     copts = [
         "-std=c++20",
     ],
+    defines = [
+        "FMT_USE_NONTYPE_TEMPLATE_ARGS=0",
+    ],
     includes = ["include"],
     strip_include_prefix = "include",
 )

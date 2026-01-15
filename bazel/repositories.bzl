@@ -350,9 +350,9 @@ def proxy_wasm_cpp_host_repositories():
         http_archive,
         name = "fmt",
         build_file = "@proxy_wasm_cpp_host//bazel/external:fmt.BUILD",
-        sha256 = "5dea48d1fcddc3ec571ce2058e13910a0d4a6bab4cc09a809d8b1dd1c88ae6f2",
-        strip_prefix = "fmt-9.1.0",
-        url = "https://github.com/fmtlib/fmt/archive/refs/tags/9.1.0.tar.gz",
+        sha256 = "40fc58bebcf38c759e11a7bd8fdc163507d2423ef5058bba7f26280c5b9c5465",
+        strip_prefix = "fmt-11.0.2",
+        url = "https://github.com/fmtlib/fmt/releases/download/11.0.2/fmt-11.0.2.zip",
     )
 
     # spdlog library required by WasmEdge
