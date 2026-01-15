@@ -350,9 +350,9 @@ def proxy_wasm_cpp_host_repositories():
         http_archive,
         name = "fmt",
         build_file = "@proxy_wasm_cpp_host//bazel/external:fmt.BUILD",
-        sha256 = "1c32293203449792bf8e94c7f6699c643887e826f2d66a80869b4f279fb07d25",
-        strip_prefix = "fmt-12.0.0",
-        url = "https://github.com/fmtlib/fmt/releases/download/12.0.0/fmt-12.0.0.zip",
+        sha256 = "40fc58bebcf38c759e11a7bd8fdc163507d2423ef5058bba7f26280c5b9c5465",
+        strip_prefix = "fmt-11.0.2",
+        url = "https://github.com/fmtlib/fmt/releases/download/11.0.2/fmt-11.0.2.zip",
     )
 
     # spdlog library required by WasmEdge
@@ -360,9 +360,9 @@ def proxy_wasm_cpp_host_repositories():
         http_archive,
         name = "spdlog",
         build_file = "@proxy_wasm_cpp_host//bazel/external:spdlog.BUILD",
-        sha256 = "9962648c9b4f1a7bbc76fd8d9172555bad1871fdb14ff4f842ef87949682caa5",
-        strip_prefix = "spdlog-1.15.0",
-        url = "https://github.com/gabime/spdlog/archive/refs/tags/v1.15.0.tar.gz",
+        sha256 = "534f2ee1a4dcbeb22249856edfb2be76a1cf4f708a20b0ac2ed090ee24cfdbc9",
+        strip_prefix = "spdlog-1.13.0",
+        url = "https://github.com/gabime/spdlog/archive/refs/tags/v1.13.0.tar.gz",
     )
 
     # simdjson library required by WasmEdge

@@ -34,6 +34,7 @@ cc_library(
         "include/common/*.h",
         "include/common/*.hpp",
         "include/common/*.inc",  # Include .inc header files
+        "include/experimental/*.hpp",  # Include experimental headers
     ]),
     includes = ["include"],
     deps = [
@@ -86,6 +87,7 @@ cc_library(
     }),
     deps = [
         ":common",
+        ":runtime",
     ],
 )
 
@@ -97,6 +99,7 @@ cc_library(
     includes = ["include"],
     deps = [
         ":common",
+        ":system",
     ],
 )
 

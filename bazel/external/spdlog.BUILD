@@ -15,8 +15,9 @@ cc_library(
     ]),
     defines = [
         "SPDLOG_COMPILED_LIB",
-        # Use spdlog's bundled fmt to avoid C++20 conflicts
+        "SPDLOG_FMT_EXTERNAL",
     ],
     includes = ["include"],
     strip_include_prefix = "include",
+    deps = ["@fmt"],
 )

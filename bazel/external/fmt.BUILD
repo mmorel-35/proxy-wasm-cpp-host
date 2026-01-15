@@ -12,7 +12,8 @@ cc_library(
         "include/fmt/*.h",
     ]),
     defines = [
-        "FMT_HEADER_ONLY=1",  # Use header-only mode to avoid compilation issues
+        "FMT_HEADER_ONLY=1",  # Use header-only mode
+        "FMT_USE_NONTYPE_TEMPLATE_ARGS=0",  # Disable C++20 NTTP for better compatibility
     ],
     includes = ["include"],
     strip_include_prefix = "include",
