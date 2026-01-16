@@ -11,9 +11,9 @@ cc_library(
         "*.cpp",
         "wasi_logging/*.cpp",
     ]),
-    hdrs = glob([
-        "../../include/plugin/*.h",
-    ]),
+    hdrs = [
+        "//include:plugin_headers",
+    ],
     strip_include_prefix = "../../include",
     deps = [
         "//lib/common",

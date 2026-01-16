@@ -8,9 +8,9 @@ package(default_visibility = ["//visibility:public"])
 cc_library(
     name = "po",
     srcs = glob(["*.cpp"]),
-    hdrs = glob([
-        "../../include/po/*.h",
-    ]),
+    hdrs = [
+        "//include:po_headers",
+    ],
     strip_include_prefix = "../../include",
     deps = [
         "//lib/common",

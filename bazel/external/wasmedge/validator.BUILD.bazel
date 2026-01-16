@@ -8,11 +8,10 @@ package(default_visibility = ["//visibility:public"])
 cc_library(
     name = "validator",
     srcs = glob(["*.cpp"]),
-    hdrs = glob([
-        "../../include/validator/*.h",
-        "../../include/ast/*.h",
-        "../../include/ast/component/*.h",
-    ]),
+    hdrs = [
+        "//include:validator_headers",
+        "//include:ast_headers",
+    ],
     strip_include_prefix = "../../include",
     deps = [
         "//lib/common",

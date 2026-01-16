@@ -15,10 +15,9 @@ cc_library(
         "@platforms//os:windows": glob(["wasi/win/*.cpp"]),
         "//conditions:default": [],
     }),
-    hdrs = glob([
-        "../../include/host/*.h",
-        "../../include/host/wasi/*.h",
-    ]),
+    hdrs = [
+        "//include:host_headers",
+    ],
     strip_include_prefix = "../../include",
     deps = [
         "//lib/common",

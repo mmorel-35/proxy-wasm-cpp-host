@@ -99,3 +99,78 @@ genrule(
         cp $(location common/enum_types.h) $(location api/wasmedge/enum_types.h)
     """,
 )
+
+# Export api headers for lib/api to use
+filegroup(
+    name = "api_headers",
+    srcs = glob([
+        "api/*.h",
+        "api/wasmedge/*.h",
+    ]),
+)
+
+# Export headers for each library component
+filegroup(
+    name = "common_headers",
+    srcs = glob([
+        "common/*.h",
+        "common/*.hpp",
+        "common/*.inc",
+        "experimental/*.hpp",
+    ]),
+)
+
+filegroup(
+    name = "ast_headers",
+    srcs = glob(["ast/*.h"]),
+)
+
+filegroup(
+    name = "runtime_headers",
+    srcs = glob(["runtime/*.h"]),
+)
+
+filegroup(
+    name = "system_headers",
+    srcs = glob(["system/*.h"]),
+)
+
+filegroup(
+    name = "po_headers",
+    srcs = glob(["po/*.h"]),
+)
+
+filegroup(
+    name = "loader_headers",
+    srcs = glob(["loader/*.h"]),
+)
+
+filegroup(
+    name = "validator_headers",
+    srcs = glob(["validator/*.h"]),
+)
+
+filegroup(
+    name = "executor_headers",
+    srcs = glob(["executor/*.h"]),
+)
+
+filegroup(
+    name = "host_headers",
+    srcs = glob(["host/*.h"]),
+)
+
+filegroup(
+    name = "plugin_headers",
+    srcs = glob(["plugin/*.h"]),
+)
+
+filegroup(
+    name = "vm_headers",
+    srcs = glob(["vm/*.h"]),
+)
+
+filegroup(
+    name = "aot_headers",
+    srcs = glob(["aot/*.h"]),
+)

@@ -8,10 +8,8 @@ package(default_visibility = ["//visibility:public"])
 cc_library(
     name = "wasmedge",
     srcs = ["wasmedge.cpp"],
-    hdrs = glob([
-        "../../include/api/*.h",
-        "../../include/api/wasmedge/*.h",
-    ]) + [
+    hdrs = [
+        "//include:api_headers",
         "//include:copy_enum_headers",
         "//include:generate_api_version_header",
     ],

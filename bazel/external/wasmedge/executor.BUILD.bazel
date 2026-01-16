@@ -13,13 +13,11 @@ cc_library(
         "instantiate/*.cpp",
         "instantiate/component/*.cpp",
     ]),
-    hdrs = glob([
-        "../../include/executor/*.h",
-        "../../include/runtime/*.h",
-        "../../include/runtime/instance/*.h",
-        "../../include/ast/*.h",
-        "../../include/ast/component/*.h",
-    ]),
+    hdrs = [
+        "//include:executor_headers",
+        "//include:runtime_headers",
+        "//include:ast_headers",
+    ],
     strip_include_prefix = "../../include",
     deps = [
         "//lib/common",

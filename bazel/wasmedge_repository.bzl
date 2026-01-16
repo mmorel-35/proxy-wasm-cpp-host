@@ -20,11 +20,13 @@ def _wasmedge_repository_impl(ctx):
     )
     
     # Apply C++20 compatibility patch
-    ctx.patch(ctx.attr.patches[0], strip = 1)
+    for patch in ctx.attr.patches:
+        ctx.patch(patch, strip = 1)
     
     # Copy BUILD files to appropriate locations
-    build_files = {
-        "BUILD.bazel": "",
+    # Using symlink instead of template to avoid directory conflicts
+    build_file_mappings = {
+        "BUILD.bazel": "BUILD.bazel",
         "include.BUILD.bazel": "include/BUILD.bazel",
         "common.BUILD.bazel": "lib/common/BUILD.bazel",
         "system.BUILD.bazel": "lib/system/BUILD.bazel",
@@ -38,20 +40,18 @@ def _wasmedge_repository_impl(ctx):
         "api.BUILD.bazel": "lib/api/BUILD.bazel",
     }
     
-    for source_name, dest in build_files.items():
-        # Find the label for this file in _build_files
-        label = None
-        for lbl, name in ctx.attr._build_files.items():
-            if name == source_name:
-                label = lbl
+    for source_filename, dest_path in build_file_mappings.items():
+        # Find the label for this source file
+        source_label = None
+        for label, filename in ctx.attr._build_files.items():
+            if filename == source_filename:
+                source_label = label
                 break
-        if label:
-            ctx.template(
-                dest,
-                label,
-                substitutions = {},
-                executable = False,
-            )
+        
+        if source_label:
+            # Read the content and write to destination
+            content = ctx.read(source_label)
+            ctx.file(dest_path, content, executable = False)
 
 wasmedge_repository = repository_rule(
     implementation = _wasmedge_repository_impl,

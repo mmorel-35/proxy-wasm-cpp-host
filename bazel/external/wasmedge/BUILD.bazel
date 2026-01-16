@@ -27,10 +27,4 @@ cc_library(
     ],
 )
 
-# Exports for external use
-exports_files([
-    "include/api/wasmedge/wasmedge.h",
-    "include/api/wasmedge/version.h.in",
-])
-
 licenses(["notice"])  # Apache 2.0
