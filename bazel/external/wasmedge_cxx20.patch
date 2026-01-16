@@ -12,9 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Patch for WasmEdge 0.16.1 to fix C++20 compatibility
-# This patch resolves conflicts between experimental/span.hpp's to_address()
-# and C++20's std::to_address by conditionally using std::to_address when available.
+# Patch for WasmEdge 0.16.1 to fix C++20 compatibility issues
+#
+# 1. Resolves conflicts between experimental/span.hpp's to_address()
+#    and C++20's std::to_address by conditionally using std::to_address when available.
+#
+# 2. Fixes C++20 u8string conversion in driver/runtimeTool.cpp where .u8string()
+#    returns std::u8string (char8_t) instead of std::string (char).
 
 --- a/include/experimental/span.hpp
 +++ b/include/experimental/span.hpp
@@ -41,3 +45,24 @@
  
  namespace detail {
  
++--- a/lib/driver/runtimeTool.cpp
+++++ b/lib/driver/runtimeTool.cpp
++@@ -444,9 +444,14 @@ int WasmEdgeTool(struct WasmEdgeToolOptions &Opt) noexcept {
++     return EXIT_FAILURE;
++   }
++   // Initialize WASI module.
+++#if __cplusplus >= 202002L && defined(__cpp_char8_t)
+++  // C++20: .u8string() returns std::u8string, need to convert to std::string
+++  auto filename_u8 = InputPath.filename().replace_extension(std::filesystem::u8path("wasm"sv)).u8string();
+++  std::string filename_str(filename_u8.begin(), filename_u8.end());
+++  WasiMod->init(Opt.Dir.value(), filename_str, Opt.Args.value(), Opt.Env.value());
+++#else
++   WasiMod->init(Opt.Dir.value(),
++                 InputPath.filename()
++                     .replace_extension(std::filesystem::u8path("wasm"sv))
++                     .u8string(),
++                 Opt.Args.value(), Opt.Env.value());
+++#endif
++   if (Opt.Reactor.value()) {
++     // Reactor mode
++     if (Opt.Args.value().size() > 0) {
