@@ -296,6 +296,7 @@ cc_library(
     srcs = glob(["lib/executor/**/*.cpp"]),
     hdrs = glob([
         "include/executor/*.h",
+        "include/executor/engine/*.h",
         "include/executor/engine/*.ipp",
     ]),
     includes = ["include"],
@@ -326,11 +327,15 @@ cc_library(
         "@platforms//os:windows": glob(["lib/host/wasi/win/*.cpp"]),
         "//conditions:default": [],
     }),
-    hdrs = glob(["include/host/wasi/*.h"]) + [
+    hdrs = glob([
+        "include/host/wasi/*.h",
+        "lib/host/wasi/*.h",  # Private headers needed by implementation
+    ]) + [
         "thirdparty/wasi/api.hpp",
     ],
     includes = [
         "include",
+        "lib/host/wasi",  # Add lib/host/wasi to include path for private headers
         "thirdparty",
     ],
     deps = [
@@ -396,28 +401,52 @@ cc_library(
         ":common",
         ":executor",
         ":host_wasi",
+        ":llvm",
         ":loader",
         ":plugin",
         ":validator",
     ],
 )
 
-# Driver library - High-level execution driver (minimal build without AOT/LLVM)
+# ==============================================================================
+# LLVM Integration
+# ==============================================================================
+# WasmEdge's LLVM wrapper for ahead-of-time (AOT) compilation support.
+
+# LLVM wrapper library - AOT compilation and JIT support
+# Provides WasmEdge's interface to LLVM for ahead-of-time compilation
+# and just-in-time execution. Depends on external LLVM library.
+cc_library(
+    name = "llvm",
+    srcs = glob(["lib/llvm/*.cpp"]),
+    hdrs = glob([
+        "include/llvm/*.h",
+        "lib/llvm/*.h",
+    ]),
+    includes = ["include"],
+    deps = [
+        ":common",
+        ":loader",
+        "@llvm-raw//:llvm_wamr_lib",
+    ],
+)
+
+# Driver library - High-level execution driver
 # Provides command-line interface and high-level APIs for running
 # WebAssembly modules with various configurations.
-# Note: Excludes AOT compiler and wasiNN RPC server which require LLVM.
+# Includes AOT compiler and other driver tools.
+# Note: Excludes wasiNNRPCServerTool which requires additional gRPC dependencies
 cc_library(
     name = "driver",
-    srcs = [
-        "lib/driver/fuzzPO.cpp",
-        "lib/driver/fuzzTool.cpp",
-        "lib/driver/runtimeTool.cpp",
-        "lib/driver/uniTool.cpp",
-    ],
+    srcs = glob(
+        ["lib/driver/*.cpp"],
+        exclude = ["lib/driver/wasiNNRPCServerTool.cpp"],  # Requires WASI-NN RPC dependencies
+    ),
     hdrs = glob(["include/driver/*.h"]),
     includes = ["include"],
     deps = [
         ":common",
+        ":llvm",
         ":po",
         ":vm",
     ],
