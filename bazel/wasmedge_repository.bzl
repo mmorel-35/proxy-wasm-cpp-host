@@ -9,8 +9,8 @@ def _wasmedge_repository_impl(ctx):
     """Implementation of wasmedge_repository rule.
     
     This rule downloads WasmEdge, applies C++20 compatibility patches,
-    and copies BUILD.bazel files throughout the source tree for native
-    Bazel compilation using rules_cc.
+    and copies the comprehensive BUILD.bazel file for native Bazel
+    compilation using rules_cc.
     """
     # Download and extract WasmEdge
     ctx.download_and_extract(
@@ -23,35 +23,9 @@ def _wasmedge_repository_impl(ctx):
     for patch in ctx.attr.patches:
         ctx.patch(patch, strip = 1)
     
-    # Copy BUILD files to appropriate locations
-    # Using symlink instead of template to avoid directory conflicts
-    build_file_mappings = {
-        "BUILD.bazel": "BUILD.bazel",
-        "include.BUILD.bazel": "include/BUILD.bazel",
-        "common.BUILD.bazel": "lib/common/BUILD.bazel",
-        "system.BUILD.bazel": "lib/system/BUILD.bazel",
-        "po.BUILD.bazel": "lib/po/BUILD.bazel",
-        "loader.BUILD.bazel": "lib/loader/BUILD.bazel",
-        "validator.BUILD.bazel": "lib/validator/BUILD.bazel",
-        "executor.BUILD.bazel": "lib/executor/BUILD.bazel",
-        "host.BUILD.bazel": "lib/host/BUILD.bazel",
-        "plugin.BUILD.bazel": "lib/plugin/BUILD.bazel",
-        "vm.BUILD.bazel": "lib/vm/BUILD.bazel",
-        "api.BUILD.bazel": "lib/api/BUILD.bazel",
-    }
-    
-    for source_filename, dest_path in build_file_mappings.items():
-        # Find the label for this source file
-        source_label = None
-        for label, filename in ctx.attr._build_files.items():
-            if filename == source_filename:
-                source_label = label
-                break
-        
-        if source_label:
-            # Read the content and write to destination
-            content = ctx.read(source_label)
-            ctx.file(dest_path, content, executable = False)
+    # Copy the main BUILD file
+    content = ctx.read(ctx.attr._build_file)
+    ctx.file("BUILD.bazel", content, executable = False)
 
 wasmedge_repository = repository_rule(
     implementation = _wasmedge_repository_impl,
@@ -60,21 +34,9 @@ wasmedge_repository = repository_rule(
         "sha256": attr.string(mandatory = True),
         "strip_prefix": attr.string(mandatory = True),
         "patches": attr.label_list(allow_files = True),
-        "_build_files": attr.label_keyed_string_dict(
-            default = {
-                Label("@proxy_wasm_cpp_host//bazel/external/wasmedge:BUILD.bazel"): "BUILD.bazel",
-                Label("@proxy_wasm_cpp_host//bazel/external/wasmedge:include.BUILD.bazel"): "include.BUILD.bazel",
-                Label("@proxy_wasm_cpp_host//bazel/external/wasmedge:common.BUILD.bazel"): "common.BUILD.bazel",
-                Label("@proxy_wasm_cpp_host//bazel/external/wasmedge:system.BUILD.bazel"): "system.BUILD.bazel",
-                Label("@proxy_wasm_cpp_host//bazel/external/wasmedge:po.BUILD.bazel"): "po.BUILD.bazel",
-                Label("@proxy_wasm_cpp_host//bazel/external/wasmedge:loader.BUILD.bazel"): "loader.BUILD.bazel",
-                Label("@proxy_wasm_cpp_host//bazel/external/wasmedge:validator.BUILD.bazel"): "validator.BUILD.bazel",
-                Label("@proxy_wasm_cpp_host//bazel/external/wasmedge:executor.BUILD.bazel"): "executor.BUILD.bazel",
-                Label("@proxy_wasm_cpp_host//bazel/external/wasmedge:host.BUILD.bazel"): "host.BUILD.bazel",
-                Label("@proxy_wasm_cpp_host//bazel/external/wasmedge:plugin.BUILD.bazel"): "plugin.BUILD.bazel",
-                Label("@proxy_wasm_cpp_host//bazel/external/wasmedge:vm.BUILD.bazel"): "vm.BUILD.bazel",
-                Label("@proxy_wasm_cpp_host//bazel/external/wasmedge:api.BUILD.bazel"): "api.BUILD.bazel",
-            },
+        "_build_file": attr.label(
+            default = Label("@proxy_wasm_cpp_host//bazel/external/wasmedge:BUILD.bazel"),
+            allow_single_file = True,
         ),
     },
 )
