@@ -99,3 +99,6 @@ index 1111111..2222222 100644
    wasmedge_add_static_lib_component_command(wasmedgeSystem)
    wasmedge_add_static_lib_component_command(wasmedgeCommon)
    wasmedge_add_static_lib_component_command(wasmedgePO)
+   wasmedge_add_static_lib_component_command(wasmedgeLoaderFileMgr)
+   wasmedge_add_static_lib_component_command(wasmedgeLoader)
+   wasmedge_add_static_lib_component_command(wasmedgeValidator)
