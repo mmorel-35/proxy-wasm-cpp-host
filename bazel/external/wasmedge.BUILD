@@ -32,6 +32,8 @@ cmake(
         "WASMEDGE_BUILD_TOOLS": "Off",
         "WASMEDGE_FORCE_DISABLE_LTO": "On",
         "WASMEDGE_BUILD_PLUGINS": "Off",
+        # Provide spdlog and fmt as external dependencies via Bazel (not CMake FetchContent)
+        "CMAKE_PREFIX_PATH": "$$EXT_BUILD_DEPS$$/spdlog;$$EXT_BUILD_DEPS$$/fmt",
     },
     env = {
         "CXXFLAGS": "-Wno-error=dangling-reference -Wno-error=maybe-uninitialized -Wno-error=array-bounds= -Wno-error=deprecated-declarations -std=c++20",
@@ -39,4 +41,8 @@ cmake(
     generate_args = ["-GNinja"],
     lib_source = ":srcs",
     out_static_libs = ["libwasmedge.a"],
+    deps = [
+        "@com_github_gabime_spdlog//:spdlog",
+        "@com_github_fmtlib_fmt//:fmt",
+    ],
 )
