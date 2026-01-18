@@ -35,5 +35,6 @@ cc_library(
         "//conditions:default": [],
     }),
     includes = ["include"],
+    linkstatic = True,
     strip_include_prefix = "include",
 )
