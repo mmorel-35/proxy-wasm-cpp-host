@@ -79,7 +79,7 @@ diff --git a/lib/api/CMakeLists.txt b/lib/api/CMakeLists.txt
 index 1111111..2222222 100644
 --- a/lib/api/CMakeLists.txt
 +++ b/lib/api/CMakeLists.txt
-@@ -151,8 +151,16 @@ if(WASMEDGE_BUILD_SHARED_LIB)
+@@ -151,8 +151,15 @@ if(WASMEDGE_BUILD_SHARED_LIB)
  endif()
  
  if(WASMEDGE_BUILD_STATIC_LIB)
@@ -94,7 +94,6 @@ index 1111111..2222222 100644
 +    wasmedge_add_static_lib_component_command(fmt::fmt)
 +    wasmedge_add_static_lib_component_command(spdlog::spdlog)
 +  endif()
-+  # Skip fmt and spdlog in Bazel builds - they're linked separately by Bazel
    wasmedge_add_static_lib_component_command(wasmedgeSystem)
    wasmedge_add_static_lib_component_command(wasmedgeCommon)
    wasmedge_add_static_lib_component_command(wasmedgePO)
