@@ -1,4 +1,4 @@
-# Copyright 2022 Google LLC
+# Copyright 2025 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ load("@v8//:bazel/v8-non-pointer-compression.bzl", "v8_disable_pointer_compressi
 
 def _v8_lib_no_pointer_compression_impl(ctx):
     """Forward providers from the library built with pointer compression disabled.
-    
+
     This is analogous to V8's _v8_binary_non_pointer_compression implementation,
     but for cc_library instead of cc_binary.
     """
@@ -49,7 +49,7 @@ v8_lib_no_pointer_compression = rule(
     This rule uses V8's v8_disable_pointer_compression transition (the same one used
     by v8_binary_non_pointer_compression) to ensure v8_enable_pointer_compression
     is set to False for the library and all its dependencies.
-    
+
     This is the library equivalent of V8's v8_binary_non_pointer_compression rule.
     """,
 )
