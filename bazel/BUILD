@@ -13,7 +13,7 @@
 # limitations under the License.
 
 load("@bazel_skylib//lib:selects.bzl", "selects")
-load("@v8//bazel:v8-non-pointer-compression.bzl", "v8_binary_non_pointer_compression")
+load(":v8_transition.bzl", "v8_lib_no_pointer_compression")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -70,11 +70,11 @@ selects.config_setting_group(
     ],
 )
 
-# V8 target with pointer compression disabled using V8's Starlark transition.
+# V8 library with pointer compression disabled using V8's Starlark transition.
 # This avoids the need to patch V8's default pointer compression setting.
-v8_binary_non_pointer_compression(
+v8_lib_no_pointer_compression(
     name = "wee8_no_pointer_compression",
-    binary = "@v8//:wee8",
+    library = "@v8//:wee8",
 )
 
 exports_files(["tsan_suppressions.txt"])
