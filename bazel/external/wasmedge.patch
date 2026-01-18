@@ -79,13 +79,21 @@ diff --git a/lib/api/CMakeLists.txt b/lib/api/CMakeLists.txt
 index 1111111..2222222 100644
 --- a/lib/api/CMakeLists.txt
 +++ b/lib/api/CMakeLists.txt
-@@ -152,7 +152,10 @@ endif()
+@@ -152,8 +152,17 @@ endif()
  
  if(WASMEDGE_BUILD_STATIC_LIB)
-   wasmedge_add_static_lib_component_command(fmt::fmt)
+-  wasmedge_add_static_lib_component_command(fmt::fmt)
 -  wasmedge_add_static_lib_component_command(spdlog::spdlog)
-+  # Skip spdlog packaging when using Bazel - spdlog is header-only with external fmt
-+  if(NOT DEFINED ENV{EXT_BUILD_DEPS})
++  # When using Bazel, only package fmt/spdlog if they are actual library targets
++  # fmt is a compiled library and should be packaged
++  # spdlog is header-only with external fmt and should NOT be packaged
++  if(DEFINED ENV{EXT_BUILD_DEPS})
++    # In Bazel builds, fmt is provided as a real library, but spdlog is header-only
++    wasmedge_add_static_lib_component_command(fmt::fmt)
++    # Skip spdlog - it's header-only (INTERFACE target) and has no TARGET_FILE
++  else()
++    # In non-Bazel builds, use the default CMake-provided versions
++    wasmedge_add_static_lib_component_command(fmt::fmt)
 +    wasmedge_add_static_lib_component_command(spdlog::spdlog)
 +  endif()
    wasmedge_add_static_lib_component_command(wasmedgeSystem)
