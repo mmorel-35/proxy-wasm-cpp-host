@@ -12,18 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Starlark rule to apply V8's pointer compression transition to a cc_library.
+"""Wrapper rule to apply V8's pointer compression transition to cc_library targets.
 
-This rule wraps V8's v8_disable_pointer_compression transition (designed for
-binaries) so it can be applied to cc_library targets. The transition sets
-v8_enable_pointer_compression to False for the wrapped library and its
-dependencies.
+V8 provides v8_disable_pointer_compression transition and v8_binary_non_pointer_compression
+for cc_binary targets. This file provides the equivalent for cc_library targets by wrapping
+the same transition that V8 uses.
 """
 
 load("@v8//:bazel/v8-non-pointer-compression.bzl", "v8_disable_pointer_compression")
 
 def _v8_lib_no_pointer_compression_impl(ctx):
-    """Forward the providers from the library with pointer compression disabled."""
+    """Forward providers from the library built with pointer compression disabled.
+    
+    This is analogous to V8's _v8_binary_non_pointer_compression implementation,
+    but for cc_library instead of cc_binary.
+    """
     # The transition may create a list of configured targets, take the first one
     library = ctx.attr.library[0] if type(ctx.attr.library) == type([]) else ctx.attr.library
     return [library[CcInfo], library[DefaultInfo]]
@@ -41,11 +44,12 @@ v8_lib_no_pointer_compression = rule(
         ),
     },
     provides = [CcInfo],
-    doc = """Wraps a V8 library target with pointer compression disabled.
+    doc = """Wraps a cc_library target with V8's pointer compression disabled.
 
-    This rule applies V8's Starlark transition to disable pointer compression,
-    which avoids the need to patch V8's default pointer compression setting.
-    The transition ensures v8_enable_pointer_compression is set to False for
-    the library and all its dependencies.
+    This rule uses V8's v8_disable_pointer_compression transition (the same one used
+    by v8_binary_non_pointer_compression) to ensure v8_enable_pointer_compression
+    is set to False for the library and all its dependencies.
+    
+    This is the library equivalent of V8's v8_binary_non_pointer_compression rule.
     """,
 )
