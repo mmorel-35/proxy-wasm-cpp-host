@@ -133,7 +133,7 @@ cc_library(
     ],
     deps = [
         ":wasm_vm_headers",
-        "@v8//:wee8",
+        "//bazel:wee8_no_pointer_compression",
     ],
 )
 
