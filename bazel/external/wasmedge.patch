@@ -9,6 +9,7 @@ index 1111111..2222222 100644
 +# When building under Bazel with rules_foreign_cc, dependencies are provided via EXT_BUILD_DEPS
 +# EXT_BUILD_DEPS environment variable contains the path to the merged dependency directory
 +# created by rules_foreign_cc, with headers in include/ and libraries in lib/
++# All dependencies listed in the cmake() rule's deps attribute are merged into a single directory structure
  # Create IMPORTED targets for fmt and spdlog to prevent CMake FetchContent from trying to download them
  if(DEFINED ENV{EXT_BUILD_DEPS})
    set(BAZEL_EXT_BUILD_DEPS "$ENV{EXT_BUILD_DEPS}")
