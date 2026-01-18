@@ -2,7 +2,7 @@ diff --git a/CMakeLists.txt b/CMakeLists.txt
 index 1111111..2222222 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -186,6 +186,41 @@ endif()
+@@ -186,6 +186,52 @@ endif()
  include(Helper)
  include(GNUInstallDirs)
  
@@ -14,17 +14,35 @@ index 1111111..2222222 100644
 +  
 +  # Create fmt::fmt IMPORTED target
 +  # rules_foreign_cc merges all deps into a single directory structure
++  # fmt is a library with compiled sources (not header-only)
 +  if(NOT TARGET fmt::fmt AND EXISTS "${BAZEL_EXT_BUILD_DEPS}/include/fmt")
-+    add_library(fmt::fmt INTERFACE IMPORTED)
-+    set_target_properties(fmt::fmt PROPERTIES
-+      INTERFACE_INCLUDE_DIRECTORIES "${BAZEL_EXT_BUILD_DEPS}/include"
++    # Look for the fmt library file
++    find_library(FMT_LIBRARY
++      NAMES fmt libfmt
++      PATHS "${BAZEL_EXT_BUILD_DEPS}/lib"
++      NO_DEFAULT_PATH
 +    )
++    
++    if(FMT_LIBRARY)
++      # Create STATIC IMPORTED library
++      add_library(fmt::fmt STATIC IMPORTED)
++      set_target_properties(fmt::fmt PROPERTIES
++        IMPORTED_LOCATION "${FMT_LIBRARY}"
++        INTERFACE_INCLUDE_DIRECTORIES "${BAZEL_EXT_BUILD_DEPS}/include"
++      )
++      message(STATUS "Created fmt::fmt IMPORTED target from Bazel deps: ${FMT_LIBRARY}")
++    else()
++      message(WARNING "fmt headers found but library not found in ${BAZEL_EXT_BUILD_DEPS}/lib")
++    endif()
++    
 +    # Also create the fmt target (without namespace) for compatibility
-+    add_library(fmt ALIAS fmt::fmt)
-+    message(STATUS "Created fmt::fmt IMPORTED target from Bazel deps")
++    if(TARGET fmt::fmt)
++      add_library(fmt ALIAS fmt::fmt)
++    endif()
 +  endif()
 +  
 +  # Create spdlog::spdlog IMPORTED target
++  # spdlog is header-only when using external fmt
 +  if(NOT TARGET spdlog::spdlog AND EXISTS "${BAZEL_EXT_BUILD_DEPS}/include/spdlog")
 +    add_library(spdlog::spdlog INTERFACE IMPORTED)
 +    set_target_properties(spdlog::spdlog PROPERTIES
