@@ -43,7 +43,7 @@ v8_lib_no_pointer_compression = rule(
             default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
     },
-    provides = [CcInfo],
+    provides = [CcInfo, DefaultInfo],
     doc = """Wraps a cc_library target with V8's pointer compression disabled.
 
     This rule uses V8's v8_disable_pointer_compression transition (the same one used
