@@ -79,24 +79,22 @@ diff --git a/lib/api/CMakeLists.txt b/lib/api/CMakeLists.txt
 index 1111111..2222222 100644
 --- a/lib/api/CMakeLists.txt
 +++ b/lib/api/CMakeLists.txt
-@@ -151,8 +151,18 @@ if(WASMEDGE_BUILD_SHARED_LIB)
+@@ -151,8 +151,16 @@ if(WASMEDGE_BUILD_SHARED_LIB)
  endif()
  
  if(WASMEDGE_BUILD_STATIC_LIB)
 -  wasmedge_add_static_lib_component_command(fmt::fmt)
 -  wasmedge_add_static_lib_component_command(spdlog::spdlog)
-+  # When using Bazel, only package fmt/spdlog if they are actual library targets
-+  # fmt is a compiled library and should be packaged
-+  # spdlog is header-only with external fmt and should NOT be packaged
-+  if(DEFINED ENV{EXT_BUILD_DEPS})
-+    # In Bazel builds, fmt is provided as a real library, but spdlog is header-only
-+    wasmedge_add_static_lib_component_command(fmt::fmt)
-+    # Skip spdlog - it's header-only (INTERFACE target) and has no TARGET_FILE
-+  else()
-+    # In non-Bazel builds, use the default CMake-provided versions
++  # When using Bazel, skip packaging fmt/spdlog into libwasmedge.a
++  # Bazel will handle linking these dependencies directly from the deps attribute
++  # This allows fmt to be either static or shared, and avoids the need to extract
++  # object files from libraries (which fails for shared libraries)
++  if(NOT DEFINED ENV{EXT_BUILD_DEPS})
++    # In non-Bazel builds, package fmt and spdlog into the static library
 +    wasmedge_add_static_lib_component_command(fmt::fmt)
 +    wasmedge_add_static_lib_component_command(spdlog::spdlog)
 +  endif()
++  # Skip fmt and spdlog in Bazel builds - they're linked separately by Bazel
    wasmedge_add_static_lib_component_command(wasmedgeSystem)
    wasmedge_add_static_lib_component_command(wasmedgeCommon)
    wasmedge_add_static_lib_component_command(wasmedgePO)
