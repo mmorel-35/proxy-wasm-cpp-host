@@ -26,11 +26,12 @@ filegroup(
 cmake(
     name = "wasmedge_lib",
     cache_entries = {
-        "WASMEDGE_BUILD_AOT_RUNTIME": "Off",
+        "WASMEDGE_USE_LLVM": "Off",
         "WASMEDGE_BUILD_SHARED_LIB": "Off",
         "WASMEDGE_BUILD_STATIC_LIB": "On",
         "WASMEDGE_BUILD_TOOLS": "Off",
         "WASMEDGE_FORCE_DISABLE_LTO": "On",
+        "WASMEDGE_BUILD_PLUGINS": "Off",
     },
     env = {
         "CXXFLAGS": "-Wno-error=dangling-reference -Wno-error=maybe-uninitialized -Wno-error=array-bounds= -Wno-error=deprecated-declarations -std=c++20",
