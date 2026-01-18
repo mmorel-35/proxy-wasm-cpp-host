@@ -538,10 +538,8 @@ void WasmEdge::getModuleFunctionImpl(std::string_view function_name,
   convArgsTupleToValTypes<std::tuple<Args...>>(exp_args);
   convArgsTupleToValTypes<std::tuple<>>(exp_returns);
   const auto *functype_cxt = WasmEdge_FunctionInstanceGetFunctionType(func_cxt);
-  std::vector<WasmEdge_ValType> act_args(
-      WasmEdge_FunctionTypeGetParametersLength(functype_cxt));
-  std::vector<WasmEdge_ValType> act_returns(
-      WasmEdge_FunctionTypeGetReturnsLength(functype_cxt));
+  std::vector<WasmEdge_ValType> act_args(WasmEdge_FunctionTypeGetParametersLength(functype_cxt));
+  std::vector<WasmEdge_ValType> act_returns(WasmEdge_FunctionTypeGetReturnsLength(functype_cxt));
   WasmEdge_FunctionTypeGetParameters(functype_cxt, act_args.data(), act_args.size());
   WasmEdge_FunctionTypeGetReturns(functype_cxt, act_returns.data(), act_returns.size());
 
@@ -591,10 +589,8 @@ void WasmEdge::getModuleFunctionImpl(std::string_view function_name,
   convArgsTupleToValTypes<std::tuple<Args...>>(exp_args);
   convArgsTupleToValTypes<std::tuple<R>>(exp_returns);
   const auto *functype_cxt = WasmEdge_FunctionInstanceGetFunctionType(func_cxt);
-  std::vector<WasmEdge_ValType> act_args(
-      WasmEdge_FunctionTypeGetParametersLength(functype_cxt));
-  std::vector<WasmEdge_ValType> act_returns(
-      WasmEdge_FunctionTypeGetReturnsLength(functype_cxt));
+  std::vector<WasmEdge_ValType> act_args(WasmEdge_FunctionTypeGetParametersLength(functype_cxt));
+  std::vector<WasmEdge_ValType> act_returns(WasmEdge_FunctionTypeGetReturnsLength(functype_cxt));
   WasmEdge_FunctionTypeGetParameters(functype_cxt, act_args.data(), act_args.size());
   WasmEdge_FunctionTypeGetReturns(functype_cxt, act_returns.data(), act_returns.size());
 
