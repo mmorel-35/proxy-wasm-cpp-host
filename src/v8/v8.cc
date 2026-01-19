@@ -41,19 +41,50 @@ namespace v8 {
 // Global configuration for V8 options. Must be set before the first VM is created.
 static bool g_enable_liftoff = false;
 
+// Builder class for constructing V8 command-line arguments.
+class V8ArgsBuilder {
+public:
+  V8ArgsBuilder() = default;
+
+  V8ArgsBuilder &setMaxMemoryPages(uint32_t max_pages) {
+    max_memory_pages_ = max_pages;
+    return *this;
+  }
+
+  V8ArgsBuilder &setLiftoffEnabled(bool enabled) {
+    liftoff_enabled_ = enabled;
+    return *this;
+  }
+
+  std::string build() const {
+    std::string args = absl::StrFormat("--wasm_max_mem_pages=%u", max_memory_pages_);
+    
+    if (!liftoff_enabled_) {
+      args += " --no-liftoff";
+    }
+    
+    return args;
+  }
+
+private:
+  uint32_t max_memory_pages_ = PROXY_WASM_HOST_MAX_WASM_MEMORY_SIZE_BYTES /
+                                PROXY_WASM_HOST_WASM_MEMORY_PAGE_SIZE_BYTES;
+  bool liftoff_enabled_ = false;
+};
+
 wasm::Engine *engine() {
   static std::once_flag init;
   static wasm::own<wasm::Engine> engine;
 
   std::call_once(init, []() {
-    // Configure the Liftoff compiler based on the global setting.
-    // When disabled (default), force optimized JIT up-front with TurboFan only.
+    // Build V8 command-line arguments using the builder pattern.
+    // When Liftoff is disabled (default), force optimized JIT up-front with TurboFan only.
     // When enabled, allow Liftoff for faster startup time.
-    std::string liftoff_flag = g_enable_liftoff ? "" : " --no-liftoff";
-    std::string args = absl::StrFormat("--wasm_max_mem_pages=%u%s",
-                                       PROXY_WASM_HOST_MAX_WASM_MEMORY_SIZE_BYTES /
-                                           PROXY_WASM_HOST_WASM_MEMORY_PAGE_SIZE_BYTES,
-                                       liftoff_flag);
+    std::string args = V8ArgsBuilder()
+                           .setMaxMemoryPages(PROXY_WASM_HOST_MAX_WASM_MEMORY_SIZE_BYTES /
+                                              PROXY_WASM_HOST_WASM_MEMORY_PAGE_SIZE_BYTES)
+                           .setLiftoffEnabled(g_enable_liftoff)
+                           .build();
     ::v8::V8::SetFlagsFromString(args.c_str(), args.size());
     ::v8::V8::EnableWebAssemblyTrapHandler(true);
 
