@@ -23,9 +23,12 @@ path = "fake_lib.rs"
 [dependencies]
 # Fixes testdata build error due to missing crate_features = ["std"]
 log = {version = "0.4.29", default-features = false, features = ['std']}
-# IMPORTANT NOTE: prefixed linking of wasmtime requires changing the generated
-# file to specify `rust_static_library` instead of `rust_library`. The
-# following sed command will do it for you:
+# IMPORTANT NOTE: Prefixed linking of wasmtime requires using rust_static_library
+# instead of rust_library. Use the vendor_and_patch.sh script or the 
+# crates_vendor_and_patch target which automatically applies this patch:
 #
-# `sed -i.bak -e 's/rust_library/rust_static_library/g' bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel`
+# `bazel run //bazel/cargo/wasmtime:crates_vendor_and_patch -- --repin`
+#
+# Or manually patch after running crates_vendor:
+# `sed -i.bak -e 's/rust_library/rust_static_library/g' bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel && rm bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel.bak`
 wasmtime-c-api-impl = {version = "40.0.2", default-features = false, features = ['cranelift', 'wasi', 'wat', 'gc-drc']}
