@@ -799,15 +799,23 @@ std::string V8::getFailMessage(std::string_view function_name, wasm::own<wasm::T
   return message;
 }
 
+void setLiftoffEnabled(bool enable) {
+  // Check if V8 engine has already been initialized.
+  // Once initialized, the configuration cannot be changed (silently ignored).
+  // Note: There's an inherent race condition here by design - if the engine
+  // is initialized between the check and the set, the configuration change
+  // will be ignored. This is acceptable because the function is intended to be
+  // called during initialization before any concurrent VM creation.
+  if (g_engine_initialized.load(std::memory_order_acquire)) {
+    return;
+  }
+  g_enable_liftoff.store(enable, std::memory_order_release);
+}
+
 } // namespace v8
 
 void setV8LiftoffEnabled(bool enable) {
-  // Check if V8 engine has already been initialized.
-  // Once initialized, the configuration cannot be changed (silently ignored).
-  if (v8::g_engine_initialized.load(std::memory_order_acquire)) {
-    return;
-  }
-  v8::g_enable_liftoff.store(enable, std::memory_order_release);
+  v8::setLiftoffEnabled(enable);
 }
 
 std::unique_ptr<WasmVm> createV8Vm() { return std::make_unique<v8::V8>(); }
