@@ -25,7 +25,7 @@ path = "fake_lib.rs"
 log = {version = "0.4.29", default-features = false, features = ['std']}
 # IMPORTANT NOTES:
 # 1. Prefixed linking requires rust_static_library instead of rust_library
-# 2. Edition 2024 requires nightly Rust, so we use edition 2021 for nightly compatibility
+# 2. Edition 2024 requires nightly Rust, so we use edition 2021 for compatibility
 #    Rust nightly 2026-01-19 is required for unstable naked_functions feature used by wasmtime-internal-fiber
 #
 # Use vendor_and_patch.sh to automatically apply both patches:

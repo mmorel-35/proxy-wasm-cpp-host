@@ -72,8 +72,8 @@ the use of `rust_static_library` instead of the default `rust_library`.
 ### edition 2021
 
 Wasmtime 40.0.2 uses Rust edition 2024, which includes experimental features like `naked_functions`
-that require a nightly Rust compiler. To maintain compatibility with nightly Rust (2026-01-19), we patch
-all BUILD files to use edition 2021, which is stable and well-supported.
+that require a nightly Rust compiler. We patch all BUILD files to use edition 2021 to support
+nightly Rust requirements while maintaining compatibility.
 
 Note: Rust nightly 2026-01-19 is required because wasmtime-internal-fiber uses unstable `naked_functions`
 feature which is not yet fully stabilized in stable Rust releases.
