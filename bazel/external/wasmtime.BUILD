@@ -62,11 +62,11 @@ genrule(
     srcs = ["crates/c-api/include/wasmtime/conf.h.in"],
     outs = ["crates/c-api/include/wasmtime/conf.h"],
     cmd = """
-      cat < $< > $$TMPDIR/working_file
+      cp $< $$TMPDIR/working_file
       for enabled_feature in $$(echo "{}"); do
-        sed -i "s/#cmakedefine WASMTIME_FEATURE_$$enabled_feature/#define WASMTIME_FEATURE_$$enabled_feature 1/" $$TMPDIR/working_file
+        sed "s/#cmakedefine WASMTIME_FEATURE_$$enabled_feature/#define WASMTIME_FEATURE_$$enabled_feature 1/" $$TMPDIR/working_file > $$TMPDIR/working_file.tmp
+        mv $$TMPDIR/working_file.tmp $$TMPDIR/working_file
       done
-      sed -i 's/#cmakedefine \\(.*\\)/\\/\\/ \\1 is not defined./' $$TMPDIR/working_file
-      cp $$TMPDIR/working_file $@
+      sed 's/#cmakedefine \\(.*\\)/\\/\\/ \\1 is not defined./' $$TMPDIR/working_file > $@
       """.format(" ".join([f.upper() for f in features])),
 )
