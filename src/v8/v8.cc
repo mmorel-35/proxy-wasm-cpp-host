@@ -15,6 +15,7 @@
 
 #include "include/proxy-wasm/v8.h"
 
+#include <atomic>
 #include <cassert>
 #include <iomanip>
 #include <memory>
@@ -40,6 +41,7 @@ namespace v8 {
 
 // Global configuration for V8 options. Must be set before the first VM is created.
 static bool g_enable_liftoff = false;
+static std::atomic<bool> g_engine_initialized{false};
 
 // Builder class for constructing V8 command-line arguments.
 class V8ArgsBuilder {
@@ -89,6 +91,7 @@ wasm::Engine *engine() {
     ::v8::V8::EnableWebAssemblyTrapHandler(true);
 
     engine = wasm::Engine::make();
+    g_engine_initialized.store(true, std::memory_order_release);
   });
 
   return engine.get();
@@ -798,6 +801,13 @@ std::string V8::getFailMessage(std::string_view function_name, wasm::own<wasm::T
 } // namespace v8
 
 void setV8Options(bool enable_liftoff) {
+  // Check if V8 engine has already been initialized.
+  // Once initialized, the configuration cannot be changed.
+  if (v8::g_engine_initialized.load(std::memory_order_acquire)) {
+    // Log a warning but don't fail - this allows graceful degradation.
+    // The integrator's error() method will be called if a VM exists.
+    return;
+  }
   v8::g_enable_liftoff = enable_liftoff;
 }
 

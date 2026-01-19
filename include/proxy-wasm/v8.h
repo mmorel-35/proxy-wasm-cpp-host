@@ -22,6 +22,10 @@
 namespace proxy_wasm {
 
 // Configure V8 options. Must be called before creating any V8 VMs.
+// This function is NOT thread-safe and must be called from a single thread
+// before any calls to createV8Vm(). Once the first VM is created, calling
+// this function will have no effect.
+//
 // @param enable_liftoff whether to enable the Liftoff compiler. When false (default),
 //   only TurboFan is used for eager compilation, which is beneficial for use cases
 //   where VMs are cloned to share compiled code. When true, Liftoff is enabled for
