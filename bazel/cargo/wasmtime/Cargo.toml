@@ -29,10 +29,5 @@ log = {version = "0.4.29", default-features = false, features = ['std']}
 #
 # `./bazel/cargo/wasmtime/vendor_and_patch.sh --repin`
 #
-# Or manually patch after running crates_vendor (portable sed command):
-# ```
-# for f in bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel; do
-#   sed 's/rust_library/rust_static_library/g' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
-# done
-# ```
+# Or manually patch after running crates_vendor. See vendor_and_patch.sh for details.
 wasmtime-c-api-impl = {version = "40.0.2", default-features = false, features = ['cranelift', 'wasi', 'wat', 'gc-drc']}
