@@ -11,7 +11,7 @@ load(
     "cargo_build_script",
     "cargo_toml_env_vars",
 )
-load("@rules_rust//rust:defs.bzl", "rust_static_library")
+load("@rules_rust//rust:defs.bzl", "rust_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -20,7 +20,7 @@ cargo_toml_env_vars(
     src = "Cargo.toml",
 )
 
-rust_static_library(
+rust_library(
     name = "wasmtime_c_api",
     srcs = glob(
         include = ["**/*.rs"],
