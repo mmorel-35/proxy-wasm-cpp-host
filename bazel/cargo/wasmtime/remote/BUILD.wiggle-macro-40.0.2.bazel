@@ -39,7 +39,7 @@ rust_proc_macro(
         ],
     ),
     crate_root = "src/lib.rs",
-    edition = "2024",
+    edition = "2021",
     rustc_env_files = [
         ":cargo_toml_env_vars",
     ],
@@ -96,7 +96,7 @@ cargo_build_script(
             "WORKSPACE.bazel",
         ],
     ),
-    edition = "2024",
+    edition = "2021",
     pkg_name = "wiggle-macro",
     rustc_env_files = [
         ":cargo_toml_env_vars",

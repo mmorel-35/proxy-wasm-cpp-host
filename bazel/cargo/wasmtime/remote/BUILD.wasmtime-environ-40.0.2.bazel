@@ -45,7 +45,7 @@ rust_library(
         "std",
     ],
     crate_root = "src/lib.rs",
-    edition = "2024",
+    edition = "2021",
     proc_macro_deps = [
         "@cu__serde_derive-1.0.228//:serde_derive",
     ],

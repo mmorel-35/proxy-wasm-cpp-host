@@ -45,7 +45,7 @@ rust_library(
         "std",
     ],
     crate_root = "src/lib.rs",
-    edition = "2024",
+    edition = "2021",
     proc_macro_deps = [
         "@cu__pulley-macros-40.0.2//:pulley_macros",
     ],

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 [package]
-edition = "2024"
+edition = "2021"
 name = "wasmtime-c-api-bazel"
 version = "40.0.2"
 
@@ -23,11 +23,12 @@ path = "fake_lib.rs"
 [dependencies]
 # Fixes testdata build error due to missing crate_features = ["std"]
 log = {version = "0.4.29", default-features = false, features = ['std']}
-# IMPORTANT NOTE: Prefixed linking of wasmtime requires using rust_static_library
-# instead of rust_library. Use the vendor_and_patch.sh script which automatically
-# applies this patch after running crates_vendor:
+# IMPORTANT NOTES:
+# 1. Prefixed linking requires rust_static_library instead of rust_library
+# 2. Edition 2024 requires nightly Rust, so we use edition 2021 for stable compatibility
 #
+# Use vendor_and_patch.sh to automatically apply both patches:
 # `./bazel/cargo/wasmtime/vendor_and_patch.sh --repin`
 #
-# Or manually patch after running crates_vendor. See vendor_and_patch.sh for details.
+# Or see vendor_and_patch.sh for manual patching commands.
 wasmtime-c-api-impl = {version = "40.0.2", default-features = false, features = ['cranelift', 'wasi', 'wat', 'gc-drc']}

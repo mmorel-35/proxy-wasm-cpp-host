@@ -46,7 +46,7 @@ rust_library(
         "pulley",
     ],
     crate_root = "src/lib.rs",
-    edition = "2024",
+    edition = "2021",
     proc_macro_deps = [
         "@cu__wasmtime-internal-versioned-export-macros-40.0.2//:wasmtime_internal_versioned_export_macros",
     ],

@@ -14,15 +14,16 @@
 # limitations under the License.
 
 # This script runs the crates_vendor target and then patches the generated
-# wasmtime-c-api-impl BUILD file to use rust_static_library instead of
-# rust_library, as required for prefixed linking.
+# BUILD files for wasmtime compatibility:
+# 1. Changes rust_library to rust_static_library (required for prefixed linking)
+# 2. Changes edition 2024 to 2021 (for stable Rust compatibility)
 
 set -euo pipefail
 
 # Run the crates_vendor target
 bazel run //bazel/cargo/wasmtime:crates_vendor "$@"
 
-# Patch the generated BUILD file to use rust_static_library
+# Patch 1: Change rust_library to rust_static_library in wasmtime-c-api-impl
 # Use a portable sed approach that works on both macOS and Linux
 for build_file in bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel; do
   if [ -f "$build_file" ]; then
@@ -34,4 +35,15 @@ for build_file in bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel;
   fi
 done
 
-echo "Successfully patched wasmtime-c-api-impl to use rust_static_library"
+# Patch 2: Change edition 2024 to 2021 in all wasmtime BUILD files
+# This fixes compatibility with stable Rust (edition 2024 requires nightly)
+for build_file in bazel/cargo/wasmtime/remote/*.bazel; do
+  if [ -f "$build_file" ]; then
+    sed 's/edition = "2024"/edition = "2021"/g' "$build_file" > "$build_file.tmp"
+    mv "$build_file.tmp" "$build_file"
+  fi
+done
+
+echo "Successfully patched wasmtime BUILD files:"
+echo "  - rust_static_library for wasmtime-c-api-impl"
+echo "  - edition 2021 for stable Rust compatibility"

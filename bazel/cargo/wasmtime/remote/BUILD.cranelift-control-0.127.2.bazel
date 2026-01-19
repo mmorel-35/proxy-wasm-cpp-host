@@ -39,7 +39,7 @@ rust_library(
         "fuzz",
     ],
     crate_root = "src/lib.rs",
-    edition = "2024",
+    edition = "2021",
     rustc_env_files = [
         ":cargo_toml_env_vars",
     ],
