@@ -40,7 +40,8 @@ namespace proxy_wasm {
 namespace v8 {
 
 // Global configuration for V8 options. Must be set before the first VM is created.
-static bool g_enable_liftoff = false;
+// Using atomic for thread-safe read access during engine initialization.
+static std::atomic<bool> g_enable_liftoff{false};
 static std::atomic<bool> g_engine_initialized{false};
 
 // Builder class for constructing V8 command-line arguments.
@@ -85,7 +86,7 @@ wasm::Engine *engine() {
     std::string args = V8ArgsBuilder()
                            .setMaxMemoryPages(PROXY_WASM_HOST_MAX_WASM_MEMORY_SIZE_BYTES /
                                               PROXY_WASM_HOST_WASM_MEMORY_PAGE_SIZE_BYTES)
-                           .setLiftoffEnabled(g_enable_liftoff)
+                           .setLiftoffEnabled(g_enable_liftoff.load(std::memory_order_acquire))
                            .build();
     ::v8::V8::SetFlagsFromString(args.c_str(), args.size());
     ::v8::V8::EnableWebAssemblyTrapHandler(true);
@@ -802,13 +803,11 @@ std::string V8::getFailMessage(std::string_view function_name, wasm::own<wasm::T
 
 void setV8Options(bool enable_liftoff) {
   // Check if V8 engine has already been initialized.
-  // Once initialized, the configuration cannot be changed.
+  // Once initialized, the configuration cannot be changed (silently ignored).
   if (v8::g_engine_initialized.load(std::memory_order_acquire)) {
-    // Log a warning but don't fail - this allows graceful degradation.
-    // The integrator's error() method will be called if a VM exists.
     return;
   }
-  v8::g_enable_liftoff = enable_liftoff;
+  v8::g_enable_liftoff.store(enable_liftoff, std::memory_order_release);
 }
 
 std::unique_ptr<WasmVm> createV8Vm() { return std::make_unique<v8::V8>(); }
