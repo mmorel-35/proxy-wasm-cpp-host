@@ -801,13 +801,13 @@ std::string V8::getFailMessage(std::string_view function_name, wasm::own<wasm::T
 
 } // namespace v8
 
-void setV8Options(bool enable_liftoff) {
+void setV8LiftoffEnabled(bool enable) {
   // Check if V8 engine has already been initialized.
   // Once initialized, the configuration cannot be changed (silently ignored).
   if (v8::g_engine_initialized.load(std::memory_order_acquire)) {
     return;
   }
-  v8::g_enable_liftoff.store(enable_liftoff, std::memory_order_release);
+  v8::g_enable_liftoff.store(enable, std::memory_order_release);
 }
 
 std::unique_ptr<WasmVm> createV8Vm() { return std::make_unique<v8::V8>(); }

@@ -26,13 +26,13 @@
 namespace proxy_wasm {
 namespace {
 
-// Test that setV8Options can be called before creating a VM.
+// Test that setV8LiftoffEnabled can be called before creating a VM.
 // Note: This test cannot verify the actual V8 flags are set correctly
 // since the V8 engine is initialized once per process. However, it
 // verifies that the API works correctly.
-TEST(V8OptionsTest, SetOptionsBeforeVMCreation) {
+TEST(V8LiftoffTest, EnableLiftoffBeforeVMCreation) {
   // This should not crash or cause errors
-  setV8Options(true);  // Enable Liftoff
+  setV8LiftoffEnabled(true);  // Enable Liftoff
   
   auto vm = createV8Vm();
   ASSERT_NE(vm, nullptr);
@@ -42,7 +42,7 @@ TEST(V8OptionsTest, SetOptionsBeforeVMCreation) {
 }
 
 // Test that VMs can be created with default options (Liftoff disabled).
-TEST(V8OptionsTest, DefaultOptionsDisableLiftoff) {
+TEST(V8LiftoffTest, DefaultOptionsDisableLiftoff) {
   auto vm = createV8Vm();
   ASSERT_NE(vm, nullptr);
   vm->integration() = std::make_unique<TestIntegration>();
