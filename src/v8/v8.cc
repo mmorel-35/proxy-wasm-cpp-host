@@ -38,15 +38,22 @@
 namespace proxy_wasm {
 namespace v8 {
 
+// Global configuration for V8 options. Must be set before the first VM is created.
+static bool g_enable_liftoff = false;
+
 wasm::Engine *engine() {
   static std::once_flag init;
   static wasm::own<wasm::Engine> engine;
 
   std::call_once(init, []() {
-    // Disable the Liftoff compiler to force optimized JIT up-front.
-    std::string args = absl::StrFormat("--wasm_max_mem_pages=%u --no-liftoff",
+    // Configure the Liftoff compiler based on the global setting.
+    // When disabled (default), force optimized JIT up-front with TurboFan only.
+    // When enabled, allow Liftoff for faster startup time.
+    std::string liftoff_flag = g_enable_liftoff ? "" : " --no-liftoff";
+    std::string args = absl::StrFormat("--wasm_max_mem_pages=%u%s",
                                        PROXY_WASM_HOST_MAX_WASM_MEMORY_SIZE_BYTES /
-                                           PROXY_WASM_HOST_WASM_MEMORY_PAGE_SIZE_BYTES);
+                                           PROXY_WASM_HOST_WASM_MEMORY_PAGE_SIZE_BYTES,
+                                       liftoff_flag);
     ::v8::V8::SetFlagsFromString(args.c_str(), args.size());
     ::v8::V8::EnableWebAssemblyTrapHandler(true);
 
@@ -758,6 +765,10 @@ std::string V8::getFailMessage(std::string_view function_name, wasm::own<wasm::T
 }
 
 } // namespace v8
+
+void setV8Options(bool enable_liftoff) {
+  v8::g_enable_liftoff = enable_liftoff;
+}
 
 std::unique_ptr<WasmVm> createV8Vm() { return std::make_unique<v8::V8>(); }
 

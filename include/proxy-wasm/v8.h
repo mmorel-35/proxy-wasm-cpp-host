@@ -21,6 +21,13 @@
 
 namespace proxy_wasm {
 
+// Configure V8 options. Must be called before creating any V8 VMs.
+// @param enable_liftoff whether to enable the Liftoff compiler. When false (default),
+//   only TurboFan is used for eager compilation, which is beneficial for use cases
+//   where VMs are cloned to share compiled code. When true, Liftoff is enabled for
+//   faster startup time at the cost of potentially slower execution.
+void setV8Options(bool enable_liftoff);
+
 std::unique_ptr<WasmVm> createV8Vm();
 
 } // namespace proxy_wasm
