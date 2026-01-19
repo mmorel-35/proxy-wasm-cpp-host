@@ -39,12 +39,14 @@ If you need to patch manually after running crates_vendor directly:
 ```bash
 bazel run //bazel/cargo/wasmtime:crates_vendor -- --repin
 
-sed -i.bak \
-  -e 's/load("@rules_rust\/\/rust:defs.bzl", "rust_library")/load("@rules_rust\/\/rust:defs.bzl", "rust_static_library")/' \
-  -e 's/^rust_library(/rust_static_library(/' \
-  bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel
-
-rm bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel.bak
+# Portable sed approach that works on both macOS and Linux
+for build_file in bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel; do
+  if [ -f "$build_file" ]; then
+    sed 's/load("@rules_rust\/\/rust:defs.bzl", "rust_library")/load("@rules_rust\/\/rust:defs.bzl", "rust_static_library")/' "$build_file" > "$build_file.tmp"
+    sed 's/^rust_library(/rust_static_library(/' "$build_file.tmp" > "$build_file"
+    rm "$build_file.tmp"
+  fi
+done
 ```
 
 ## Why is this necessary?

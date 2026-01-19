@@ -23,12 +23,15 @@ set -euo pipefail
 bazel run //bazel/cargo/wasmtime:crates_vendor "$@"
 
 # Patch the generated BUILD file to use rust_static_library
-sed -i.bak \
-  -e 's/load("@rules_rust\/\/rust:defs.bzl", "rust_library")/load("@rules_rust\/\/rust:defs.bzl", "rust_static_library")/' \
-  -e 's/^rust_library(/rust_static_library(/' \
-  bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel
-
-# Remove backup file
-rm -f bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel.bak
+# Use a portable sed approach that works on both macOS and Linux
+for build_file in bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel; do
+  if [ -f "$build_file" ]; then
+    # First replacement: change the load statement
+    sed 's/load("@rules_rust\/\/rust:defs.bzl", "rust_library")/load("@rules_rust\/\/rust:defs.bzl", "rust_static_library")/' "$build_file" > "$build_file.tmp"
+    # Second replacement: change the rule call
+    sed 's/^rust_library(/rust_static_library(/' "$build_file.tmp" > "$build_file"
+    rm "$build_file.tmp"
+  fi
+done
 
 echo "Successfully patched wasmtime-c-api-impl to use rust_static_library"
