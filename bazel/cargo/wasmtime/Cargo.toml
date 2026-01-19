@@ -26,6 +26,7 @@ log = {version = "0.4.29", default-features = false, features = ['std']}
 # IMPORTANT NOTES:
 # 1. Prefixed linking requires rust_static_library instead of rust_library
 # 2. Edition 2024 requires nightly Rust, so we use edition 2021 for stable compatibility
+#    Rust 1.84.0 includes partial stabilization of the naked attribute needed by wasmtime-internal-fiber
 #
 # Use vendor_and_patch.sh to automatically apply both patches:
 # `./bazel/cargo/wasmtime/vendor_and_patch.sh --repin`
