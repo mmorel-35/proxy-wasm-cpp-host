@@ -34,6 +34,17 @@ load("@proxy_wasm_cpp_host//bazel:dependencies_import.bzl", "proxy_wasm_cpp_host
 
 proxy_wasm_cpp_host_dependencies_import()
 
+# Register Rust nightly toolchains
+register_toolchains(
+    "@rust_linux_x86_64__x86_64-unknown-linux-gnu__nightly//:toolchain",
+    "@rust_linux_x86_64__aarch64-unknown-linux-gnu__nightly//:toolchain",
+    "@rust_linux_x86_64__wasm32-unknown-unknown__nightly//:toolchain",
+    "@rust_linux_x86_64__wasm32-wasip1__nightly//:toolchain",
+    "@rust_linux_s390x__s390x-unknown-linux-gnu__nightly//:toolchain",
+    "@rust_linux_s390x__wasm32-unknown-unknown__nightly//:toolchain",
+    "@rust_linux_s390x__wasm32-wasip1__nightly//:toolchain",
+)
+
 load("@proxy_wasm_cpp_sdk//bazel:repositories.bzl", "proxy_wasm_cpp_sdk_repositories")
 
 proxy_wasm_cpp_sdk_repositories()

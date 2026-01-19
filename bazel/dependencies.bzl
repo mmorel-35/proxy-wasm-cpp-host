@@ -40,6 +40,9 @@ def proxy_wasm_cpp_host_dependencies():
     py_repositories()
 
     rust_repositories()
+
+    # Register custom Rust nightly toolchains
+    # Note: We use nightly because wasmtime-internal-fiber requires unstable naked_functions feature
     rust_repository_set(
         name = "rust_linux_x86_64",
         exec_triple = "x86_64-unknown-linux-gnu",

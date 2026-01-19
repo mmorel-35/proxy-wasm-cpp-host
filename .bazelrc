@@ -83,3 +83,5 @@ build:windows --cxxopt="/std:c++20" --host_cxxopt="/std:c++20"
 # Enable symlinks and runfiles on Windows (enabled by default on other platforms).
 startup --windows_enable_symlinks
 build:windows --enable_runfiles
+# Use nightly Rust toolchain by default for wasmtime compatibility
+build --@rules_rust//rust/toolchain/channel=nightly

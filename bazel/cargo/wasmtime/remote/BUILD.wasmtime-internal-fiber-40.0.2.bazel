@@ -54,6 +54,7 @@ rust_library(
     ],
     rustc_flags = [
         "--cap-lints=allow",
+        "-Zcrate-attr=feature(naked_functions)",
     ],
     tags = [
         "cargo-bazel",
