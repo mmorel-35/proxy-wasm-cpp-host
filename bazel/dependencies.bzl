@@ -48,13 +48,13 @@ def proxy_wasm_cpp_host_dependencies():
             "wasm32-unknown-unknown",
             "wasm32-wasip1",
         ],
-        versions = ["1.84.0"],
+        versions = ["nightly/2026-01-19"],
         sha256s = {
-            "rustc-1.84.0-x86_64-unknown-linux-gnu.tar.xz": "a1737d86f80b31a6d48a6726726275dc068ecb930c9635b13aa59999486de837",
-            "clippy-1.84.0-x86_64-unknown-linux-gnu.tar.xz": "1db0212c08e126bf6ee28a0d363c5d6859fe357aa9e91d0247059397dbe7e1fd",
-            "cargo-1.84.0-x86_64-unknown-linux-gnu.tar.xz": "6c2371488db92a09cd50a1b4045c022f3cf2c643285b3b21105ab5f9b64fd6b6",
-            "llvm-tools-1.84.0-x86_64-unknown-linux-gnu.tar.xz": "683e84d7b8f4b32d4e6b4ce90ccf014deb23317a0babc75ffe6e7022b453cfae",
-            "rust-std-1.84.0-x86_64-unknown-linux-gnu.tar.xz": "770237080b9310d126350c3bd70820bd91064c2e96c29ab5f2e002b31b5bd067",
+            "rustc-nightly-x86_64-unknown-linux-gnu.tar.xz": "18d87ca1690413f5fb459d6ea7bc278f01e7c6b41d1511586d6623405303ff19",
+            "clippy-nightly-x86_64-unknown-linux-gnu.tar.xz": "ebc4faa83d42694ad203285ea383751db3ac3a07e22433ad36f5f9e61ad9d4b1",
+            "cargo-nightly-x86_64-unknown-linux-gnu.tar.xz": "2f28a86cb9cc5115fd948caaae8aba96fba9ad7afb103a7e80a3c98d55362d49",
+            "llvm-tools-nightly-x86_64-unknown-linux-gnu.tar.xz": "6487ee4b6a2872399cdada1fdfee3ee5c6f5ebaad0803fabf74e60a5662e3b0b",
+            "rust-std-nightly-x86_64-unknown-linux-gnu.tar.xz": "94a6cd03f741f749b0cf7da66382a6117cd624e47beca8b61bf75ae9d192df9b",
         },
     )
     rust_repository_set(
@@ -64,7 +64,7 @@ def proxy_wasm_cpp_host_dependencies():
             "wasm32-unknown-unknown",
             "wasm32-wasip1",
         ],
-        versions = ["1.84.0"],
+        versions = ["nightly/2026-01-19"],
     )
     crate_universe_dependencies(bootstrap = True)
 
