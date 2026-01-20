@@ -18,7 +18,6 @@
 #include <vector>
 
 #include <openssl/evp.h>
-#include <openssl/sha.h>
 
 namespace proxy_wasm {
 
@@ -38,7 +37,7 @@ std::string BytesToHex(const std::vector<uint8_t> &bytes) {
 } // namespace
 
 std::vector<uint8_t> Sha256(const std::vector<std::string_view> &parts) {
-  uint8_t sha256[SHA256_DIGEST_LENGTH];
+  uint8_t sha256[32]; // SHA-256 produces 32 bytes
   unsigned int hash_len = 0;
 
   EVP_MD_CTX *hash_ctx = EVP_MD_CTX_new();
@@ -61,7 +60,7 @@ std::vector<uint8_t> Sha256(const std::vector<std::string_view> &parts) {
 
   EVP_MD_CTX_free(hash_ctx);
 
-  if (!hash_ok || hash_len != SHA256_DIGEST_LENGTH) {
+  if (!hash_ok || hash_len != 32) {
     return std::vector<uint8_t>();
   }
 
