@@ -38,7 +38,7 @@ rust_library(
         "std",
     ],
     crate_root = "src/lib.rs",
-    edition = "2021",
+    edition = "2024",
     proc_macro_deps = [
         "@cu__async-trait-0.1.89//:async_trait",
     ],

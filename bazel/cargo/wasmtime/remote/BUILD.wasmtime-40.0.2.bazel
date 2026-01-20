@@ -62,7 +62,7 @@ rust_library(
         "wat",
     ],
     crate_root = "src/lib.rs",
-    edition = "2021",
+    edition = "2024",
     proc_macro_deps = [
         "@cu__async-trait-0.1.89//:async_trait",
         "@cu__serde_derive-1.0.228//:serde_derive",
@@ -268,7 +268,7 @@ cargo_build_script(
             "WORKSPACE.bazel",
         ],
     ),
-    edition = "2021",
+    edition = "2024",
     pkg_name = "wasmtime",
     proc_macro_deps = [
         "@cu__wasmtime-internal-versioned-export-macros-40.0.2//:wasmtime_internal_versioned_export_macros",

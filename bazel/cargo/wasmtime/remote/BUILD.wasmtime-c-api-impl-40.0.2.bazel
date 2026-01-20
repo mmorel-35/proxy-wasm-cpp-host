@@ -54,7 +54,7 @@ rust_static_library(
         "wat",
     ],
     crate_root = "src/lib.rs",
-    edition = "2021",
+    edition = "2024",
     proc_macro_deps = [
         "@cu__async-trait-0.1.89//:async_trait",
         "@cu__wasmtime-internal-c-api-macros-40.0.2//:wasmtime_internal_c_api_macros",
@@ -133,7 +133,7 @@ cargo_build_script(
             "WORKSPACE.bazel",
         ],
     ),
-    edition = "2021",
+    edition = "2024",
     links = "wasmtime-c-api",
     pkg_name = "wasmtime-c-api-impl",
     rustc_env_files = [

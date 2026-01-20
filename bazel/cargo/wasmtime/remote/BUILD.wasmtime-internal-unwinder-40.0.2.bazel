@@ -43,7 +43,7 @@ rust_library(
         "default",
     ],
     crate_root = "src/lib.rs",
-    edition = "2021",
+    edition = "2024",
     rustc_env_files = [
         ":cargo_toml_env_vars",
     ],
@@ -105,7 +105,7 @@ cargo_build_script(
             "WORKSPACE.bazel",
         ],
     ),
-    edition = "2021",
+    edition = "2024",
     pkg_name = "wasmtime-internal-unwinder",
     rustc_env_files = [
         ":cargo_toml_env_vars",

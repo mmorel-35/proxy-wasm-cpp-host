@@ -69,11 +69,7 @@ The wasmtime C API requires prefixed symbols to avoid conflicts with other WebAs
 runtimes. This prefixing is done at the link level using a static library, which requires
 the use of `rust_static_library` instead of the default `rust_library`.
 
-### edition 2021
-
-Wasmtime 40.0.2 uses Rust edition 2024, which requires nightly Rust. We patch all BUILD 
-files to use edition 2021 for compatibility with stable Rust 1.91.0.
-
-Note: Rust 1.91.0 (stable) supports the `naked_functions` feature used by wasmtime-internal-fiber.
+This is the only patch needed for wasmtime 40.0.2 with Rust 1.92.0, which supports both
+edition 2024 and the `naked_functions` feature used by wasmtime-internal-fiber.
 
 See `bazel/cargo/wasmtime/Cargo.toml` for more details.

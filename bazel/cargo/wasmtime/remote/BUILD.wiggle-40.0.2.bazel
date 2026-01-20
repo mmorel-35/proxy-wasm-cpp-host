@@ -38,7 +38,7 @@ rust_library(
         "wasmtime",
     ],
     crate_root = "src/lib.rs",
-    edition = "2021",
+    edition = "2024",
     proc_macro_deps = [
         "@cu__wiggle-macro-40.0.2//:wiggle_macro",
     ],

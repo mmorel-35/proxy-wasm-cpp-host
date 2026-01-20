@@ -25,10 +25,9 @@ path = "fake_lib.rs"
 log = {version = "0.4.29", default-features = false, features = ['std']}
 # IMPORTANT NOTES:
 # 1. Prefixed linking requires rust_static_library instead of rust_library
-# 2. Edition 2024 requires nightly Rust, so we use edition 2021 for compatibility
-#    Rust 1.91.0 (stable) supports the naked_functions feature required by wasmtime-internal-fiber
+#    (see vendor_and_patch.sh for automatic patching)
 #
-# Use vendor_and_patch.sh to automatically apply both patches:
+# Use vendor_and_patch.sh to automatically apply the patch:
 # `./bazel/cargo/wasmtime/vendor_and_patch.sh --repin`
 #
 # Or see vendor_and_patch.sh for manual patching commands.
