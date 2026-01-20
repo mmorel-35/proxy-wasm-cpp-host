@@ -53,6 +53,7 @@ rust_library(
         ":cargo_toml_env_vars",
     ],
     rustc_flags = [
+        "-Zcrate-attr=feature(naked_functions)",
         "--cap-lints=allow",
     ],
     tags = [
@@ -233,6 +234,7 @@ cargo_build_script(
         ":cargo_toml_env_vars",
     ],
     rustc_flags = [
+        "-Zcrate-attr=feature(naked_functions)",
         "--cap-lints=allow",
     ],
     tags = [

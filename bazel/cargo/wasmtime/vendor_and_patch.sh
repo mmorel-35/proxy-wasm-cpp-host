@@ -21,7 +21,7 @@ set -euo pipefail
 # Run the crates_vendor target
 bazel run //bazel/cargo/wasmtime:crates_vendor "$@"
 
-# Patch: Change rust_library to rust_static_library in wasmtime-c-api-impl
+# Patch 1: Change rust_library to rust_static_library in wasmtime-c-api-impl
 # This is required for prefixed symbol linking
 for build_file in bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel; do
   if [ -f "$build_file" ]; then
@@ -33,5 +33,16 @@ for build_file in bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel;
   fi
 done
 
+# Patch 2: Enable unstable features for wasmtime-internal-fiber on aarch64
+# Edition 2024 with naked_functions requires nightly features on stable Rust
+for build_file in bazel/cargo/wasmtime/remote/BUILD.wasmtime-internal-fiber-*.bazel; do
+  if [ -f "$build_file" ]; then
+    # Add unstable feature flags before --cap-lints=allow
+    sed 's/"--cap-lints=allow",/"-Zcrate-attr=feature(naked_functions)",\n        "--cap-lints=allow",/' "$build_file" > "$build_file.tmp"
+    mv "$build_file.tmp" "$build_file"
+  fi
+done
+
 echo "Successfully patched wasmtime BUILD files:"
 echo "  - rust_static_library for wasmtime-c-api-impl (required for prefixed linking)"
+echo "  - unstable features for wasmtime-internal-fiber (required for naked_functions)"
