@@ -6,8 +6,8 @@ The wasmtime vendored crates require two patches to work with stable Rust and pr
 
 1. **rust_static_library**: The wasmtime-c-api-impl crate needs to be built as a `rust_static_library` 
    instead of `rust_library` for proper prefixed linking support.
-2. **edition 2021**: The generated BUILD files use Rust edition 2024, which requires nightly Rust 
-   for unstable features like `naked_functions`. We patch them to use edition 2021 for stable Rust compatibility.
+2. **unstable features**: The wasmtime-internal-fiber crate uses the `naked_functions` feature which 
+   is still unstable in Rust 1.92.0. We need to enable it explicitly via rustc flags.
 
 ## Solution
 
@@ -34,7 +34,8 @@ To update vendored crates without repinning:
 2. Patches the generated `BUILD.wasmtime-c-api-impl-*.bazel` file to replace:
    - `rust_library` with `rust_static_library` in the load statement
    - `rust_library(` with `rust_static_library(` in the rule definition
-3. Patches all generated BUILD files to replace `edition = "2024"` with `edition = "2021"`
+3. Patches the generated `BUILD.wasmtime-internal-fiber-*.bazel` file to add:
+   - `-Zcrate-attr=feature(naked_functions)` to rustc_flags to enable the unstable feature
 
 ### Manual patching
 
@@ -52,10 +53,10 @@ for build_file in bazel/cargo/wasmtime/remote/BUILD.wasmtime-c-api-impl-*.bazel;
   fi
 done
 
-# Patch 2: edition 2021 for stable Rust compatibility
-for build_file in bazel/cargo/wasmtime/remote/*.bazel; do
+# Patch 2: Enable unstable features for wasmtime-internal-fiber
+for build_file in bazel/cargo/wasmtime/remote/BUILD.wasmtime-internal-fiber-*.bazel; do
   if [ -f "$build_file" ]; then
-    sed 's/edition = "2024"/edition = "2021"/g' "$build_file" > "$build_file.tmp"
+    sed 's/"--cap-lints=allow",/"-Zcrate-attr=feature(naked_functions)",\n        "--cap-lints=allow",/' "$build_file" > "$build_file.tmp"
     mv "$build_file.tmp" "$build_file"
   fi
 done
