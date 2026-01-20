@@ -44,25 +44,6 @@ for build_file in bazel/cargo/wasmtime/remote/*.bazel; do
   fi
 done
 
-# Patch 3: Add naked_functions feature flag to wasmtime-internal-fiber
-# The fiber crate requires the unstable naked_functions feature
-for build_file in bazel/cargo/wasmtime/remote/BUILD.wasmtime-internal-fiber-*.bazel; do
-  if [ -f "$build_file" ]; then
-    # Add the feature flag right after "--cap-lints=allow"
-    # Check if the flag is not already present to make the script idempotent
-    if ! grep -q "naked_functions" "$build_file"; then
-      sed '/rustc_flags = \[/,/\]/{
-        s/\("--cap-lints=allow",\)/\1\n        "-Zcrate-attr=feature(naked_functions)",/
-      }' "$build_file" > "$build_file.tmp"
-      mv "$build_file.tmp" "$build_file"
-      echo "  Added naked_functions feature flag to $build_file"
-    else
-      echo "  Skipped $build_file (already patched)"
-    fi
-  fi
-done
-
 echo "Successfully patched wasmtime BUILD files:"
 echo "  - rust_static_library for wasmtime-c-api-impl"
 echo "  - edition 2021 for stable Rust compatibility"
-echo "  - naked_functions feature flag for wasmtime-internal-fiber"

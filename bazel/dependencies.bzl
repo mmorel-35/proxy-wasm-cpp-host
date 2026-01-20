@@ -40,9 +40,6 @@ def proxy_wasm_cpp_host_dependencies():
     py_repositories()
 
     rust_repositories()
-
-    # Register custom Rust nightly toolchains
-    # Note: We use nightly because wasmtime-internal-fiber requires unstable naked_functions feature
     rust_repository_set(
         name = "rust_linux_x86_64",
         exec_triple = "x86_64-unknown-linux-gnu",
@@ -51,13 +48,13 @@ def proxy_wasm_cpp_host_dependencies():
             "wasm32-unknown-unknown",
             "wasm32-wasip1",
         ],
-        versions = ["nightly/2026-01-19"],
+        versions = ["1.91.0"],
         sha256s = {
-            "rustc-nightly-x86_64-unknown-linux-gnu.tar.xz": "18d87ca1690413f5fb459d6ea7bc278f01e7c6b41d1511586d6623405303ff19",
-            "clippy-nightly-x86_64-unknown-linux-gnu.tar.xz": "ebc4faa83d42694ad203285ea383751db3ac3a07e22433ad36f5f9e61ad9d4b1",
-            "cargo-nightly-x86_64-unknown-linux-gnu.tar.xz": "2f28a86cb9cc5115fd948caaae8aba96fba9ad7afb103a7e80a3c98d55362d49",
-            "llvm-tools-nightly-x86_64-unknown-linux-gnu.tar.xz": "6487ee4b6a2872399cdada1fdfee3ee5c6f5ebaad0803fabf74e60a5662e3b0b",
-            "rust-std-nightly-x86_64-unknown-linux-gnu.tar.xz": "94a6cd03f741f749b0cf7da66382a6117cd624e47beca8b61bf75ae9d192df9b",
+            "rustc-1.91.0-x86_64-unknown-linux-gnu.tar.xz": "a7169e8cb6174af2f45717703370363d8de82ce55f6ccba185893045b9370874",
+            "clippy-1.91.0-x86_64-unknown-linux-gnu.tar.xz": "0087c3d58d2fdeafa89830c299b1026c9f981b49835db89c922b3c6a299b3225",
+            "cargo-1.91.0-x86_64-unknown-linux-gnu.tar.xz": "7103c03fb8abe85b23307005a9dfe4f01c826a89945d84b96fa2d03fd4d2d138",
+            "llvm-tools-1.91.0-x86_64-unknown-linux-gnu.tar.xz": "3d7756e0ce1ee18d20399aef770f09c55a4134f5a0f18e4e3c018aa1b3919a70",
+            "rust-std-1.91.0-x86_64-unknown-linux-gnu.tar.xz": "89e6520b16c12b43526440298d2da0dcb70747c5cc2d0b8e47d39b5da9aeef49",
         },
     )
     rust_repository_set(
@@ -67,7 +64,7 @@ def proxy_wasm_cpp_host_dependencies():
             "wasm32-unknown-unknown",
             "wasm32-wasip1",
         ],
-        versions = ["nightly/2026-01-19"],
+        versions = ["1.91.0"],
     )
     crate_universe_dependencies(bootstrap = True)
 
