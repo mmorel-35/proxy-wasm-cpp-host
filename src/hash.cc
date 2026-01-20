@@ -52,7 +52,7 @@ std::vector<uint8_t> Sha256(const std::vector<std::string_view> &parts) {
     return std::vector<uint8_t>();
   }
 
-  for (auto part : parts) {
+  for (const auto& part : parts) {
     if (EVP_DigestUpdate(hash_ctx, part.data(), part.size()) == 0) {
       return std::vector<uint8_t>();
     }
