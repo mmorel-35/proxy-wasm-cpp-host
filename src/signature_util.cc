@@ -19,6 +19,7 @@
 #include <memory>
 
 #ifdef PROXY_WASM_VERIFY_WITH_ED25519_PUBKEY
+#include "absl/cleanup/cleanup.h"
 #include <openssl/evp.h>
 #endif
 
@@ -306,16 +307,22 @@ bool SignatureUtil::verifySignature(std::string_view bytecode, std::string &mess
     return false;
   }
 
-  uint8_t computed_hash[32]; // SHA-256 produces 32 bytes
+  absl::Cleanup free_hash_ctx = [hash_ctx] { EVP_MD_CTX_free(hash_ctx); };
+
+  uint8_t computed_hash[EVP_MAX_MD_SIZE];
   unsigned int hash_len = 0;
 
-  bool hash_ok = (EVP_DigestInit_ex(hash_ctx, EVP_sha256(), nullptr) != 0) &&
-                 (EVP_DigestUpdate(hash_ctx, content_start, content_len) != 0) &&
-                 (EVP_DigestFinal_ex(hash_ctx, computed_hash, &hash_len) != 0);
+  if (EVP_DigestInit_ex(hash_ctx, EVP_sha256(), nullptr) == 0) {
+    message = "Failed to compute SHA-256 hash";
+    return false;
+  }
 
-  EVP_MD_CTX_free(hash_ctx);
+  if (EVP_DigestUpdate(hash_ctx, content_start, content_len) == 0) {
+    message = "Failed to compute SHA-256 hash";
+    return false;
+  }
 
-  if (!hash_ok || hash_len != 32) {
+  if (EVP_DigestFinal_ex(hash_ctx, computed_hash, &hash_len) == 0) {
     message = "Failed to compute SHA-256 hash";
     return false;
   }
@@ -351,21 +358,23 @@ bool SignatureUtil::verifySignature(std::string_view bytecode, std::string &mess
     return false;
   }
 
+  absl::Cleanup free_pubkey = [pubkey] { EVP_PKEY_free(pubkey); };
+
   EVP_MD_CTX *mdctx = EVP_MD_CTX_new();
   if (mdctx == nullptr) {
     message = "Failed to allocate memory for EVP_MD_CTX";
-    EVP_PKEY_free(pubkey);
     return false;
   }
 
-  bool ok = (EVP_DigestVerifyInit(mdctx, nullptr, nullptr, nullptr, pubkey) != 0) &&
-            (EVP_DigestVerify(mdctx, signature, 64 /* ED25519_SIGNATURE_LEN */, signature_msg.get(),
-                              msg_len) != 0);
+  absl::Cleanup free_mdctx = [mdctx] { EVP_MD_CTX_free(mdctx); };
 
-  EVP_MD_CTX_free(mdctx);
-  EVP_PKEY_free(pubkey);
+  if (EVP_DigestVerifyInit(mdctx, nullptr, nullptr, nullptr, pubkey) == 0) {
+    message = "Signature mismatch";
+    return false;
+  }
 
-  if (!ok) {
+  if (EVP_DigestVerify(mdctx, signature, 64 /* ED25519_SIGNATURE_LEN */, signature_msg.get(),
+                       msg_len) == 0) {
     message = "Signature mismatch";
     return false;
   }
