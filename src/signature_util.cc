@@ -369,7 +369,7 @@ bool SignatureUtil::verifySignature(std::string_view bytecode, std::string &mess
   absl::Cleanup free_mdctx = [mdctx] { EVP_MD_CTX_free(mdctx); };
 
   if (EVP_DigestVerifyInit(mdctx, nullptr, nullptr, nullptr, pubkey) == 0) {
-    message = "Signature mismatch";
+    message = "Failed to initialize signature verification";
     return false;
   }
 
