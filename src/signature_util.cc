@@ -328,7 +328,7 @@ bool SignatureUtil::verifySignature(std::string_view bytecode, std::string &mess
   }
 
   // Verify the computed hash matches the expected hash
-  if (std::memcmp(computed_hash, expected_hash, 32) != 0) {
+  if (std::memcmp(computed_hash, expected_hash, hash_len) != 0) {
     message = "Hash mismatch";
     return false;
   }
@@ -340,14 +340,14 @@ bool SignatureUtil::verifySignature(std::string_view bytecode, std::string &mess
   // https://github.com/wasm-signatures/wasmsign2/blob/0.2.6/src/lib/src/signature/multi.rs#L268-L278
   const char *domain = "wasmsig";
   size_t domain_len = 7;
-  size_t msg_len = domain_len + 3 + 32; // domain + 3 bytes (spec/content/hash) + 32 bytes (hash)
+  size_t msg_len = domain_len + 3 + hash_len; // domain + 3 bytes (spec/content/hash) + hash
   auto signature_msg = std::make_unique<uint8_t[]>(msg_len);
 
   std::memcpy(signature_msg.get(), domain, domain_len);
   signature_msg[domain_len] = spec_version;
   signature_msg[domain_len + 1] = content_type;
   signature_msg[domain_len + 2] = hash_fn;
-  std::memcpy(signature_msg.get() + domain_len + 3, expected_hash, 32);
+  std::memcpy(signature_msg.get() + domain_len + 3, expected_hash, hash_len);
 
   static const auto ed25519_pubkey = hex2pubkey<32>(PROXY_WASM_VERIFY_WITH_ED25519_PUBKEY);
 
