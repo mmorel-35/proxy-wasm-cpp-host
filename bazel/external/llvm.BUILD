@@ -18,13 +18,13 @@ licenses(["notice"])  # Apache 2
 
 package(default_visibility = ["//visibility:public"])
 
-# LLVM libraries needed by WAMR JIT - built with native Bazel.
+# LLVM libraries for JIT/AOT compilation - built with native Bazel.
 # This replaces the foreign_cc cmake build of LLVM with native Bazel builds.
-# These libraries are linked into the final binary, while WAMR's CMake build
-# uses the hermetic LLVM toolchain's CMake configs for configuration only.
+# These libraries are linked into the final binary for WAMR JIT and WasmEdge AOT.
+# Shared by both WAMR and WasmEdge for consistency.
 # Uses select() for CPU-specific libraries only.
 cc_library(
-    name = "llvm_wamr_lib",
+    name = "llvm_lib",
     deps = [
         "@llvm-project//llvm:Analysis",
         "@llvm-project//llvm:BitReader",
