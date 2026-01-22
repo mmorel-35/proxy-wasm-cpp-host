@@ -170,21 +170,24 @@ jobs:
           flags: --config=hermetic-llvm
           cache: true
         - name: 'WAMR interp on Linux/x86_64'
-          engine: 'wamr-interp'
+          engine: 'wamr'
+          llvm_mode: 'interpreter'
           repo: 'com_github_bytecodealliance_wasm_micro_runtime'
           os: ubuntu-24.04-16core
           arch: x86_64
           action: test
           flags: --config=hermetic-llvm
         - name: 'WAMR interp on macOS/x86_64'
-          engine: 'wamr-interp'
+          engine: 'wamr'
+          llvm_mode: 'interpreter'
           repo: 'com_github_bytecodealliance_wasm_micro_runtime'
           os: macos-15
           arch: x86_64
           action: test
           flags: --config=hermetic-llvm
         - name: 'WAMR jit on Linux/x86_64'
-          engine: 'wamr-jit'
+          engine: 'wamr'
+          llvm_mode: 'jit'
           repo: 'com_github_bytecodealliance_wasm_micro_runtime'
           os: ubuntu-24.04-16core
           arch: x86_64
@@ -193,27 +196,48 @@ jobs:
           deps: lld-18
           cache: true
         - name: 'WAMR jit on macOS/x86_64'
-          engine: 'wamr-jit'
+          engine: 'wamr'
+          llvm_mode: 'jit'
           repo: 'com_github_bytecodealliance_wasm_micro_runtime'
           os: macos-15
           arch: x86_64
           action: test
           cache: true
           flags: --config=hermetic-llvm
-        - name: 'WasmEdge on Linux/x86_64'
+        - name: 'WasmEdge interp on Linux/x86_64'
           engine: 'wasmedge'
+          llvm_mode: 'interpreter'
           repo: 'com_github_wasmedge_wasmedge'
           os: ubuntu-24.04-16core
           arch: x86_64
           action: test
           flags: --config=hermetic-llvm
-        - name: 'WasmEdge on macOS/x86_64'
+        - name: 'WasmEdge interp on macOS/x86_64'
           engine: 'wasmedge'
+          llvm_mode: 'interpreter'
           repo: 'com_github_wasmedge_wasmedge'
           os: macos-15
           arch: x86_64
           action: test
           flags: --config=hermetic-llvm
+        - name: 'WasmEdge AOT on Linux/x86_64'
+          engine: 'wasmedge'
+          llvm_mode: 'aot'
+          repo: 'com_github_wasmedge_wasmedge'
+          os: ubuntu-24.04-16core
+          arch: x86_64
+          action: test
+          flags: --config=hermetic-llvm
+          cache: true
+        - name: 'WasmEdge AOT on macOS/x86_64'
+          engine: 'wasmedge'
+          llvm_mode: 'aot'
+          repo: 'com_github_wasmedge_wasmedge'
+          os: macos-15
+          arch: x86_64
+          action: test
+          flags: --config=hermetic-llvm
+          cache: true
         - name: 'Wasmtime on Linux/x86_64'
           engine: 'wasmtime'
           repo: 'com_github_bytecodealliance_wasmtime'
@@ -259,7 +283,7 @@ jobs:
 
     - name: Compute job hash
       id: job-hash
-      run: echo "hash=$(echo -n '${{ matrix.engine }}-${{ matrix.flags }}-${{ matrix.os }}-${{ matrix.arch }}' | sha1sum | cut -c1-10)" >> $GITHUB_OUTPUT
+      run: echo "hash=$(echo -n '${{ matrix.engine }}-${{ matrix.llvm_mode }}-${{ matrix.flags }}-${{ matrix.os }}-${{ matrix.arch }}' | sha1sum | cut -c1-10)" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Install dependencies (Linux)
@@ -325,6 +349,7 @@ jobs:
         --verbose_failures
         --test_output=errors
         --define engine=${{ matrix.engine }}
+        ${{ matrix.llvm_mode && format('--define llvm_mode={0}', matrix.llvm_mode) || '' }}
         ${{ matrix.flags }}
         -- //test/... ${{ matrix.targets }}
 
@@ -336,7 +361,7 @@ jobs:
         --verbose_failures
         --test_output=errors
         --define engine=${{ matrix.engine }}
+        ${{ matrix.llvm_mode && format('--define llvm_mode={0}', matrix.llvm_mode) || '' }}
         ${{ matrix.flags }}
         --per_file_copt=src/signature_util.cc,test/signature_util_test.cc@-DPROXY_WASM_VERIFY_WITH_ED25519_PUBKEY=\"$(xxd -p -c 256 test/test_data/signature_key1.pub | cut -c3- | tr -d '\n')\"
         //test:signature_util_test
-

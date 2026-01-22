@@ -28,13 +28,8 @@ config_setting(
 )
 
 config_setting(
-    name = "engine_wamr_interp",
-    values = {"define": "engine=wamr-interp"},
-)
-
-config_setting(
-    name = "engine_wamr_jit",
-    values = {"define": "engine=wamr-jit"},
+    name = "engine_wamr",
+    values = {"define": "engine=wamr"},
 )
 
 config_setting(
@@ -50,6 +45,61 @@ config_setting(
 config_setting(
     name = "multiengine",
     values = {"define": "engine=multi"},
+)
+
+# LLVM mode configuration (orthogonal to engine choice)
+config_setting(
+    name = "llvm_mode_interpreter",
+    values = {"define": "llvm_mode=interpreter"},
+)
+
+config_setting(
+    name = "llvm_mode_jit",
+    values = {"define": "llvm_mode=jit"},
+)
+
+config_setting(
+    name = "llvm_mode_aot",
+    values = {"define": "llvm_mode=aot"},
+)
+
+# Legacy aliases for backward compatibility (only for settings that existed in upstream)
+config_setting(
+    name = "engine_wamr_interp_legacy",
+    values = {"define": "engine=wamr-interp"},
+)
+
+config_setting(
+    name = "engine_wamr_jit_legacy",
+    values = {"define": "engine=wamr-jit"},
+)
+
+# Unified engine selectors that support both new and legacy syntax
+selects.config_setting_group(
+    name = "engine_wamr_interp",
+    match_any = [
+        ":engine_wamr",  # New: --define=engine=wamr (without llvm_mode)
+        ":engine_wamr_interp_legacy",  # Legacy: --define=engine=wamr-interp
+    ],
+)
+
+selects.config_setting_group(
+    name = "engine_wamr_jit",
+    match_all = [
+        ":engine_wamr",
+        ":llvm_mode_jit",
+    ],
+    match_any = [
+        ":engine_wamr_jit_legacy",  # Legacy: --define=engine=wamr-jit
+    ],
+)
+
+selects.config_setting_group(
+    name = "engine_wasmedge_aot",
+    match_all = [
+        ":engine_wasmedge",
+        ":llvm_mode_aot",
+    ],
 )
 
 config_setting(
