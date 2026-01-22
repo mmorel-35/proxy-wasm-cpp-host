@@ -96,8 +96,8 @@ selects.config_setting_group(
 selects.config_setting_group(
     name = "engine_wamr_jit",
     match_any = [
-        ":engine_wamr_with_jit",  # New: --define=engine=wamr --define=llvm_mode=jit
-        ":engine_wamr_jit_legacy",  # Legacy: --define=engine=wamr-jit
+        ":engine_wamr_with_jit",  # New syntax: --define=engine=wamr --define=llvm_mode=jit
+        ":engine_wamr_jit_legacy",  # Legacy syntax: --define=engine=wamr-jit
     ],
 )
 
