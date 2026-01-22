@@ -83,13 +83,20 @@ selects.config_setting_group(
     ],
 )
 
+# New syntax: wamr + JIT mode
 selects.config_setting_group(
-    name = "engine_wamr_jit",
+    name = "engine_wamr_with_jit",
     match_all = [
         ":engine_wamr",
         ":llvm_mode_jit",
     ],
+)
+
+# Unified selector supporting both new and legacy syntax
+selects.config_setting_group(
+    name = "engine_wamr_jit",
     match_any = [
+        ":engine_wamr_with_jit",  # New: --define=engine=wamr --define=llvm_mode=jit
         ":engine_wamr_jit_legacy",  # Legacy: --define=engine=wamr-jit
     ],
 )
