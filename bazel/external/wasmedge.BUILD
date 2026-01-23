@@ -41,8 +41,8 @@ cmake(
             # Set LLVM_INCLUDE_DIR for the build to use
             "LLVM_INCLUDE_DIR": "$$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include",
             # Set LLVM_DIR to the CMake config directory so find_package(LLVM) works
-            # Use EXT_BUILD_DEPS since data files are copied there by rules_foreign_cc
-            "LLVM_DIR": "$$EXT_BUILD_DEPS/llvm_cmake/lib/cmake/llvm",
+            # The llvm_cmake_config files are in EXT_BUILD_DEPS/llvm_cmake_config/
+            "LLVM_DIR": "$$EXT_BUILD_DEPS/llvm_cmake_config",
         },
         "//conditions:default": {
             "WASMEDGE_USE_LLVM": "Off",
@@ -71,24 +71,6 @@ cmake(
         },
     }),
     generate_args = ["-GNinja"],
-    # Extract LLVM CMake config tarball before running cmake
-    # The tarball is copied to EXT_BUILD_DEPS by rules_foreign_cc but needs to be extracted
-    configure_command = select({
-        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_llvm": """
-            # Extract LLVM CMake config tarball if it exists
-            if [ -f "$$EXT_BUILD_DEPS/llvm_cmake.tar.gz" ]; then
-                echo "Extracting LLVM CMake config to $$EXT_BUILD_DEPS"
-                tar -xzf "$$EXT_BUILD_DEPS/llvm_cmake.tar.gz" -C "$$EXT_BUILD_DEPS"
-                echo "LLVM CMake config extracted successfully"
-                ls -la "$$EXT_BUILD_DEPS/llvm_cmake/lib/cmake/llvm/" || true
-            else
-                echo "Warning: llvm_cmake.tar.gz not found in $$EXT_BUILD_DEPS"
-                ls -la "$$EXT_BUILD_DEPS" || true
-            fi
-            cmake
-        """,
-        "//conditions:default": "cmake",
-    }),
     lib_source = ":srcs",
     out_static_libs = ["libwasmedge.a"],
     deps = [
