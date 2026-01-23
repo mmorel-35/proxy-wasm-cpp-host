@@ -111,7 +111,10 @@ genrule(
     outs = ["llvm_cmake.tar.gz"],
     cmd = """
         # Create temporary directory for building the archive
-        TMPDIR=$$(mktemp -d)
+        TMPDIR=$$(mktemp -d) || exit 1
+        
+        # Ensure cleanup on exit
+        trap 'rm -rf $$TMPDIR' EXIT
         
         # Create directory structure
         mkdir -p $$TMPDIR/llvm_cmake/lib/cmake/llvm
@@ -193,7 +196,6 @@ EOF
 
         # Create tarball from the temp directory
         tar -czf $(location llvm_cmake.tar.gz) -C $$TMPDIR llvm_cmake
-        rm -rf $$TMPDIR
     """,
 )
 
