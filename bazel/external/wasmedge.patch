@@ -175,9 +175,11 @@ index cfc8cbc..72ffcc0 100644
    wasmedge_add_static_lib_component_command(wasmedgeSystem)
    wasmedge_add_static_lib_component_command(wasmedgeCommon)
    wasmedge_add_static_lib_component_command(wasmedgePO)
-@@ -170,9 +177,13 @@ if(WASMEDGE_BUILD_STATIC_LIB)
-   wasmedge_add_static_lib_component_command(wasmedgePluginWasiCrypto)
-   wasmedge_add_static_lib_component_command(wasmedgePluginWasiNN)
+@@ -168,11 +175,15 @@ if(WASMEDGE_BUILD_STATIC_LIB)
+   wasmedge_add_static_lib_component_command(wasmedgePluginWasiLogging)
+   wasmedge_add_static_lib_component_command(wasmedgeVM)
+   wasmedge_add_static_lib_component_command(wasmedgeDriver)
+ 
    if(WASMEDGE_USE_LLVM)
 -    foreach(LIB_NAME IN LISTS WASMEDGE_LLVM_LINK_STATIC_COMPONENTS)
 -      wasmedge_add_libs_component_command(${LIB_NAME})
@@ -192,6 +194,7 @@ index cfc8cbc..72ffcc0 100644
      wasmedge_add_static_lib_component_command(utilBlake3)
      wasmedge_add_static_lib_component_command(wasmedgeAOT)
      wasmedge_add_static_lib_component_command(wasmedgeLLVM)
++  endif()
 diff --git a/lib/llvm/CMakeLists.txt b/lib/llvm/CMakeLists.txt
 index 87e8d19..0791d8e 100644
 --- a/lib/llvm/CMakeLists.txt
