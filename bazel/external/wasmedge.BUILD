@@ -41,8 +41,8 @@ cmake(
             # Set LLVM_INCLUDE_DIR for the build to use
             "LLVM_INCLUDE_DIR": "$$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include",
             # Set LLVM_DIR to the CMake config directory so find_package(LLVM) works
-            # The llvm_cmake_config files are in EXT_BUILD_DEPS/llvm_cmake_config/
-            "LLVM_DIR": "$$EXT_BUILD_DEPS/llvm_cmake_config",
+            # Use EXT_BUILD_DEPS since data files are copied there by rules_foreign_cc
+            "LLVM_DIR": "$$EXT_BUILD_DEPS/llvm_cmake/lib/cmake/llvm",
         },
         "//conditions:default": {
             "WASMEDGE_USE_LLVM": "Off",

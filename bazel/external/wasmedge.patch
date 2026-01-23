@@ -67,10 +67,31 @@ diff --git a/cmake/Helper.cmake b/cmake/Helper.cmake
 index d3ea6d6..ad52829 100644
 --- a/cmake/Helper.cmake
 +++ b/cmake/Helper.cmake
-@@ -214,9 +214,14 @@ endfunction()
+@@ -214,9 +214,32 @@ endfunction()
  # Generate the list of static libs to statically link LLVM.
  if((WASMEDGE_LINK_LLVM_STATIC OR WASMEDGE_BUILD_STATIC_LIB) AND WASMEDGE_USE_LLVM)
    # Pack the LLVM and lld static libraries.
++  # When building with Bazel, extract LLVM CMake config tarball if present
++  # rules_foreign_cc symlinks files from data attribute to EXT_BUILD_DEPS but doesn't extract tarballs
++  if(BAZEL_BUILD AND DEFINED ENV{EXT_BUILD_DEPS})
++    set(LLVM_CMAKE_TARBALL "$ENV{EXT_BUILD_DEPS}/llvm_cmake.tar.gz")
++    if(EXISTS "${LLVM_CMAKE_TARBALL}")
++      message(STATUS "Bazel build: Extracting LLVM CMake config from ${LLVM_CMAKE_TARBALL}")
++      execute_process(
++        COMMAND ${CMAKE_COMMAND} -E tar xzf "${LLVM_CMAKE_TARBALL}"
++        WORKING_DIRECTORY "$ENV{EXT_BUILD_DEPS}"
++        RESULT_VARIABLE EXTRACT_RESULT
++        OUTPUT_VARIABLE EXTRACT_OUTPUT
++        ERROR_VARIABLE EXTRACT_ERROR
++      )
++      if(NOT EXTRACT_RESULT EQUAL 0)
++        message(FATAL_ERROR "Failed to extract LLVM CMake config: ${EXTRACT_ERROR}")
++      endif()
++      message(STATUS "Bazel build: LLVM CMake config extracted successfully")
++    else()
++      message(WARNING "Bazel build: LLVM CMake config tarball not found at ${LLVM_CMAKE_TARBALL}")
++    endif()
++  endif()
 +  # When building with Bazel, skip LLD entirely - Bazel provides LLVM via llvm-project
    find_package(LLVM REQUIRED HINTS "${LLVM_DIR}")
 -  find_package(LLD HINTS "${LLVM_DIR}" "${LLD_DIR}")
