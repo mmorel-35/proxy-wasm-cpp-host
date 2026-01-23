@@ -32,7 +32,7 @@ cmake(
         "WASMEDGE_BUILD_TOOLS": "Off",
         "WASMEDGE_FORCE_DISABLE_LTO": "On",
         # Provide spdlog and fmt as external dependencies via Bazel (not CMake FetchContent)
-        "CMAKE_PREFIX_PATH": "$$EXT_BUILD_DEPS$$/spdlog;$$EXT_BUILD_DEPS$$/fmt",
+        "CMAKE_PREFIX_PATH": "$$EXT_BUILD_DEPS/spdlog;$$EXT_BUILD_DEPS/fmt",
     } | select({
         "@proxy_wasm_cpp_host//bazel:engine_wasmedge_llvm": {
             "WASMEDGE_USE_LLVM": "On",
@@ -42,7 +42,7 @@ cmake(
             "LLVM_INCLUDE_DIR": "$$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include",
             # Set LLVM_DIR to the CMake config directory so find_package(LLVM) works
             # Use EXT_BUILD_DEPS since data files are copied there by rules_foreign_cc
-            "LLVM_DIR": "$$EXT_BUILD_DEPS$$/llvm_cmake/lib/cmake/llvm",
+            "LLVM_DIR": "$$EXT_BUILD_DEPS/llvm_cmake/lib/cmake/llvm",
         },
         "//conditions:default": {
             "WASMEDGE_USE_LLVM": "Off",
