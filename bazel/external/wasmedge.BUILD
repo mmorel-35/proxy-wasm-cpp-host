@@ -71,6 +71,24 @@ cmake(
         },
     }),
     generate_args = ["-GNinja"],
+    # Extract LLVM CMake config tarball before running cmake
+    # The tarball is copied to EXT_BUILD_DEPS by rules_foreign_cc but needs to be extracted
+    configure_command = select({
+        "@proxy_wasm_cpp_host//bazel:engine_wasmedge_llvm": """
+            # Extract LLVM CMake config tarball if it exists
+            if [ -f "$$EXT_BUILD_DEPS/llvm_cmake.tar.gz" ]; then
+                echo "Extracting LLVM CMake config to $$EXT_BUILD_DEPS"
+                tar -xzf "$$EXT_BUILD_DEPS/llvm_cmake.tar.gz" -C "$$EXT_BUILD_DEPS"
+                echo "LLVM CMake config extracted successfully"
+                ls -la "$$EXT_BUILD_DEPS/llvm_cmake/lib/cmake/llvm/" || true
+            else
+                echo "Warning: llvm_cmake.tar.gz not found in $$EXT_BUILD_DEPS"
+                ls -la "$$EXT_BUILD_DEPS" || true
+            fi
+            cmake
+        """,
+        "//conditions:default": "cmake",
+    }),
     lib_source = ":srcs",
     out_static_libs = ["libwasmedge.a"],
     deps = [
