@@ -40,6 +40,8 @@ cmake(
             "BAZEL_BUILD": "ON",
             # Set LLVM_INCLUDE_DIR for the build to use
             "LLVM_INCLUDE_DIR": "$$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include",
+            # Set LLVM_DIR to the CMake config directory so find_package(LLVM) works
+            "LLVM_DIR": "$$EXT_BUILD_ROOT/external/llvm-raw/llvm_cmake/lib/cmake/llvm",
         },
         "//conditions:default": {
             "WASMEDGE_USE_LLVM": "Off",
@@ -51,6 +53,7 @@ cmake(
     data = select({
         "@proxy_wasm_cpp_host//bazel:engine_wasmedge_llvm": [
             "@llvm_toolchain_llvm//:all_includes",
+            "@llvm-raw//:llvm_cmake_config",
         ],
         "//conditions:default": [],
     }),
