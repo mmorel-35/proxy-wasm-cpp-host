@@ -140,7 +140,8 @@ set(LLVM_VERSION_STRING "19.1.0")
 # These are relative to where WasmEdge's CMake will be running
 # In rules_foreign_cc sandbox, LLVM headers are available via EXT_BUILD_ROOT
 # CMAKE_CURRENT_LIST_DIR will be EXT_BUILD_DEPS/llvm_cmake_config
-# We need to go up to EXT_BUILD_DEPS, which is the parent directory
+# Unlike tarball-based approach (which created lib/cmake/llvm subdirs requiring ../../../),
+# individual files are placed directly in llvm_cmake_config, so we only go up one level
 get_filename_component(LLVM_INSTALL_PREFIX "\\$${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(LLVM_LIBRARY_DIR "\\$${LLVM_INSTALL_PREFIX}/lib")
 set(LLVM_CMAKE_DIR "\\$${CMAKE_CURRENT_LIST_DIR}")
