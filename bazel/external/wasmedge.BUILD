@@ -59,10 +59,10 @@ cmake(
             # The data attribute ensures llvm_toolchain_llvm is mounted in sandbox
             # This path works with both WORKSPACE and bzlmod
             "CFLAGS": "-isystem $$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include",
-            "CXXFLAGS": "-isystem $$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include -Wno-error=dangling-reference -Wno-error=maybe-uninitialized -Wno-error=array-bounds= -Wno-error=deprecated-declarations -std=c++20",
+            "CXXFLAGS": "-isystem $$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include -Wno-error=deprecated-declarations -std=c++20",
         },
         "//conditions:default": {
-            "CXXFLAGS": "-Wno-error=dangling-reference -Wno-error=maybe-uninitialized -Wno-error=array-bounds= -Wno-error=deprecated-declarations -std=c++20",
+            "CXXFLAGS": "-Wno-error=deprecated-declarations -std=c++20",
         },
     }),
     generate_args = ["-GNinja"],
