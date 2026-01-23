@@ -97,3 +97,100 @@ index 1111111..2222222 100644
    wasmedge_add_static_lib_component_command(wasmedgeSystem)
    wasmedge_add_static_lib_component_command(wasmedgeCommon)
    wasmedge_add_static_lib_component_command(wasmedgePO)
+diff --git a/cmake/Helper.cmake b/cmake/Helper.cmake
+index 1111111..2222222 100644
+--- a/cmake/Helper.cmake
++++ b/cmake/Helper.cmake
+@@ -214,9 +214,14 @@ endfunction()
+ # Generate the list of static libs to statically link LLVM.
+ if((WASMEDGE_LINK_LLVM_STATIC OR WASMEDGE_BUILD_STATIC_LIB) AND WASMEDGE_USE_LLVM)
+   # Pack the LLVM and lld static libraries.
++  # When building with Bazel, skip LLD entirely - Bazel provides LLVM via llvm-project
+   find_package(LLVM REQUIRED HINTS "${LLVM_DIR}")
+-  find_package(LLD HINTS "${LLVM_DIR}" "${LLD_DIR}")
+-  if(LLD_FOUND)
++  if(NOT BAZEL_BUILD)
++    find_package(LLD HINTS "${LLVM_DIR}" "${LLD_DIR}")
++  else()
++    message(STATUS "Bazel build: Skipping LLD libraries (LLVM provided via Bazel llvm-project)")
++  endif()
++  if(LLD_FOUND AND NOT BAZEL_BUILD)
+     get_property(LLD_LIBRARY_DIR TARGET lldELF PROPERTY IMPORTED_LOCATION_RELEASE)
+     get_filename_component(LLD_LIBRARY_DIR "${LLD_LIBRARY_DIR}" DIRECTORY)
+   endif()
+@@ -233,10 +238,14 @@ if((WASMEDGE_LINK_LLVM_STATIC OR WASMEDGE_BUILD_STATIC_LIB) AND WASMEDGE_USE_LL
+   string(REPLACE " " ";" WASMEDGE_LLVM_LINK_LIBS_NAME "${WASMEDGE_LLVM_LINK_LIBS_NAME}")
+   set(WASMEDGE_LLVM_LINK_LIBS_NAME "${WASMEDGE_LLVM_LINK_LIBS_NAME}")
+ 
+-  list(APPEND WASMEDGE_LLVM_LINK_STATIC_COMPONENTS
+-    ${LLD_LIBRARY_DIR}/liblldELF.a
+-    ${LLD_LIBRARY_DIR}/liblldCommon.a
+-  )
++  # Skip LLD libraries when building with Bazel
++  # Bazel's llvm-project provides LLVM libraries directly without LLD
++  if(NOT BAZEL_BUILD)
++    list(APPEND WASMEDGE_LLVM_LINK_STATIC_COMPONENTS
++      ${LLD_LIBRARY_DIR}/liblldELF.a
++      ${LLD_LIBRARY_DIR}/liblldCommon.a
++    )
++  endif()
+   foreach(LIB_NAME IN LISTS WASMEDGE_LLVM_LINK_LIBS_NAME)
+     list(APPEND WASMEDGE_LLVM_LINK_STATIC_COMPONENTS
+       ${LLVM_LIBRARY_DIR}/lib${LIB_NAME}.a
+@@ -244,12 +253,14 @@ if((WASMEDGE_LINK_LLVM_STATIC OR WASMEDGE_BUILD_STATIC_LIB) AND WASMEDGE_USE_LL
+   endforeach()
+   if(LLVM_VERSION_MAJOR LESS_EQUAL 13)
+     # For LLVM <= 13
+-    list(APPEND WASMEDGE_LLVM_LINK_STATIC_COMPONENTS
+-      ${LLD_LIBRARY_DIR}/liblldCore.a
+-      ${LLD_LIBRARY_DIR}/liblldDriver.a
+-      ${LLD_LIBRARY_DIR}/liblldReaderWriter.a
+-      ${LLD_LIBRARY_DIR}/liblldYAML.a
+-    )
++    if(NOT BAZEL_BUILD)
++      list(APPEND WASMEDGE_LLVM_LINK_STATIC_COMPONENTS
++        ${LLD_LIBRARY_DIR}/liblldCore.a
++        ${LLD_LIBRARY_DIR}/liblldDriver.a
++        ${LLD_LIBRARY_DIR}/liblldReaderWriter.a
++        ${LLD_LIBRARY_DIR}/liblldYAML.a
++      )
++    endif()
+   else()
+     # For LLVM 14
+-    list(APPEND WASMEDGE_LLVM_LINK_STATIC_COMPONENTS
+-@@ -257,6 +268,7 @@ if((WASMEDGE_LINK_LLVM_STATIC OR WASMEDGE_BUILD_STATIC_LIB) AND WASMEDGE_USE_LL
+-      ${LLD_LIBRARY_DIR}/liblldCOFF.a
+-      ${LLD_LIBRARY_DIR}/liblldMachO.a
+-      ${LLD_LIBRARY_DIR}/liblldWasm.a
+-+      # Skip LLD libraries when building with Bazel
+-    )
++    # Skip LLD libraries when building with Bazel
++    if(NOT BAZEL_BUILD)
++      list(APPEND WASMEDGE_LLVM_LINK_STATIC_COMPONENTS
++@@ -257,6 +268,7 @@ if((WASMEDGE_LINK_LLVM_STATIC OR WASMEDGE_BUILD_STATIC_LIB) AND WASMEDGE_USE_LL
++        ${LLD_LIBRARY_DIR}/liblldCOFF.a
++        ${LLD_LIBRARY_DIR}/liblldMachO.a
++        ${LLD_LIBRARY_DIR}/liblldWasm.a
++      )
++    endif()
+   endif()
+   if(LLVM_VERSION_MAJOR GREATER_EQUAL 15)
+diff --git a/lib/llvm/CMakeLists.txt b/lib/llvm/CMakeLists.txt
+index 1111111..2222222 100644
+--- a/lib/llvm/CMakeLists.txt
++++ b/lib/llvm/CMakeLists.txt
+@@ -6,7 +6,13 @@ list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
+ include(LLVMConfig)
+ include(AddLLVM)
+ 
+-find_package(LLD HINTS "${LLD_CMAKE_PATH}" "${LLD_DIR}" "${LLVM_LIBRARY_DIR}/cmake/lld")
++# When building with Bazel, skip LLD - Bazel provides LLVM libraries directly
++# LLD is not needed for static LLVM linking via Bazel's llvm-project
++if(NOT BAZEL_BUILD)
++  find_package(LLD HINTS "${LLD_CMAKE_PATH}" "${LLD_DIR}" "${LLVM_LIBRARY_DIR}/cmake/lld")
++else()
++  message(STATUS "Bazel build: Skipping LLD find_package (not required for Bazel-provided LLVM)")
++endif()
+ if(LLD_FOUND)
+   list(APPEND CMAKE_MODULE_PATH "${LLD_CMAKE_DIR}")
+ endif()

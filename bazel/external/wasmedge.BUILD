@@ -36,6 +36,7 @@ cmake(
     } | select({
         "@proxy_wasm_cpp_host//bazel:engine_wasmedge_llvm": {
             "WASMEDGE_USE_LLVM": "On",
+            "WASMEDGE_LINK_LLVM_STATIC": "On",
             "BAZEL_BUILD": "ON",
             # Set LLVM_INCLUDE_DIR for the build to use
             "LLVM_INCLUDE_DIR": "$$EXT_BUILD_ROOT/external/llvm_toolchain_llvm/include",
