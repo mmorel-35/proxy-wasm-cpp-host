@@ -1,7 +1,8 @@
-diff -Naur WasmEdge-0.16.1/CMakeLists.txt WasmEdge-0.16.1-patched/CMakeLists.txt
---- WasmEdge-0.16.1/CMakeLists.txt	2026-01-05 22:09:55.000000000 +0000
-+++ WasmEdge-0.16.1-patched/CMakeLists.txt	2026-01-26 06:54:45.363263996 +0000
-@@ -186,6 +186,60 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 460eb83..cf922cf 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -186,6 +186,60 @@ include(FetchContent)
  include(Helper)
  include(GNUInstallDirs)
  
@@ -62,10 +63,11 @@ diff -Naur WasmEdge-0.16.1/CMakeLists.txt WasmEdge-0.16.1-patched/CMakeLists.txt
  set(CPACK_PACKAGE_VENDOR Second State LLC)
  set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}-${CMAKE_SYSTEM_NAME}")
  set(CPACK_STRIP_FILES ON)
-diff -Naur WasmEdge-0.16.1/cmake/Helper.cmake WasmEdge-0.16.1-patched/cmake/Helper.cmake
---- WasmEdge-0.16.1/cmake/Helper.cmake	2026-01-05 22:09:55.000000000 +0000
-+++ WasmEdge-0.16.1-patched/cmake/Helper.cmake	2026-01-26 06:55:17.176092959 +0000
-@@ -214,9 +214,35 @@
+diff --git a/cmake/Helper.cmake b/cmake/Helper.cmake
+index d3ea6d6..871e607 100644
+--- a/cmake/Helper.cmake
++++ b/cmake/Helper.cmake
+@@ -214,9 +214,35 @@ endfunction()
  # Generate the list of static libs to statically link LLVM.
  if((WASMEDGE_LINK_LLVM_STATIC OR WASMEDGE_BUILD_STATIC_LIB) AND WASMEDGE_USE_LLVM)
    # Pack the LLVM and lld static libraries.
@@ -103,7 +105,7 @@ diff -Naur WasmEdge-0.16.1/cmake/Helper.cmake WasmEdge-0.16.1-patched/cmake/Help
      get_property(LLD_LIBRARY_DIR TARGET lldELF PROPERTY IMPORTED_LOCATION_RELEASE)
      get_filename_component(LLD_LIBRARY_DIR "${LLD_LIBRARY_DIR}" DIRECTORY)
    endif()
-@@ -233,10 +259,14 @@
+@@ -233,10 +259,14 @@ if((WASMEDGE_LINK_LLVM_STATIC OR WASMEDGE_BUILD_STATIC_LIB) AND WASMEDGE_USE_LLV
    string(REPLACE " " ";" WASMEDGE_LLVM_LINK_LIBS_NAME "${WASMEDGE_LLVM_LINK_LIBS_NAME}")
    set(WASMEDGE_LLVM_LINK_LIBS_NAME "${WASMEDGE_LLVM_LINK_LIBS_NAME}")
  
@@ -122,7 +124,7 @@ diff -Naur WasmEdge-0.16.1/cmake/Helper.cmake WasmEdge-0.16.1-patched/cmake/Help
    foreach(LIB_NAME IN LISTS WASMEDGE_LLVM_LINK_LIBS_NAME)
      list(APPEND WASMEDGE_LLVM_LINK_STATIC_COMPONENTS
        ${LLVM_LIBRARY_DIR}/lib${LIB_NAME}.a
-@@ -244,20 +274,24 @@
+@@ -244,20 +274,24 @@ if((WASMEDGE_LINK_LLVM_STATIC OR WASMEDGE_BUILD_STATIC_LIB) AND WASMEDGE_USE_LLV
    endforeach()
    if(LLVM_VERSION_MAJOR LESS_EQUAL 13)
      # For LLVM <= 13
@@ -159,10 +161,11 @@ diff -Naur WasmEdge-0.16.1/cmake/Helper.cmake WasmEdge-0.16.1-patched/cmake/Help
    endif()
    if(LLVM_VERSION_MAJOR GREATER_EQUAL 15)
      # For LLVM 15 or greater on MacOS, or all LLVM 16+
-diff -Naur WasmEdge-0.16.1/include/CMakeLists.txt WasmEdge-0.16.1-patched/include/CMakeLists.txt
---- WasmEdge-0.16.1/include/CMakeLists.txt	2026-01-05 22:09:55.000000000 +0000
-+++ WasmEdge-0.16.1-patched/include/CMakeLists.txt	2026-01-26 06:55:24.776052292 +0000
-@@ -39,6 +39,8 @@
+diff --git a/include/CMakeLists.txt b/include/CMakeLists.txt
+index 1c9bd74..9a703cb 100644
+--- a/include/CMakeLists.txt
++++ b/include/CMakeLists.txt
+@@ -39,6 +39,8 @@ configure_file(common/enum_configure.h api/wasmedge/enum_configure.h COPYONLY)
  configure_file(common/enum_errcode.h api/wasmedge/enum_errcode.h COPYONLY)
  configure_file(common/enum_types.h api/wasmedge/enum_types.h COPYONLY)
  configure_file(common/version.h.in common/version.h)
@@ -171,10 +174,11 @@ diff -Naur WasmEdge-0.16.1/include/CMakeLists.txt WasmEdge-0.16.1-patched/includ
  unset(WASMEDGE_VERSION_STRING)
  unset(WASMEDGE_VERSION_LIST)
  unset(WASMEDGE_VERSION_MAJOR)
-diff -Naur WasmEdge-0.16.1/lib/api/CMakeLists.txt WasmEdge-0.16.1-patched/lib/api/CMakeLists.txt
---- WasmEdge-0.16.1/lib/api/CMakeLists.txt	2026-01-05 22:09:55.000000000 +0000
-+++ WasmEdge-0.16.1-patched/lib/api/CMakeLists.txt	2026-01-26 06:55:40.578963981 +0000
-@@ -151,8 +151,15 @@
+diff --git a/lib/api/CMakeLists.txt b/lib/api/CMakeLists.txt
+index cfc8cbc..5b5f9f2 100644
+--- a/lib/api/CMakeLists.txt
++++ b/lib/api/CMakeLists.txt
+@@ -151,8 +151,15 @@ if(WASMEDGE_BUILD_SHARED_LIB)
  endif()
  
  if(WASMEDGE_BUILD_STATIC_LIB)
@@ -192,7 +196,7 @@ diff -Naur WasmEdge-0.16.1/lib/api/CMakeLists.txt WasmEdge-0.16.1-patched/lib/ap
    wasmedge_add_static_lib_component_command(wasmedgeSystem)
    wasmedge_add_static_lib_component_command(wasmedgeCommon)
    wasmedge_add_static_lib_component_command(wasmedgePO)
-@@ -169,9 +176,13 @@
+@@ -169,9 +176,13 @@ if(WASMEDGE_BUILD_STATIC_LIB)
    wasmedge_add_static_lib_component_command(wasmedgeDriver)
  
    if(WASMEDGE_USE_LLVM)
@@ -209,10 +213,11 @@ diff -Naur WasmEdge-0.16.1/lib/api/CMakeLists.txt WasmEdge-0.16.1-patched/lib/ap
      wasmedge_add_static_lib_component_command(utilBlake3)
      wasmedge_add_static_lib_component_command(wasmedgeAOT)
      wasmedge_add_static_lib_component_command(wasmedgeLLVM)
-diff -Naur WasmEdge-0.16.1/lib/llvm/CMakeLists.txt WasmEdge-0.16.1-patched/lib/llvm/CMakeLists.txt
---- WasmEdge-0.16.1/lib/llvm/CMakeLists.txt	2026-01-05 22:09:55.000000000 +0000
-+++ WasmEdge-0.16.1-patched/lib/llvm/CMakeLists.txt	2026-01-26 06:55:53.157891069 +0000
-@@ -6,7 +6,13 @@
+diff --git a/lib/llvm/CMakeLists.txt b/lib/llvm/CMakeLists.txt
+index 87e8d19..0791d8e 100644
+--- a/lib/llvm/CMakeLists.txt
++++ b/lib/llvm/CMakeLists.txt
+@@ -6,7 +6,13 @@ list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
  include(LLVMConfig)
  include(AddLLVM)
  
