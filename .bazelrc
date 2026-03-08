@@ -1,5 +1,7 @@
-# Disable Bzlmod
-common --noenable_bzlmod
+# Bzlmod is enabled by default in Bazel 7+. Both Bzlmod and legacy WORKSPACE
+# builds are supported. To force legacy WORKSPACE mode, pass:
+#   --noenable_bzlmod
+# See MODULE.bazel for Bzlmod dependency declarations.
 
 # Pass CC, CXX and PATH from the environment.
 build --action_env=CC

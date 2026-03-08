@@ -26,8 +26,8 @@ cc_test(
     linkstatic = 1,
     deps = [
         "//:lib",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -41,8 +41,8 @@ cc_test(
     deps = [
         ":utility_lib",
         "//:lib",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -60,8 +60,8 @@ cc_test(
     deps = [
         ":utility_lib",
         "//:lib",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -79,8 +79,8 @@ cc_test(
     deps = [
         ":utility_lib",
         "//:lib",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -97,8 +97,8 @@ cc_test(
     deps = [
         ":utility_lib",
         "//:lib",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -113,8 +113,8 @@ cc_test(
     deps = [
         ":utility_lib",
         "//:lib",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -128,8 +128,8 @@ cc_test(
     deps = [
         ":utility_lib",
         "//:lib",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -143,8 +143,8 @@ cc_test(
     deps = [
         ":utility_lib",
         "//:lib",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -158,8 +158,8 @@ cc_test(
     deps = [
         ":utility_lib",
         "//:lib",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -169,8 +169,8 @@ cc_test(
     linkstatic = 1,
     deps = [
         "//:lib",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -180,8 +180,8 @@ cc_test(
     linkstatic = 1,
     deps = [
         "//:lib",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -191,8 +191,8 @@ cc_test(
     linkstatic = 1,
     deps = [
         "//:lib",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -207,8 +207,8 @@ cc_test(
     deps = [
         ":utility_lib",
         "//:lib",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -218,8 +218,8 @@ cc_test(
     linkstatic = 1,
     deps = [
         "//:lib",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -233,6 +233,6 @@ cc_library(
     hdrs = ["utility.h"],
     deps = [
         "//:lib",
-        "@com_google_googletest//:gtest",
+        "@googletest//:gtest",
     ],
 )

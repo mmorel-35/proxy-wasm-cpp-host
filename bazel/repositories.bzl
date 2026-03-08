@@ -150,7 +150,7 @@ def proxy_wasm_cpp_host_repositories():
     # This is the latest LTS release (20250512.1), required by protobuf 33.2
     maybe(
         http_archive,
-        name = "com_google_absl",
+        name = "abseil-cpp",
         sha256 = "1692f77d1739bacf3f94337188b78583cf09bab7e420d2dc6c5605a4f86785a1",
         strip_prefix = "abseil-cpp-20250814.1",
         urls = ["https://github.com/abseil/abseil-cpp/archive/20250814.1.tar.gz"],
@@ -186,26 +186,20 @@ def proxy_wasm_cpp_host_repositories():
 
     maybe(
         http_archive,
-        name = "com_google_googletest",
+        name = "googletest",
         sha256 = "65fab701d9829d38cb77c14acdc431d2108bfdbf8979e40eb8ae567edf10b27c",
         strip_prefix = "googletest-1.17.0",
         urls = ["https://github.com/google/googletest/releases/download/v1.17.0/googletest-1.17.0.tar.gz"],
-        repo_mapping = {
-            "@abseil-cpp": "@com_google_absl",
-        },
     )
 
     # NullVM dependencies.
 
     maybe(
         http_archive,
-        name = "com_google_protobuf",
+        name = "protobuf",
         sha256 = "6b6599b54c88d75904b7471f5ca34a725fa0af92e134dd1a32d5b395aa4b4ca8",
         strip_prefix = "protobuf-33.2",
         url = "https://github.com/protocolbuffers/protobuf/releases/download/v33.2/protobuf-33.2.tar.gz",
-        repo_mapping = {
-            "@abseil-cpp": "@com_google_absl",
-        },
     )
 
     # V8 with dependencies.
@@ -226,9 +220,6 @@ def proxy_wasm_cpp_host_repositories():
             "find ./src ./include -type f -exec sed -i.bak -e 's!#include \"third_party/dragonbox/src/include/dragonbox/dragonbox.h\"!#include \"dragonbox/dragonbox.h\"!' {} \\;",
             "find ./src ./include -type f -exec sed -i.bak -e 's!#include \"third_party/fast_float/src/include/fast_float/!#include \"fast_float/!' {} \\;",
         ],
-        repo_mapping = {
-            "@abseil-cpp": "@com_google_absl",
-        },
     )
 
     maybe(
@@ -346,7 +337,7 @@ def proxy_wasm_cpp_host_repositories():
     # https://github.com/bazelbuild/bazel-central-registry/tree/main/modules/fmt/11.0.2
     maybe(
         http_archive,
-        name = "com_github_fmtlib_fmt",
+        name = "fmt",
         sha256 = "6cb1e6d37bdcb756dbbe59be438790db409cdb4868c66e888d5df9f13f7c027f",
         strip_prefix = "fmt-11.0.2",
         urls = ["https://github.com/fmtlib/fmt/archive/refs/tags/11.0.2.tar.gz"],
@@ -357,7 +348,7 @@ def proxy_wasm_cpp_host_repositories():
     # https://github.com/bazelbuild/bazel-central-registry/tree/main/modules/spdlog/1.13.0
     maybe(
         http_archive,
-        name = "com_github_gabime_spdlog",
+        name = "spdlog",
         sha256 = "534f2ee1a4dcbeb22249856edfb2be76a1cf4f708a20b0ac2ed090ee24cfdbc9",
         strip_prefix = "spdlog-1.13.0",
         urls = ["https://github.com/gabime/spdlog/archive/refs/tags/v1.13.0.tar.gz"],
