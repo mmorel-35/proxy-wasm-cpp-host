@@ -23,7 +23,7 @@ Usage:
 """
 
 module(
-    name = "proxy_wasm_cpp_host",
+    name = "proxy-wasm-cpp-host",
     version = "0.0.0",
     compatibility_level = 1,
 )

@@ -22,7 +22,7 @@ bazel build --enable_bzlmod //...
 
 **Using as a dependency (in your MODULE.bazel):**
 ```starlark
-bazel_dep(name = "proxy_wasm_cpp_host", version = "X.Y.Z")
+bazel_dep(name = "proxy-wasm-cpp-host", version = "X.Y.Z")
 ```
 
 ### Legacy WORKSPACE
