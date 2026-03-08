@@ -89,7 +89,7 @@ cc_library(
     }),
     deps = [
         ":headers",
-        "@com_google_absl//absl/cleanup",
+        "@abseil-cpp//absl/cleanup",
     ] + select({
         "//bazel:crypto_system": [],
         "//conditions:default": ["@boringssl//:crypto"],
@@ -117,7 +117,7 @@ cc_library(
     ],
     deps = [
         ":headers",
-        "@com_google_protobuf//:protobuf_lite",
+        "@protobuf//:protobuf_lite",
         "@proxy_wasm_cpp_sdk//:api_lib",
     ],
 )

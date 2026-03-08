@@ -51,14 +51,9 @@ bazel_dep(name = "aspect_rules_js", version = "2.1.2")
 
 # ─── Core C++ dependencies ───────────────────────────────────────────────────
 
-# repo_name maintains backward compatibility with existing @com_google_absl references.
-bazel_dep(name = "abseil-cpp", version = "20250814.1", repo_name = "com_google_absl")
-
-# repo_name maintains backward compatibility with existing @com_google_googletest references.
-bazel_dep(name = "googletest", version = "1.17.0", repo_name = "com_google_googletest")
-
-# repo_name maintains backward compatibility with existing @com_google_protobuf references.
-bazel_dep(name = "protobuf", version = "33.2", repo_name = "com_google_protobuf")
+bazel_dep(name = "abseil-cpp", version = "20250814.1")
+bazel_dep(name = "googletest", version = "1.17.0")
+bazel_dep(name = "protobuf", version = "33.2")
 
 # ─── V8 dependencies (available in BCR) ──────────────────────────────────────
 
@@ -66,11 +61,8 @@ bazel_dep(name = "highway", version = "1.2.0")
 
 # ─── WasmEdge dependencies (available in BCR) ────────────────────────────────
 
-# repo_name maintains backward compatibility with existing @com_github_fmtlib_fmt references.
-bazel_dep(name = "fmt", version = "11.0.2", repo_name = "com_github_fmtlib_fmt")
-
-# repo_name maintains backward compatibility with existing @com_github_gabime_spdlog references.
-bazel_dep(name = "spdlog", version = "1.13.0", repo_name = "com_github_gabime_spdlog")
+bazel_dep(name = "fmt", version = "11.0.2")
+bazel_dep(name = "spdlog", version = "1.13.0")
 
 # ─── Python toolchain configuration ──────────────────────────────────────────
 

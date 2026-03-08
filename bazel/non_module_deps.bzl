@@ -76,9 +76,6 @@ def _non_module_deps_impl(mctx):
             "find ./src ./include -type f -exec sed -i.bak -e 's!#include \"third_party/dragonbox/src/include/dragonbox/dragonbox.h\"!#include \"dragonbox/dragonbox.h\"!' {} \\;",
             "find ./src ./include -type f -exec sed -i.bak -e 's!#include \"third_party/fast_float/src/include/fast_float/!#include \"fast_float/!' {} \\;",
         ],
-        repo_mapping = {
-            "@abseil-cpp": "@com_google_absl",
-        },
     )
 
     # fast_float 7.0.0 is not available in BCR (only 6.1.6 and 8.0.2).

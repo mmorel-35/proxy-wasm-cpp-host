@@ -14,8 +14,8 @@
 
 load("@aspect_rules_lint//format:repositories.bzl", "rules_lint_dependencies")
 load("@bazel_lib//lib:repositories.bzl", "bazel_lib_dependencies", "bazel_lib_register_toolchains")
-load("@com_google_googletest//:googletest_deps.bzl", "googletest_deps")
-load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+load("@googletest//:googletest_deps.bzl", "googletest_deps")
+load("@protobuf//:protobuf_deps.bzl", "protobuf_deps")
 load("@envoy_toolshed//sysroot:sysroot.bzl", "setup_sysroots")
 load("@llvm-raw//utils/bazel:configure.bzl", "llvm_configure")
 load("@proxy_wasm_cpp_host//bazel/cargo/wasmsign/remote:crates.bzl", wasmsign_crate_repositories = "crate_repositories")

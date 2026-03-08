@@ -41,7 +41,7 @@ cmake(
     lib_source = ":srcs",
     out_static_libs = ["libwasmedge.a"],
     deps = [
-        "@com_github_fmtlib_fmt//:fmt",
-        "@com_github_gabime_spdlog//:spdlog",
+        "@fmt//:fmt",
+        "@spdlog//:spdlog",
     ],
 )
