@@ -1,0 +1,148 @@
+# Copyright 2025 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# WORKSPACE.bzlmod — supplementary setup for Bzlmod builds.
+#
+# This file is loaded by Bazel when --enable_bzlmod is active (Bazel 6.3+).
+# It supplements MODULE.bazel with setup that cannot yet be expressed purely
+# as module extensions (toolchain configuration, cargo repos, pip repos).
+#
+# IMPORTANT: Do NOT call any function here that uses maybe() for repos that
+# are already declared via bazel_dep in MODULE.bazel. In Bzlmod mode,
+# native.existing_rules() does not return MODULE.bazel repos, so maybe()
+# would attempt to create them again, causing "Repository already defined"
+# errors. Only call functions for repos that are in bazel/non_module_deps.bzl
+# or are entirely new to WORKSPACE.bzlmod.
+#
+# Repos declared via bazel_dep in MODULE.bazel are accessible here via load().
+# Repos created by the non_module_deps module extension are also accessible.
+#
+# WORKSPACE (without .bzlmod suffix) remains in place for legacy builds that
+# do not pass --enable_bzlmod.
+
+# ─── LLVM additional toolchain (aarch64 cross-compilation) ────────────────────
+# The primary llvm_toolchain is configured via the llvm extension tag in
+# MODULE.bazel. Here we configure the additional aarch64 toolchain that reuses
+# the already-downloaded LLVM binaries with a cross-compilation sysroot.
+
+load("@toolchains_llvm//toolchain:rules.bzl", "llvm_toolchain")
+
+llvm_toolchain(
+    name = "llvm_aarch64",
+    llvm_version = "19.1.0",
+    toolchain_roots = {
+        "": "@llvm_toolchain_llvm//",
+    },
+    sysroot = {
+        "linux-aarch64": "@sysroot_linux_arm64//:sysroot",
+    },
+)
+
+# ─── Sysroots (cross-compilation) ────────────────────────────────────────────
+# setup_sysroots() downloads sysroot archives (arm64, s390x) and the Emscripten
+# SDK (emsdk) used by hermetic-llvm bazelrc config for WASM cross-compilation.
+# envoy_toolshed comes from the non_module_deps module extension.
+
+load("@envoy_toolshed//sysroot:sysroot.bzl", "setup_sysroots")
+
+setup_sysroots()
+
+# ─── LLVM native Bazel build (for WAMR JIT) ───────────────────────────────────
+# llvm-raw comes from the non_module_deps module extension.
+
+load("@llvm-raw//utils/bazel:configure.bzl", "llvm_configure")
+
+llvm_configure(name = "llvm-project", targets = ["X86", "AArch64"])
+
+# ─── Rust additional repository sets ─────────────────────────────────────────
+# rules_rust's Bzlmod extension (rust.toolchain in MODULE.bazel) configures
+# the default toolchain. The additional per-exec-platform repository sets with
+# custom wasm targets are configured here until rust.repository_set() bzlmod
+# tags support the full parameter set.
+
+load("@rules_rust//rust:repositories.bzl", "rust_repository_set")
+
+rust_repository_set(
+    name = "rust_linux_x86_64",
+    exec_triple = "x86_64-unknown-linux-gnu",
+    extra_target_triples = [
+        "aarch64-unknown-linux-gnu",
+        "wasm32-unknown-unknown",
+        "wasm32-wasip1",
+    ],
+    versions = ["1.93.1"],
+)
+
+rust_repository_set(
+    name = "rust_linux_s390x",
+    exec_triple = "s390x-unknown-linux-gnu",
+    extra_target_triples = [
+        "wasm32-unknown-unknown",
+        "wasm32-wasip1",
+    ],
+    versions = ["1.93.1"],
+)
+
+# ─── Crate universe bootstrap ─────────────────────────────────────────────────
+
+load("@rules_rust//crate_universe:repositories.bzl", "crate_universe_dependencies")
+
+crate_universe_dependencies(bootstrap = True)
+
+# ─── Wasmtime and Wasmsign crate repositories ─────────────────────────────────
+
+load("@proxy_wasm_cpp_host//bazel/cargo/wasmtime/remote:crates.bzl", wasmtime_crate_repositories = "crate_repositories")
+
+wasmtime_crate_repositories()
+
+load("@proxy_wasm_cpp_host//bazel/cargo/wasmsign/remote:crates.bzl", wasmsign_crate_repositories = "crate_repositories")
+
+wasmsign_crate_repositories()
+
+# ─── Python pip repositories ──────────────────────────────────────────────────
+# rules_fuzzing from BCR (bazel_dep in MODULE.bazel) still requires
+# rules_fuzzing_init() to be called to create the @fuzzing_py_deps pip repo.
+load("@rules_fuzzing//fuzzing:init.bzl", "rules_fuzzing_init")
+
+rules_fuzzing_init()
+
+# V8 Python dependencies (requirements.txt is inside the v8 archive).
+# v8 comes from the non_module_deps module extension.
+load("@rules_python//python:pip.bzl", "pip_parse")
+
+pip_parse(
+    name = "v8_python_deps",
+    extra_pip_args = ["--require-hashes"],
+    requirements_lock = "@v8//:bazel/requirements.txt",
+)
+
+# ─── Import pip install functions ─────────────────────────────────────────────
+
+load("@fuzzing_py_deps//:requirements.bzl", pip_fuzzing_dependencies = "install_deps")
+
+pip_fuzzing_dependencies()
+
+load("@v8_python_deps//:requirements.bzl", pip_v8_dependencies = "install_deps")
+
+pip_v8_dependencies()
+
+# ─── proxy-wasm C++ SDK extra dependencies ───────────────────────────────────
+# Only call dependencies_extra here (which creates @emsdk from Emscripten SDK).
+# Do NOT call proxy_wasm_cpp_sdk_repositories() or proxy_wasm_cpp_sdk_dependencies()
+# because they use maybe() for repos that are already managed by MODULE.bazel
+# (e.g. abseil-cpp), which would cause "Repository already defined" errors.
+
+load("@proxy_wasm_cpp_sdk//bazel:dependencies_extra.bzl", "proxy_wasm_cpp_sdk_dependencies_extra")
+
+proxy_wasm_cpp_sdk_dependencies_extra()
